@@ -59,16 +59,16 @@ The goal is not to "finish files." The goal is to build reflexes.
 
 | Day | Focus | Notes |
 |---|---|---|
-| Day 01 Part 1 | Machine Learning Basics | [Notes](Week-02/Day-01-Part-1-Machine-Learning-Basics/00-notes.md) |
-| Day 01 Part 2 | Regression Algorithms | [Notes](Week-02/Day-01-Part-2-Regression-Algorithms/00-notes.md) |
-| Day 02 Part 1 | Classification Algorithms | [Notes](Week-02/Day-02-Part-1-Classification-Algorithms/00-notes.md) |
-| Day 02 Part 2 | Clustering Techniques | [Notes](Week-02/Day-02-Part-2-Clustering-Techniques/00-notes.md) |
-| Day 03 Part 1 | Feature Engineering | [Notes](Week-02/Day-03-Part-1-Feature-Engineering/00-notes.md) |
-| Day 03 Part 2 | Model Evaluation | [Notes](Week-02/Day-03-Part-2-Model-Evaluation/00-notes.md) |
-| Day 04 Part 1 | Intro to Deep Learning | [Notes](Week-02/Day-04-Part-1-Intro-to-Deep-Learning/00-notes.md) |
-| Day 04 Part 2 | NLP Basics | [Notes](Week-02/Day-04-Part-2-NLP-Basics/00-notes.md) |
-| Day 05 Part 1 | End-to-End Mini Project | [Notes](Week-02/Day-05-Part-1-End-to-End-Mini-Project/00-notes.md) |
-| Day 05 Part 2 | Mock Interview and Resume Review | [Notes](Week-02/Day-05-Part-2-Mock-Interview-Resume-Review/00-notes.md) |
+| Day 01 Part 1 | Machine Learning Basics | [Agenda](Week-02/Day-01-Part-1-Machine-Learning-Basics/00-agenda.md) |
+| Day 01 Part 2 | Regression Algorithms | [Agenda](Week-02/Day-01-Part-2-Regression-Algorithms/00-agenda.md) |
+| Day 02 Part 1 | Classification Algorithms | [Agenda](Week-02/Day-02-Part-1-Classification-Algorithms/00-agenda.md) |
+| Day 02 Part 2 | Clustering Techniques | [Agenda](Week-02/Day-02-Part-2-Clustering-Techniques/00-agenda.md) |
+| Day 03 Part 1 | Feature Engineering | [Agenda](Week-02/Day-03-Part-1-Feature-Engineering/00-agenda.md) |
+| Day 03 Part 2 | Model Evaluation | [Agenda](Week-02/Day-03-Part-2-Model-Evaluation/00-agenda.md) |
+| Day 04 Part 1 | Intro to Deep Learning | [Agenda](Week-02/Day-04-Part-1-Intro-to-Deep-Learning/00-agenda.md) |
+| Day 04 Part 2 | NLP Basics | [Agenda](Week-02/Day-04-Part-2-NLP-Basics/00-agenda.md) |
+| Day 05 Part 1 | End-to-End Mini Project | [Agenda](Week-02/Day-05-Part-1-End-to-End-Mini-Project/00-agenda.md) |
+| Day 05 Part 2 | Mock Interview and Resume Review | [Agenda](Week-02/Day-05-Part-2-Mock-Interview-Resume-Review/00-agenda.md) |
 
 ---
 
@@ -187,7 +187,7 @@ When studying or building a project, ask:
 
 ## Current Status
 
-Week 01 has been expanded into a complete foundation path. Week 02 and the supporting project/interview/cheat-sheet folders are planned for further expansion. See [NOTES_IMPROVEMENT_PLAN.md](NOTES_IMPROVEMENT_PLAN.md) for the next improvement phases.
+Week 01 has been expanded into a complete foundation path. Week 02 now has a full multi-file learning structure across machine learning, evaluation, NLP, deep learning, project work, and interview preparation. The supporting project/interview/cheat-sheet folders are planned for further expansion. See [NOTES_IMPROVEMENT_PLAN.md](NOTES_IMPROVEMENT_PLAN.md) for the next improvement phases.
 
 ---
 

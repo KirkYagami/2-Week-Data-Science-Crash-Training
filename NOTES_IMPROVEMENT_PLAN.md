@@ -44,7 +44,7 @@ Goal: make the first week usable end to end without placeholder notes.
 
 ### Phase 2 — Build Week 02 Machine Learning Notes
 
-Status: pending.
+Status: complete.
 
 Priority order:
 
@@ -107,8 +107,8 @@ Every completed note should include:
 
 ## Next Recommended Work
 
-Start Phase 2 with:
+Start Phase 3 with:
 
-`Week-02/Day-01-Part-1-Machine-Learning-Basics/00-notes.md`
+`Cheat-Sheets/python-cheat-sheet.md`
 
-Then continue through Week 02 in order.
+Then continue through the global cheat sheets in order.
