@@ -196,3 +196,18 @@ Week 01 has been expanded into a complete foundation path. Week 02 and the suppo
 Data science is not one skill. It is a stack of habits: curiosity, cleaning, checking assumptions, writing code that survives tomorrow, and explaining what you found without making the chart do magic tricks.
 
 Use this repo as a training ground. Break things, fix them, write the insight down, and keep moving.
+
+---
+
+<div align="center">
+
+## 📬 Get in Touch
+
+[![Email](https://img.shields.io/badge/Email-er.nikhilsharma7%40gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:er.nikhilsharma7@gmail.com)
+[![Phone](https://img.shields.io/badge/Phone-9682654928-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](tel:+919682654928)
+
+### Made with ❤️ by [Nikhil Sharma](https://github.com/KirkYagami)
+
+⭐ Found this helpful? Consider giving it a star!
+
+</div>
