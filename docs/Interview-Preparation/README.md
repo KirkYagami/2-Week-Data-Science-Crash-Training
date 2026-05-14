@@ -15,9 +15,15 @@ Saying an answer out loud is not optional — it is the skill being tested.
 
 | Folder | Topics | Status |
 |---|---|---|
+| [01-Python](01-Python/) | Python basics, data structures, OOP, functional programming, libraries | Coming soon |
+| [02-SQL](02-SQL/) | SQL basics, joins, window functions, subqueries, query optimization | Coming soon |
 | [03-Statistics](03-Statistics/) | Descriptive stats, probability, distributions, hypothesis testing, A/B testing, Bayesian thinking | ✅ Ready |
 | [04-Machine-Learning](04-Machine-Learning/) | Fundamentals, regression, classification, clustering, ensembles, feature engineering, evaluation, regularization | ✅ Ready |
-| More subjects | Python, SQL, Deep Learning, NLP, System Design, Case Studies, Behavioral | Coming soon |
+| [05-Deep-Learning](05-Deep-Learning/) | Neural networks, training, CNNs, RNNs, transformers | Coming soon |
+| [06-NLP](06-NLP/) | Text preprocessing, classical NLP, embeddings, language models, applications | Coming soon |
+| [07-System-Design](07-System-Design/) | ML system design, data pipelines, model serving, monitoring | Coming soon |
+| [08-Case-Studies](08-Case-Studies/) | Product metrics, experiment design, ML problem framing, business cases | Coming soon |
+| [09-Behavioral](09-Behavioral/) | Telling your story, project deep dives, conflict, STAR method | Coming soon |
 
 ## Difficulty Guide
 

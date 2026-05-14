@@ -325,6 +325,18 @@ nav:
 
   - Interview Prep:
     - Overview: Interview-Preparation/README.md
+    - Python:
+      - Python Basics: Interview-Preparation/01-Python/01-python-basics.md
+      - Data Structures: Interview-Preparation/01-Python/02-data-structures.md
+      - OOP: Interview-Preparation/01-Python/03-oop.md
+      - Functional & Iterators: Interview-Preparation/01-Python/04-functional-and-iterators.md
+      - Libraries & Ecosystem: Interview-Preparation/01-Python/05-libraries-ecosystem.md
+    - SQL:
+      - SQL Basics: Interview-Preparation/02-SQL/01-sql-basics.md
+      - Joins & Aggregations: Interview-Preparation/02-SQL/02-joins-and-aggregations.md
+      - Window Functions: Interview-Preparation/02-SQL/03-window-functions.md
+      - Subqueries & CTEs: Interview-Preparation/02-SQL/04-subqueries-and-ctes.md
+      - Query Optimization: Interview-Preparation/02-SQL/05-query-optimization.md
     - Statistics:
       - Descriptive Statistics: Interview-Preparation/03-Statistics/01-descriptive-statistics.md
       - Probability: Interview-Preparation/03-Statistics/02-probability.md
@@ -341,6 +353,33 @@ nav:
       - Feature Engineering: Interview-Preparation/04-Machine-Learning/06-feature-engineering.md
       - Model Evaluation: Interview-Preparation/04-Machine-Learning/07-model-evaluation.md
       - Regularization: Interview-Preparation/04-Machine-Learning/08-regularization.md
+    - Deep Learning:
+      - Neural Networks: Interview-Preparation/05-Deep-Learning/01-neural-networks.md
+      - Training & Optimization: Interview-Preparation/05-Deep-Learning/02-training-and-optimization.md
+      - CNNs: Interview-Preparation/05-Deep-Learning/03-cnns.md
+      - RNNs & LSTMs: Interview-Preparation/05-Deep-Learning/04-rnns-and-lstms.md
+      - Transformers & Attention: Interview-Preparation/05-Deep-Learning/05-transformers-and-attention.md
+    - NLP:
+      - Text Preprocessing: Interview-Preparation/06-NLP/01-text-preprocessing.md
+      - Classical NLP: Interview-Preparation/06-NLP/02-classical-nlp.md
+      - Word Embeddings: Interview-Preparation/06-NLP/03-word-embeddings.md
+      - Language Models: Interview-Preparation/06-NLP/04-language-models.md
+      - NLP Applications: Interview-Preparation/06-NLP/05-nlp-applications.md
+    - System Design:
+      - ML System Design: Interview-Preparation/07-System-Design/01-ml-system-design.md
+      - Data Pipelines: Interview-Preparation/07-System-Design/02-data-pipelines.md
+      - Model Serving: Interview-Preparation/07-System-Design/03-model-serving.md
+      - Monitoring & Maintenance: Interview-Preparation/07-System-Design/04-monitoring-and-maintenance.md
+    - Case Studies:
+      - Product Metrics: Interview-Preparation/08-Case-Studies/01-product-metrics.md
+      - Experiment Design: Interview-Preparation/08-Case-Studies/02-experiment-design.md
+      - ML Problem Framing: Interview-Preparation/08-Case-Studies/03-ml-problem-framing.md
+      - Business Case Walkthrough: Interview-Preparation/08-Case-Studies/04-business-case-walkthrough.md
+    - Behavioral:
+      - Telling Your Story: Interview-Preparation/09-Behavioral/01-telling-your-story.md
+      - Project Deep Dives: Interview-Preparation/09-Behavioral/02-project-deep-dives.md
+      - Conflict & Collaboration: Interview-Preparation/09-Behavioral/03-conflict-and-collaboration.md
+      - STAR Method Practice: Interview-Preparation/09-Behavioral/04-star-method-practice.md
 
   - Assignments:
     - Week 01: Assignments/week-01-assignment.md
