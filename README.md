@@ -65,42 +65,41 @@ The goal is not to "finish files." The goal is to build reflexes.
 
 | Day | Focus | Start Here |
 |---|---|---|
-| Day 01 Part 1 | Python Basics | [Agenda](Week-01/Day-01-Part-1-Python-Basics/00-agenda.md) |
-| Day 01 Part 2 | Advanced Python | [Agenda](Week-01/Day-01-Part-2-Advanced-Python/00-agenda.md) |
-| Day 02 Part 1 | NumPy Fundamentals | [Agenda](Week-01/Day-02-Part-1-NumPy-Fundamentals/00-agenda.md) |
-| Day 02 Part 2 | Pandas Basics | [Agenda](Week-01/Day-02-Part-2-Pandas-Basics/00-agenda.md) |
-| Day 03 Part 1 | Pandas Advanced | [GroupBy](Week-01/Day-03-Part-1-Pandas-Advanced/01-groupby.md) |
-| Day 03 Part 2 | Data Visualization | [Matplotlib Basics](Week-01/Day-03-Part-2-Data-Visualization/01-matplotlib-basics.md) |
-| Day 04 Part 1 | Statistics Basics | [Mean, Median, Mode](Week-01/Day-04-Part-1-Statistics-Basics/01-mean-median-mode.md) |
-| Day 04 Part 2 | Inferential Statistics | [Hypothesis Testing](Week-01/Day-04-Part-2-Inferential-Statistics/01-hypothesis-testing.md) |
-| Day 05 Part 1 | SQL for Data Science | [SELECT and WHERE](Week-01/Day-05-Part-1-SQL-for-Data-Science/01-select-and-where.md) |
-| Day 05 Part 2 | EDA | [Data Cleaning](Week-01/Day-05-Part-2-EDA/01-data-cleaning.md) |
+| Day 01 Part 1 | Python Basics | [Agenda](docs/Week-01/Day-01-Part-1-Python-Basics/00-agenda.md) |
+| Day 01 Part 2 | Advanced Python | [Agenda](docs/Week-01/Day-01-Part-2-Advanced-Python/00-agenda.md) |
+| Day 02 Part 1 | NumPy Fundamentals | [Agenda](docs/Week-01/Day-02-Part-1-NumPy-Fundamentals/00-agenda.md) |
+| Day 02 Part 2 | Pandas Basics | [Agenda](docs/Week-01/Day-02-Part-2-Pandas-Basics/00-agenda.md) |
+| Day 03 Part 1 | Pandas Advanced | [GroupBy](docs/Week-01/Day-03-Part-1-Pandas-Advanced/01-groupby.md) |
+| Day 03 Part 2 | Data Visualization | [Matplotlib Basics](docs/Week-01/Day-03-Part-2-Data-Visualization/01-matplotlib-basics.md) |
+| Day 04 Part 1 | Statistics Basics | [Mean, Median, Mode](docs/Week-01/Day-04-Part-1-Statistics-Basics/01-mean-median-mode.md) |
+| Day 04 Part 2 | Inferential Statistics | [Hypothesis Testing](docs/Week-01/Day-04-Part-2-Inferential-Statistics/01-hypothesis-testing.md) |
+| Day 05 Part 1 | SQL for Data Science | [SELECT and WHERE](docs/Week-01/Day-05-Part-1-SQL-for-Data-Science/01-select-and-where.md) |
+| Day 05 Part 2 | EDA | [Data Cleaning](docs/Week-01/Day-05-Part-2-EDA/01-data-cleaning.md) |
 
 ### Week 02 — Machine Learning and Projects
 
 | Day | Focus | Notes |
 |---|---|---|
-| Day 01 Part 1 | Machine Learning Basics | [Agenda](Week-02/Day-01-Part-1-Machine-Learning-Basics/00-agenda.md) |
-| Day 01 Part 2 | Regression Algorithms | [Agenda](Week-02/Day-01-Part-2-Regression-Algorithms/00-agenda.md) |
-| Day 02 Part 1 | Classification Algorithms | [Agenda](Week-02/Day-02-Part-1-Classification-Algorithms/00-agenda.md) |
-| Day 02 Part 2 | Clustering Techniques | [Agenda](Week-02/Day-02-Part-2-Clustering-Techniques/00-agenda.md) |
-| Day 03 Part 1 | Feature Engineering | [Agenda](Week-02/Day-03-Part-1-Feature-Engineering/00-agenda.md) |
-| Day 03 Part 2 | Model Evaluation | [Agenda](Week-02/Day-03-Part-2-Model-Evaluation/00-agenda.md) |
-| Day 04 Part 1 | Intro to Deep Learning | [Agenda](Week-02/Day-04-Part-1-Intro-to-Deep-Learning/00-agenda.md) |
-| Day 04 Part 2 | NLP Basics | [Agenda](Week-02/Day-04-Part-2-NLP-Basics/00-agenda.md) |
-| Day 05 Part 1 | End-to-End Mini Project | [Agenda](Week-02/Day-05-Part-1-End-to-End-Mini-Project/00-agenda.md) |
-| Day 05 Part 2 | Mock Interview and Resume Review | [Agenda](Week-02/Day-05-Part-2-Mock-Interview-Resume-Review/00-agenda.md) |
+| Day 01 Part 1 | Machine Learning Basics | [Agenda](docs/Week-02/Day-01-Part-1-Machine-Learning-Basics/00-agenda.md) |
+| Day 01 Part 2 | Regression Algorithms | [Agenda](docs/Week-02/Day-01-Part-2-Regression-Algorithms/00-agenda.md) |
+| Day 02 Part 1 | Classification Algorithms | [Agenda](docs/Week-02/Day-02-Part-1-Classification-Algorithms/00-agenda.md) |
+| Day 02 Part 2 | Clustering Techniques | [Agenda](docs/Week-02/Day-02-Part-2-Clustering-Techniques/00-agenda.md) |
+| Day 03 Part 1 | Feature Engineering | [Agenda](docs/Week-02/Day-03-Part-1-Feature-Engineering/00-agenda.md) |
+| Day 03 Part 2 | Model Evaluation | [Agenda](docs/Week-02/Day-03-Part-2-Model-Evaluation/00-agenda.md) |
+| Day 04 Part 1 | Intro to Deep Learning | [Agenda](docs/Week-02/Day-04-Part-1-Intro-to-Deep-Learning/00-agenda.md) |
+| Day 04 Part 2 | NLP Basics | [Agenda](docs/Week-02/Day-04-Part-2-NLP-Basics/00-agenda.md) |
+| Day 05 Part 1 | End-to-End Mini Project | [Agenda](docs/Week-02/Day-05-Part-1-End-to-End-Mini-Project/00-agenda.md) |
+| Day 05 Part 2 | Mock Interview and Resume Review | [Agenda](docs/Week-02/Day-05-Part-2-Mock-Interview-Resume-Review/00-agenda.md) |
 
 ---
 
 ## Fast-Access Folders
 
-- [Assignments](Assignments)
-- [Cheat Sheets](Cheat-Sheets)
-- [Datasets](Datasets)
-- [Interview Preparation](Interview-Preparation)
-- [Projects](Projects)
-- [Resources](Resources)
+- [Assignments](docs/Assignments)
+- [Cheat Sheets](docs/Cheat-Sheets)
+- [Interview Preparation](docs/Interview-Preparation)
+- [Projects](docs/Projects)
+- [Resources](docs/Resources)
 
 ---
 

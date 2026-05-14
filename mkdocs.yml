@@ -38,6 +38,8 @@ theme:
 
 plugins:
   - search
+  - roamlinks
+  - callouts
 
 markdown_extensions:
   - admonition
@@ -52,6 +54,7 @@ markdown_extensions:
   - tables
   - toc:
       permalink: true
+  - md_in_html
 
 extra:
   social:
