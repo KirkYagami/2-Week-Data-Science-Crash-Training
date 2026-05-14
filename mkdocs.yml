@@ -319,9 +319,14 @@ nav:
     - Python: Cheat-Sheets/python-cheat-sheet.md
     - NumPy: Cheat-Sheets/numpy-cheat-sheet.md
     - Pandas: Cheat-Sheets/pandas-cheat-sheet.md
+    - Matplotlib & Seaborn: Cheat-Sheets/matplotlib-seaborn-cheat-sheet.md
     - SQL: Cheat-Sheets/sql-cheat-sheet.md
     - Statistics: Cheat-Sheets/statistics-cheat-sheet.md
     - Machine Learning: Cheat-Sheets/ml-cheat-sheet.md
+    - Scikit-learn: Cheat-Sheets/sklearn-cheat-sheet.md
+    - Feature Engineering: Cheat-Sheets/feature-engineering-cheat-sheet.md
+    - Deep Learning: Cheat-Sheets/deep-learning-cheat-sheet.md
+    - Regex: Cheat-Sheets/regex-cheat-sheet.md
 
   - Interview Prep:
     - Overview: Interview-Preparation/README.md
