@@ -101,7 +101,6 @@ The goal is not to "finish files." The goal is to build reflexes.
 - [Interview Preparation](Interview-Preparation)
 - [Projects](Projects)
 - [Resources](Resources)
-- [Notes Improvement Plan](NOTES_IMPROVEMENT_PLAN.md)
 
 ---
 
