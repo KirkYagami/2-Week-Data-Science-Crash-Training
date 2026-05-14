@@ -1,61 +1,111 @@
-/* ── Brand colors ───────────────────────────────────────────── */
-:root,
-[data-md-color-scheme="slate"],
+/*
+ * Focus Teal — color palette grounded in cognitive research
+ *
+ * Dark bg #0F172A  : deep navy (not black) eliminates halation on dark screens
+ * Primary #0D9488  : teal / blue-green (490–520 nm) promotes calm analytical focus
+ *                    (Mehta & Zhu 2009; biophilic color research)
+ * Accent  #F59E0B  : warm amber — draws attention like a highlighter, sparingly used
+ * Text    #F1F5F9  : cool off-white (~8:1 contrast) — softer than pure white
+ * Light bg #F8FAFC : very slightly blue-tinted white, easier than pure white
+ */
+
+/* ── Dark scheme ──────────────────────────────────────────────── */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color:              #0D9488;
+  --md-primary-fg-color--light:       #14B8A6;
+  --md-primary-fg-color--dark:        #0F766E;
+  --md-primary-bg-color:              #F1F5F9;
+  --md-primary-bg-color--light:       rgba(241,245,249,0.7);
+  --md-accent-fg-color:               #F59E0B;
+  --md-accent-fg-color--transparent:  rgba(245,158,11,0.12);
+  --md-accent-bg-color:               #0F172A;
+
+  --md-default-bg-color:              #0F172A;
+  --md-default-fg-color:              #F1F5F9;
+  --md-default-fg-color--light:       #CBD5E1;
+  --md-default-fg-color--lighter:     #94A3B8;
+  --md-default-fg-color--lightest:    #475569;
+
+  --md-code-bg-color:                 #1E293B;
+  --md-code-fg-color:                 #E2E8F0;
+
+  --md-typeset-a-color:               #2DD4BF;
+  --md-typeset-mark-color:            rgba(245,158,11,0.25);
+}
+
+/* ── Light scheme ─────────────────────────────────────────────── */
 [data-md-color-scheme="default"] {
-  --md-primary-fg-color:        #1A237E;
-  --md-primary-fg-color--light: #3949AB;
-  --md-primary-fg-color--dark:  #0D1654;
-  --md-primary-bg-color:        #FFFFFF;
-  --md-primary-bg-color--light: rgba(255,255,255,0.7);
-  --md-accent-fg-color:         #FFD600;
-  --md-accent-fg-color--transparent: rgba(255,214,0,0.1);
-  --md-accent-bg-color:         #1A237E;
+  --md-primary-fg-color:              #0F766E;
+  --md-primary-fg-color--light:       #0D9488;
+  --md-primary-fg-color--dark:        #115E59;
+  --md-primary-bg-color:              #FFFFFF;
+  --md-primary-bg-color--light:       rgba(255,255,255,0.7);
+  --md-accent-fg-color:               #D97706;
+  --md-accent-fg-color--transparent:  rgba(217,119,6,0.12);
+
+  --md-default-bg-color:              #F8FAFC;
+  --md-typeset-a-color:               #0F766E;
 }
 
-/* ── Header ─────────────────────────────────────────────────── */
+/* ── Header ───────────────────────────────────────────────────── */
 .md-header {
-  background: linear-gradient(135deg, #0D1654 0%, #1A237E 60%, #283593 100%);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
-}
-
-/* Gold underline on active nav tab */
-.md-tabs__link--active,
-.md-tabs__link:hover {
-  color: #FFD600 !important;
+  background: linear-gradient(135deg, #0F172A 0%, #0F2D35 55%, #0D3D38 100%);
+  box-shadow: 0 1px 0 rgba(13,148,136,0.3), 0 4px 16px rgba(0,0,0,0.5);
 }
 
 .md-tabs {
-  background: rgba(0,0,0,0.2);
+  background: rgba(13,148,136,0.08);
+  border-top: 1px solid rgba(13,148,136,0.2);
 }
 
-/* ── Logo sizing ─────────────────────────────────────────────── */
+.md-tabs__link--active,
+.md-tabs__link:hover {
+  color: #F59E0B !important;
+}
+
+/* ── Logo ─────────────────────────────────────────────────────── */
 .md-header__button.md-logo img,
 .md-header__button.md-logo svg {
   height: 32px;
   width:  32px;
 }
 
-/* ── Headings — gold accent on h1 ───────────────────────────── */
+/* ── Headings ─────────────────────────────────────────────────── */
 .md-typeset h1 {
-  color: #1A237E;
   font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 [data-md-color-scheme="slate"] .md-typeset h1 {
-  color: #FFD600;
+  color: #2DD4BF;
 }
 
-/* ── Links ───────────────────────────────────────────────────── */
-[data-md-color-scheme="slate"] .md-typeset a {
-  color: #82B1FF;
+[data-md-color-scheme="default"] .md-typeset h1 {
+  color: #0F766E;
 }
 
-/* ── Code blocks ─────────────────────────────────────────────── */
+[data-md-color-scheme="slate"] .md-typeset h2 {
+  border-bottom: 1px solid rgba(13,148,136,0.25);
+  padding-bottom: 0.2em;
+}
+
+/* ── Code ─────────────────────────────────────────────────────── */
 .md-typeset code {
   border-radius: 4px;
 }
 
-/* ── Contact banner (index page) ────────────────────────────── */
+[data-md-color-scheme="slate"] .md-typeset code {
+  background: #1E293B;
+  color: #7DD3D8;
+}
+
+/* ── Admonition / callout accent ──────────────────────────────── */
+[data-md-color-scheme="slate"] .md-typeset .admonition,
+[data-md-color-scheme="slate"] .md-typeset details {
+  border-left-color: #0D9488;
+}
+
+/* ── Contact banner (index page) ─────────────────────────────── */
 .contact-banner {
   text-align: center;
   padding: 2rem 1.5rem;
@@ -74,13 +124,17 @@
   font-weight: 600;
 }
 
-/* ── Footer ─────────────────────────────────────────────────── */
+/* ── Footer ───────────────────────────────────────────────────── */
 .md-footer {
-  background: #0D1654;
+  background: #080F1A;
+}
+
+.md-footer-nav {
+  background: #0F172A;
 }
 
 .md-footer-meta {
-  border-top: 2px solid rgba(255, 214, 0, 0.3);
+  border-top: 1px solid rgba(13,148,136,0.3);
 }
 
 .md-footer-meta__inner {
@@ -90,7 +144,7 @@
   justify-content: center;
   text-align: center;
   gap: 0.5rem;
-  padding: 1rem 0;
+  padding: 1.25rem 0;
 }
 
 .md-footer-copyright {
@@ -106,12 +160,13 @@
 }
 
 .md-footer-copyright__highlight a {
-  color: #FFD600;
+  color: #F59E0B;
   font-weight: 700;
   text-decoration: none;
 }
 
 .md-footer-copyright__highlight a:hover {
+  color: #FCD34D;
   text-decoration: underline;
 }
 
@@ -121,9 +176,9 @@
 }
 
 .md-social__link svg {
-  fill: #FFD600;
+  fill: #0D9488;
 }
 
 .md-social__link:hover svg {
-  fill: #FFF176;
+  fill: #2DD4BF;
 }
