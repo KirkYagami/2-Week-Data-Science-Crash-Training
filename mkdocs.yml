@@ -58,6 +58,9 @@ markdown_extensions:
       permalink: true
   - md_in_html
 
+extra_css:
+  - stylesheets/extra.css
+
 extra:
   social:
     - icon: fontawesome/brands/linkedin
