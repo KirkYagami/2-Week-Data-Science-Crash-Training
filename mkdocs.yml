@@ -324,11 +324,23 @@ nav:
     - Machine Learning: Cheat-Sheets/ml-cheat-sheet.md
 
   - Interview Prep:
-    - Python: Interview-Preparation/python-interview-questions.md
-    - SQL: Interview-Preparation/sql-interview-questions.md
-    - Statistics: Interview-Preparation/statistics-interview-questions.md
-    - Machine Learning: Interview-Preparation/machine-learning-interview-questions.md
-    - Case Studies: Interview-Preparation/case-study-discussions.md
+    - Overview: Interview-Preparation/README.md
+    - Statistics:
+      - Descriptive Statistics: Interview-Preparation/03-Statistics/01-descriptive-statistics.md
+      - Probability: Interview-Preparation/03-Statistics/02-probability.md
+      - Distributions: Interview-Preparation/03-Statistics/03-distributions.md
+      - Hypothesis Testing: Interview-Preparation/03-Statistics/04-hypothesis-testing.md
+      - A/B Testing: Interview-Preparation/03-Statistics/05-ab-testing.md
+      - Bayesian Thinking: Interview-Preparation/03-Statistics/06-bayesian-thinking.md
+    - Machine Learning:
+      - ML Fundamentals: Interview-Preparation/04-Machine-Learning/01-ml-fundamentals.md
+      - Regression: Interview-Preparation/04-Machine-Learning/02-regression.md
+      - Classification: Interview-Preparation/04-Machine-Learning/03-classification.md
+      - Clustering: Interview-Preparation/04-Machine-Learning/04-clustering.md
+      - Ensemble Methods: Interview-Preparation/04-Machine-Learning/05-ensemble-methods.md
+      - Feature Engineering: Interview-Preparation/04-Machine-Learning/06-feature-engineering.md
+      - Model Evaluation: Interview-Preparation/04-Machine-Learning/07-model-evaluation.md
+      - Regularization: Interview-Preparation/04-Machine-Learning/08-regularization.md
 
   - Assignments:
     - Week 01: Assignments/week-01-assignment.md
