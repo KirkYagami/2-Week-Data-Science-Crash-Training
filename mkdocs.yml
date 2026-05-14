@@ -1,0 +1,330 @@
+site_name: 2-Week Data Science Crash Training
+site_author: Nikhil Sharma
+site_description: A focused, hands-on data science learning vault — from Python basics to practical machine learning.
+site_url: https://kirkyagami.github.io/2-Week-Data-Science-Crash-Training/
+
+repo_name: KirkYagami/2-Week-Data-Science-Crash-Training
+repo_url: https://github.com/KirkYagami/2-Week-Data-Science-Crash-Training
+
+docs_dir: .
+site_dir: site
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - search.highlight
+    - search.suggest
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/-nikhil/
+      name: Nikhil Sharma on LinkedIn
+    - icon: fontawesome/brands/github
+      link: https://github.com/KirkYagami
+      name: KirkYagami on GitHub
+    - icon: fontawesome/solid/envelope
+      link: mailto:er.nikhilsharma7@gmail.com
+      name: Email Nikhil
+
+nav:
+  - Home: README.md
+
+  - Week 01 — Foundations:
+    - Week-01/README.md
+
+    - Day 01 — Python:
+      - Part 1 — Python Basics:
+        - Agenda: Week-01/Day-01-Part-1-Python-Basics/00-agenda.md
+        - Python Introduction: Week-01/Day-01-Part-1-Python-Basics/01-python-introduction.md
+        - Variables & Data Types: Week-01/Day-01-Part-1-Python-Basics/02-variables-and-data-types.md
+        - Control Flow: Week-01/Day-01-Part-1-Python-Basics/03-control-flow.md
+        - Functions: Week-01/Day-01-Part-1-Python-Basics/04-functions.md
+        - Lists, Tuples & Dicts: Week-01/Day-01-Part-1-Python-Basics/05-lists-tuples-dictionaries.md
+        - Practice Problems: Week-01/Day-01-Part-1-Python-Basics/06-practice-problems.md
+        - Interview Questions: Week-01/Day-01-Part-1-Python-Basics/07-interview-questions.md
+        - Cheat Sheet: Week-01/Day-01-Part-1-Python-Basics/08-cheat-sheet.md
+      - Part 2 — Advanced Python:
+        - Agenda: Week-01/Day-01-Part-2-Advanced-Python/00-agenda.md
+        - OOP Basics: Week-01/Day-01-Part-2-Advanced-Python/01-oop-basics.md
+        - File Handling: Week-01/Day-01-Part-2-Advanced-Python/02-file-handling.md
+        - Modules & Packages: Week-01/Day-01-Part-2-Advanced-Python/03-modules-and-packages.md
+        - Exception Handling: Week-01/Day-01-Part-2-Advanced-Python/04-exception-handling.md
+        - Python Best Practices: Week-01/Day-01-Part-2-Advanced-Python/05-python-best-practices.md
+        - Mini Exercises: Week-01/Day-01-Part-2-Advanced-Python/06-mini-exercises.md
+        - Interview Questions: Week-01/Day-01-Part-2-Advanced-Python/07-interview-questions.md
+
+    - Day 02 — NumPy & Pandas:
+      - Part 1 — NumPy Fundamentals:
+        - Agenda: Week-01/Day-02-Part-1-NumPy-Fundamentals/00-agenda.md
+        - Introduction to NumPy: Week-01/Day-02-Part-1-NumPy-Fundamentals/01-introduction-to-numpy.md
+        - Array Creation: Week-01/Day-02-Part-1-NumPy-Fundamentals/02-array-creation.md
+        - Indexing & Slicing: Week-01/Day-02-Part-1-NumPy-Fundamentals/03-indexing-and-slicing.md
+        - Vectorization: Week-01/Day-02-Part-1-NumPy-Fundamentals/04-vectorization.md
+        - Broadcasting: Week-01/Day-02-Part-1-NumPy-Fundamentals/05-broadcasting.md
+        - NumPy Exercises: Week-01/Day-02-Part-1-NumPy-Fundamentals/06-numpy-exercises.md
+        - Cheat Sheet: Week-01/Day-02-Part-1-NumPy-Fundamentals/07-cheat-sheet.md
+      - Part 2 — Pandas Basics:
+        - Agenda: Week-01/Day-02-Part-2-Pandas-Basics/00-agenda.md
+        - Series & DataFrames: Week-01/Day-02-Part-2-Pandas-Basics/01-series-and-dataframes.md
+        - Reading CSV & Excel: Week-01/Day-02-Part-2-Pandas-Basics/02-reading-csv-excel.md
+        - Filtering & Sorting: Week-01/Day-02-Part-2-Pandas-Basics/03-filtering-and-sorting.md
+        - Basic Data Analysis: Week-01/Day-02-Part-2-Pandas-Basics/04-basic-data-analysis.md
+        - Practice Exercises: Week-01/Day-02-Part-2-Pandas-Basics/05-practice-exercises.md
+        - Interview Questions: Week-01/Day-02-Part-2-Pandas-Basics/06-interview-questions.md
+
+    - Day 03 — Pandas Advanced & Visualization:
+      - Part 1 — Pandas Advanced:
+        - GroupBy: Week-01/Day-03-Part-1-Pandas-Advanced/01-groupby.md
+        - Merge & Join: Week-01/Day-03-Part-1-Pandas-Advanced/02-merge-and-join.md
+        - Apply Functions: Week-01/Day-03-Part-1-Pandas-Advanced/03-apply-functions.md
+        - Missing Values: Week-01/Day-03-Part-1-Pandas-Advanced/04-missing-values.md
+        - Real-World Data Cleaning: Week-01/Day-03-Part-1-Pandas-Advanced/05-real-world-data-cleaning.md
+        - Exercises: Week-01/Day-03-Part-1-Pandas-Advanced/06-exercises.md
+      - Part 2 — Data Visualization:
+        - Matplotlib Basics: Week-01/Day-03-Part-2-Data-Visualization/01-matplotlib-basics.md
+        - Line, Bar & Histogram: Week-01/Day-03-Part-2-Data-Visualization/02-line-bar-histogram.md
+        - Seaborn Basics: Week-01/Day-03-Part-2-Data-Visualization/03-seaborn-basics.md
+        - Heatmaps: Week-01/Day-03-Part-2-Data-Visualization/04-heatmaps.md
+        - Visualization Best Practices: Week-01/Day-03-Part-2-Data-Visualization/05-visualization-best-practices.md
+        - Mini Project: Week-01/Day-03-Part-2-Data-Visualization/06-mini-project.md
+
+    - Day 04 — Statistics:
+      - Part 1 — Statistics Basics:
+        - Mean, Median & Mode: Week-01/Day-04-Part-1-Statistics-Basics/01-mean-median-mode.md
+        - Variance & Std Dev: Week-01/Day-04-Part-1-Statistics-Basics/02-variance-and-std.md
+        - Probability Basics: Week-01/Day-04-Part-1-Statistics-Basics/03-probability-basics.md
+        - Distributions: Week-01/Day-04-Part-1-Statistics-Basics/04-distributions.md
+        - Cheat Sheet: Week-01/Day-04-Part-1-Statistics-Basics/05-statistics-cheat-sheet.md
+        - Practice Questions: Week-01/Day-04-Part-1-Statistics-Basics/06-practice-questions.md
+      - Part 2 — Inferential Statistics:
+        - Hypothesis Testing: Week-01/Day-04-Part-2-Inferential-Statistics/01-hypothesis-testing.md
+        - P-Value: Week-01/Day-04-Part-2-Inferential-Statistics/02-p-value.md
+        - Confidence Intervals: Week-01/Day-04-Part-2-Inferential-Statistics/03-confidence-interval.md
+        - Correlation: Week-01/Day-04-Part-2-Inferential-Statistics/04-correlation.md
+        - Statistical Tests: Week-01/Day-04-Part-2-Inferential-Statistics/05-statistical-tests.md
+        - Interview Prep: Week-01/Day-04-Part-2-Inferential-Statistics/06-interview-prep.md
+
+    - Day 05 — SQL & EDA:
+      - Part 1 — SQL for Data Science:
+        - SELECT & WHERE: Week-01/Day-05-Part-1-SQL-for-Data-Science/01-select-and-where.md
+        - GROUP BY & HAVING: Week-01/Day-05-Part-1-SQL-for-Data-Science/02-group-by-and-having.md
+        - JOINs: Week-01/Day-05-Part-1-SQL-for-Data-Science/03-joins.md
+        - Subqueries: Week-01/Day-05-Part-1-SQL-for-Data-Science/04-subqueries.md
+        - CTEs: Week-01/Day-05-Part-1-SQL-for-Data-Science/05-ctes.md
+        - Window Functions: Week-01/Day-05-Part-1-SQL-for-Data-Science/06-window-functions.md
+        - SQL Case Studies: Week-01/Day-05-Part-1-SQL-for-Data-Science/07-sql-case-studies.md
+        - Interview Questions: Week-01/Day-05-Part-1-SQL-for-Data-Science/08-sql-interview-questions.md
+      - Part 2 — EDA:
+        - Data Cleaning: Week-01/Day-05-Part-2-EDA/01-data-cleaning.md
+        - Outlier Detection: Week-01/Day-05-Part-2-EDA/02-outlier-detection.md
+        - Feature Understanding: Week-01/Day-05-Part-2-EDA/03-feature-understanding.md
+        - Univariate Analysis: Week-01/Day-05-Part-2-EDA/04-univariate-analysis.md
+        - Bivariate Analysis: Week-01/Day-05-Part-2-EDA/05-bivariate-analysis.md
+        - EDA Workflow: Week-01/Day-05-Part-2-EDA/06-eda-workflow.md
+        - Mini Case Study: Week-01/Day-05-Part-2-EDA/07-mini-case-study.md
+
+  - Week 02 — Machine Learning:
+    - Overview: Week-02/README.md
+
+    - Day 01 — ML Basics & Regression:
+      - Part 1 — Machine Learning Basics:
+        - Agenda: Week-02/Day-01-Part-1-Machine-Learning-Basics/00-agenda.md
+        - What is Machine Learning?: Week-02/Day-01-Part-1-Machine-Learning-Basics/01-what-is-machine-learning.md
+        - Supervised vs Unsupervised: Week-02/Day-01-Part-1-Machine-Learning-Basics/02-supervised-unsupervised.md
+        - Train/Test Split & Leakage: Week-02/Day-01-Part-1-Machine-Learning-Basics/03-train-test-split-and-leakage.md
+        - Scikit-learn Workflow: Week-02/Day-01-Part-1-Machine-Learning-Basics/04-scikit-learn-workflow.md
+        - Exercises: Week-02/Day-01-Part-1-Machine-Learning-Basics/05-exercises.md
+      - Part 2 — Regression Algorithms:
+        - Agenda: Week-02/Day-01-Part-2-Regression-Algorithms/00-agenda.md
+        - Regression Overview: Week-02/Day-01-Part-2-Regression-Algorithms/01-regression-overview.md
+        - Linear Regression: Week-02/Day-01-Part-2-Regression-Algorithms/02-linear-regression.md
+        - Ridge, Lasso & ElasticNet: Week-02/Day-01-Part-2-Regression-Algorithms/03-ridge-lasso-elasticnet.md
+        - Tree-Based Regression: Week-02/Day-01-Part-2-Regression-Algorithms/04-tree-based-regression.md
+        - Regression Metrics: Week-02/Day-01-Part-2-Regression-Algorithms/05-regression-metrics.md
+        - Exercises: Week-02/Day-01-Part-2-Regression-Algorithms/06-exercises.md
+
+    - Day 02 — Classification & Clustering:
+      - Part 1 — Classification Algorithms:
+        - Agenda: Week-02/Day-02-Part-1-Classification-Algorithms/00-agenda.md
+        - Classification Overview: Week-02/Day-02-Part-1-Classification-Algorithms/01-classification-overview.md
+        - Logistic Regression: Week-02/Day-02-Part-1-Classification-Algorithms/02-logistic-regression.md
+        - KNN & Naive Bayes: Week-02/Day-02-Part-1-Classification-Algorithms/03-knn-and-naive-bayes.md
+        - Trees, Forests & Boosting: Week-02/Day-02-Part-1-Classification-Algorithms/04-trees-forests-boosting.md
+        - Classification Metrics: Week-02/Day-02-Part-1-Classification-Algorithms/05-classification-metrics.md
+        - Exercises: Week-02/Day-02-Part-1-Classification-Algorithms/06-exercises.md
+      - Part 2 — Clustering Techniques:
+        - Agenda: Week-02/Day-02-Part-2-Clustering-Techniques/00-agenda.md
+        - Clustering Overview: Week-02/Day-02-Part-2-Clustering-Techniques/01-clustering-overview.md
+        - K-Means: Week-02/Day-02-Part-2-Clustering-Techniques/02-k-means.md
+        - Hierarchical Clustering: Week-02/Day-02-Part-2-Clustering-Techniques/03-hierarchical-clustering.md
+        - DBSCAN: Week-02/Day-02-Part-2-Clustering-Techniques/04-dbscan.md
+        - Evaluation & Scaling: Week-02/Day-02-Part-2-Clustering-Techniques/05-evaluation-and-scaling.md
+        - Exercises: Week-02/Day-02-Part-2-Clustering-Techniques/06-exercises.md
+
+    - Day 03 — Feature Engineering & Evaluation:
+      - Part 1 — Feature Engineering:
+        - Agenda: Week-02/Day-03-Part-1-Feature-Engineering/00-agenda.md
+        - Overview: Week-02/Day-03-Part-1-Feature-Engineering/01-feature-engineering-overview.md
+        - Numeric Features: Week-02/Day-03-Part-1-Feature-Engineering/02-numeric-features.md
+        - Categorical Features: Week-02/Day-03-Part-1-Feature-Engineering/03-categorical-features.md
+        - Datetime & Text Features: Week-02/Day-03-Part-1-Feature-Engineering/04-datetime-and-text-features.md
+        - Pipelines & Leakage: Week-02/Day-03-Part-1-Feature-Engineering/05-pipelines-and-leakage.md
+        - Exercises: Week-02/Day-03-Part-1-Feature-Engineering/06-exercises.md
+      - Part 2 — Model Evaluation:
+        - Agenda: Week-02/Day-03-Part-2-Model-Evaluation/00-agenda.md
+        - Evaluation Overview: Week-02/Day-03-Part-2-Model-Evaluation/01-evaluation-overview.md
+        - Cross-Validation: Week-02/Day-03-Part-2-Model-Evaluation/02-cross-validation.md
+        - Regression Evaluation: Week-02/Day-03-Part-2-Model-Evaluation/03-regression-evaluation.md
+        - Classification Evaluation: Week-02/Day-03-Part-2-Model-Evaluation/04-classification-evaluation.md
+        - Model Selection & Tuning: Week-02/Day-03-Part-2-Model-Evaluation/05-model-selection-and-tuning.md
+        - Exercises: Week-02/Day-03-Part-2-Model-Evaluation/06-exercises.md
+
+    - Day 04 — Deep Learning & NLP:
+      - Part 1 — Intro to Deep Learning:
+        - Agenda: Week-02/Day-04-Part-1-Intro-to-Deep-Learning/00-agenda.md
+        - Neural Network Intuition: Week-02/Day-04-Part-1-Intro-to-Deep-Learning/01-neural-network-intuition.md
+        - Training Neural Networks: Week-02/Day-04-Part-1-Intro-to-Deep-Learning/02-training-neural-networks.md
+        - Keras Quickstart: Week-02/Day-04-Part-1-Intro-to-Deep-Learning/03-keras-quickstart.md
+        - Overfitting & Regularization: Week-02/Day-04-Part-1-Intro-to-Deep-Learning/04-overfitting-regularization.md
+        - Exercises: Week-02/Day-04-Part-1-Intro-to-Deep-Learning/05-exercises.md
+      - Part 2 — NLP Basics:
+        - Agenda: Week-02/Day-04-Part-2-NLP-Basics/00-agenda.md
+        - NLP Overview: Week-02/Day-04-Part-2-NLP-Basics/01-nlp-overview.md
+        - Text Preprocessing: Week-02/Day-04-Part-2-NLP-Basics/02-text-preprocessing.md
+        - BoW & TF-IDF: Week-02/Day-04-Part-2-NLP-Basics/03-bow-tfidf.md
+        - Sentiment Classification: Week-02/Day-04-Part-2-NLP-Basics/04-sentiment-classification.md
+        - Transformers Overview: Week-02/Day-04-Part-2-NLP-Basics/05-transformers-overview.md
+        - Exercises: Week-02/Day-04-Part-2-NLP-Basics/06-exercises.md
+
+    - Day 05 — Project & Interview:
+      - Part 1 — End-to-End Mini Project:
+        - Agenda: Week-02/Day-05-Part-1-End-to-End-Mini-Project/00-agenda.md
+        - Project Brief: Week-02/Day-05-Part-1-End-to-End-Mini-Project/01-project-brief.md
+        - EDA & Cleaning: Week-02/Day-05-Part-1-End-to-End-Mini-Project/02-eda-and-cleaning.md
+        - Feature Engineering: Week-02/Day-05-Part-1-End-to-End-Mini-Project/03-feature-engineering.md
+        - Modeling Pipeline: Week-02/Day-05-Part-1-End-to-End-Mini-Project/04-modeling-pipeline.md
+        - Evaluation & Report: Week-02/Day-05-Part-1-End-to-End-Mini-Project/05-evaluation-and-report.md
+        - Submission Checklist: Week-02/Day-05-Part-1-End-to-End-Mini-Project/06-submission-checklist.md
+      - Part 2 — Mock Interview & Resume Review:
+        - Agenda: Week-02/Day-05-Part-2-Mock-Interview-Resume-Review/00-agenda.md
+        - Resume Checklist: Week-02/Day-05-Part-2-Mock-Interview-Resume-Review/01-resume-checklist.md
+        - Portfolio & GitHub: Week-02/Day-05-Part-2-Mock-Interview-Resume-Review/02-portfolio-github.md
+        - Technical Interview Questions: Week-02/Day-05-Part-2-Mock-Interview-Resume-Review/03-technical-interview-questions.md
+        - Case Study Practice: Week-02/Day-05-Part-2-Mock-Interview-Resume-Review/04-case-study-practice.md
+        - Mock Interview Script: Week-02/Day-05-Part-2-Mock-Interview-Resume-Review/05-mock-interview-script.md
+
+  - Projects:
+    - Titanic Survival Prediction:
+      - Overview: Projects/Titanic-Survival-Prediction/README.md
+      - Dataset Guide: Projects/Titanic-Survival-Prediction/dataset-guide.md
+      - EDA: Projects/Titanic-Survival-Prediction/eda.md
+      - Feature Engineering: Projects/Titanic-Survival-Prediction/feature-engineering.md
+      - Model Building: Projects/Titanic-Survival-Prediction/model-building.md
+      - Evaluation: Projects/Titanic-Survival-Prediction/evaluation.md
+      - Interview Questions: Projects/Titanic-Survival-Prediction/interview-questions.md
+    - House Price Prediction:
+      - Overview: Projects/House-Price-Prediction/README.md
+      - Dataset Guide: Projects/House-Price-Prediction/dataset-guide.md
+      - EDA: Projects/House-Price-Prediction/eda.md
+      - Feature Engineering: Projects/House-Price-Prediction/feature-engineering.md
+      - Model Building: Projects/House-Price-Prediction/model-building.md
+      - Evaluation: Projects/House-Price-Prediction/evaluation.md
+      - Interview Questions: Projects/House-Price-Prediction/interview-questions.md
+    - Movie Recommendation System:
+      - Overview: Projects/Movie-Recommendation-System/README.md
+      - Dataset Guide: Projects/Movie-Recommendation-System/dataset-guide.md
+      - EDA: Projects/Movie-Recommendation-System/eda.md
+      - Feature Engineering: Projects/Movie-Recommendation-System/feature-engineering.md
+      - Model Building: Projects/Movie-Recommendation-System/model-building.md
+      - Evaluation: Projects/Movie-Recommendation-System/evaluation.md
+      - Interview Questions: Projects/Movie-Recommendation-System/interview-questions.md
+    - Customer Churn Prediction:
+      - Overview: Projects/Customer-Churn-Prediction/README.md
+      - Dataset Guide: Projects/Customer-Churn-Prediction/dataset-guide.md
+      - EDA: Projects/Customer-Churn-Prediction/eda.md
+      - Feature Engineering: Projects/Customer-Churn-Prediction/feature-engineering.md
+      - Model Building: Projects/Customer-Churn-Prediction/model-building.md
+      - Evaluation: Projects/Customer-Churn-Prediction/evaluation.md
+      - Interview Questions: Projects/Customer-Churn-Prediction/interview-questions.md
+    - Sales Forecasting:
+      - Overview: Projects/Sales-Forecasting/README.md
+      - Dataset Guide: Projects/Sales-Forecasting/dataset-guide.md
+      - EDA: Projects/Sales-Forecasting/eda.md
+      - Feature Engineering: Projects/Sales-Forecasting/feature-engineering.md
+      - Model Building: Projects/Sales-Forecasting/model-building.md
+      - Evaluation: Projects/Sales-Forecasting/evaluation.md
+      - Interview Questions: Projects/Sales-Forecasting/interview-questions.md
+    - Sentiment Analysis on Tweets:
+      - Overview: Projects/Sentiment-Analysis-on-Tweets/README.md
+      - Dataset Guide: Projects/Sentiment-Analysis-on-Tweets/dataset-guide.md
+      - EDA: Projects/Sentiment-Analysis-on-Tweets/eda.md
+      - Feature Engineering: Projects/Sentiment-Analysis-on-Tweets/feature-engineering.md
+      - Model Building: Projects/Sentiment-Analysis-on-Tweets/model-building.md
+      - Evaluation: Projects/Sentiment-Analysis-on-Tweets/evaluation.md
+      - Interview Questions: Projects/Sentiment-Analysis-on-Tweets/interview-questions.md
+
+  - Cheat Sheets:
+    - Python: Cheat-Sheets/python-cheat-sheet.md
+    - NumPy: Cheat-Sheets/numpy-cheat-sheet.md
+    - Pandas: Cheat-Sheets/pandas-cheat-sheet.md
+    - SQL: Cheat-Sheets/sql-cheat-sheet.md
+    - Statistics: Cheat-Sheets/statistics-cheat-sheet.md
+    - Machine Learning: Cheat-Sheets/ml-cheat-sheet.md
+
+  - Interview Prep:
+    - Python: Interview-Preparation/python-interview-questions.md
+    - SQL: Interview-Preparation/sql-interview-questions.md
+    - Statistics: Interview-Preparation/statistics-interview-questions.md
+    - Machine Learning: Interview-Preparation/machine-learning-interview-questions.md
+    - Case Studies: Interview-Preparation/case-study-discussions.md
+
+  - Assignments:
+    - Week 01: Assignments/week-01-assignment.md
+    - Week 02: Assignments/week-02-assignment.md
+
+  - Resources:
+    - Books: Resources/books.md
+    - Courses: Resources/courses.md
+    - YouTube Channels: Resources/youtube-channels.md
+    - Practice Platforms: Resources/practice-platforms.md

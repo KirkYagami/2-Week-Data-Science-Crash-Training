@@ -1,1 +1,11 @@
 script.md
+.claude
+NOTES_IMPROVEMENT_PLAN.md
+
+# MkDocs build output
+site/
+
+# Python
+__pycache__/
+*.pyc
+.venv/

@@ -1,8 +1,16 @@
 # 2-Week Data Science Crash Training
 
-A focused, hands-on data science learning vault built for people who want to move from Python basics to practical machine learning workflows without getting lost in theory fog.
+[![Website](https://img.shields.io/badge/Website-Live-4CAF50?style=for-the-badge&logo=materialformkdocs&logoColor=white)](https://kirkyagami.github.io/2-Week-Data-Science-Crash-Training/)
+[![GitHub Stars](https://img.shields.io/github/stars/KirkYagami/2-Week-Data-Science-Crash-Training?style=for-the-badge&logo=github)](https://github.com/KirkYagami/2-Week-Data-Science-Crash-Training/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
-This repo is structured like a two-week bootcamp. Week 01 builds the working foundation: Python, NumPy, Pandas, visualization, statistics, SQL, and EDA. Week 02 moves into machine learning, feature engineering, evaluation, deep learning, NLP, and an end-to-end project.
+A focused, hands-on data science learning vault — structured as a two-week bootcamp — built for students who want to move from Python basics to practical machine learning workflows without getting lost in theory fog.
+
+**Trainer:** [Nikhil Sharma](https://www.linkedin.com/in/-nikhil/) — Data Science Trainer & Practitioner
+
+> Browse the course online at **[kirkyagami.github.io/2-Week-Data-Science-Crash-Training](https://kirkyagami.github.io/2-Week-Data-Science-Crash-Training/)** — no setup required.
+
+Week 01 builds the working foundation: Python, NumPy, Pandas, visualization, statistics, SQL, and EDA. Week 02 moves into machine learning, feature engineering, evaluation, deep learning, NLP, and an end-to-end project.
 
 ---
 
@@ -21,6 +29,19 @@ By the end of this training, you should be able to:
 - explain your work in interview-friendly language
 
 ---
+
+## For Students — Getting Started
+
+Two ways to use this course:
+
+**Option 1 — Read online (no setup):** Open the [course website](https://kirkyagami.github.io/2-Week-Data-Science-Crash-Training/) and follow the left-hand navigation. Everything is searchable.
+
+**Option 2 — Clone and study locally:**
+```bash
+git clone https://github.com/KirkYagami/2-Week-Data-Science-Crash-Training.git
+cd 2-Week-Data-Science-Crash-Training
+```
+Then open the markdown files in any editor (VS Code recommended).
 
 ## How to Use This Repo
 
@@ -187,7 +208,7 @@ When studying or building a project, ask:
 
 ## Current Status
 
-Week 01 has been expanded into a complete foundation path. Week 02 now has a full multi-file learning structure across machine learning, evaluation, NLP, deep learning, project work, and interview preparation. The supporting project/interview/cheat-sheet folders are planned for further expansion. See [NOTES_IMPROVEMENT_PLAN.md](NOTES_IMPROVEMENT_PLAN.md) for the next improvement phases.
+Both weeks are fully written and structured. Week 01 covers the complete data science foundation. Week 02 covers machine learning, deep learning, NLP, and an end-to-end project with mock interview preparation. The cheat sheets, interview prep, and guided projects are available and actively maintained.
 
 ---
 
@@ -204,7 +225,7 @@ Use this repo as a training ground. Break things, fix them, write the insight do
 ## 📬 Get in Touch
 
 [![Email](https://img.shields.io/badge/Email-er.nikhilsharma7%40gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:er.nikhilsharma7@gmail.com)
-[![Phone](https://img.shields.io/badge/Phone-9682654928-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](tel:+919682654928)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Nikhil%20Sharma-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/-nikhil/)
 
 ### Made with ❤️ by [Nikhil Sharma](https://www.linkedin.com/in/-nikhil/)
 
