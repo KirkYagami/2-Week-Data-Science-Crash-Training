@@ -1,3 +1,65 @@
+/* ── Brand colors ───────────────────────────────────────────── */
+:root,
+[data-md-color-scheme="slate"],
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color:        #1A237E;
+  --md-primary-fg-color--light: #3949AB;
+  --md-primary-fg-color--dark:  #0D1654;
+  --md-primary-bg-color:        #FFFFFF;
+  --md-primary-bg-color--light: rgba(255,255,255,0.7);
+  --md-accent-fg-color:         #FFD600;
+  --md-accent-fg-color--transparent: rgba(255,214,0,0.1);
+  --md-accent-bg-color:         #1A237E;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+.md-header {
+  background: linear-gradient(135deg, #0D1654 0%, #1A237E 60%, #283593 100%);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+
+/* Gold underline on active nav tab */
+.md-tabs__link--active,
+.md-tabs__link:hover {
+  color: #FFD600 !important;
+}
+
+.md-tabs {
+  background: rgba(0,0,0,0.2);
+}
+
+/* ── Logo sizing ─────────────────────────────────────────────── */
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 32px;
+  width:  32px;
+}
+
+/* ── Headings — gold accent on h1 ───────────────────────────── */
+.md-typeset h1 {
+  color: #1A237E;
+  font-weight: 800;
+}
+
+[data-md-color-scheme="slate"] .md-typeset h1 {
+  color: #FFD600;
+}
+
+/* ── Links ───────────────────────────────────────────────────── */
+[data-md-color-scheme="slate"] .md-typeset a {
+  color: #82B1FF;
+}
+
+/* ── Code blocks ─────────────────────────────────────────────── */
+.md-typeset code {
+  border-radius: 4px;
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+.md-footer {
+  background: #0D1654;
+}
+
 .md-footer-meta__inner {
   flex-direction: column;
   align-items: center;
@@ -9,6 +71,15 @@
   text-align: center;
 }
 
+.md-footer-copyright__highlight a {
+  color: #FFD600;
+  font-weight: 600;
+}
+
 .md-social {
   padding: 0;
+}
+
+.md-social__link svg {
+  fill: #FFD600;
 }
