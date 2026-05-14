@@ -6,6 +6,8 @@ site_url: https://kirkyagami.github.io/2-Week-Data-Science-Crash-Training/
 repo_name: KirkYagami/2-Week-Data-Science-Crash-Training
 repo_url: https://github.com/KirkYagami/2-Week-Data-Science-Crash-Training
 
+copyright: Made with ❤️ by <a href="https://www.linkedin.com/in/-nikhil/" target="_blank">Nikhil Sharma</a>
+
 
 theme:
   name: material
