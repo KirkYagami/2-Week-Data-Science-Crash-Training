@@ -6,8 +6,6 @@ site_url: https://kirkyagami.github.io/2-Week-Data-Science-Crash-Training/
 repo_name: KirkYagami/2-Week-Data-Science-Crash-Training
 repo_url: https://github.com/KirkYagami/2-Week-Data-Science-Crash-Training
 
-docs_dir: .
-site_dir: site
 
 theme:
   name: material
@@ -68,10 +66,10 @@ extra:
       name: Email Nikhil
 
 nav:
-  - Home: README.md
+  - Home: index.md
 
   - Week 01 — Foundations:
-    - Week-01/README.md
+    - Overview: Week-01/README.md
 
     - Day 01 — Python:
       - Part 1 — Python Basics:
