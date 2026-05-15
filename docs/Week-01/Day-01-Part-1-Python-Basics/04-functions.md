@@ -1,300 +1,388 @@
-# 🔧 04 – Functions
+# Functions
 
-> **Prerequisites:** [[03-control-flow]]  
-> **Time to read:** ~30 minutes
-
----
-
-## 🧠 What is a Function?
-
-A **function** is a named, reusable block of code that performs a specific task.
-
-Think of a function like a **recipe**:
-- You name it (e.g., `bake_cake`)
-- You define what ingredients it needs (parameters)
-- It performs steps (the function body)
-- It produces a result (the return value)
-
-### Why Use Functions?
-
-```
-Without functions:                     With functions:
-──────────────────                     ──────────────
-# Calculate tax for order 1            def calculate_tax(price, rate=0.18):
-price1 = 100                               return price * rate
-tax1 = price1 * 0.18
-total1 = price1 + tax1                 # Calculate tax for any order
-                                       total1 = 100 + calculate_tax(100)
-# Calculate tax for order 2            total2 = 250 + calculate_tax(250)
-price2 = 250                           total3 = 75  + calculate_tax(75, 0.05)
-tax2 = price2 * 0.18
-total2 = price2 + tax2
-
-# Calculate tax for order 3
-price3 = 75
-tax3 = price3 * 0.05                  # Change tax logic? Edit ONE place.
-total3 = price3 + tax3
-```
-
-**The 3 core benefits:**
-1. **DRY** (Don't Repeat Yourself) — write logic once, use many times
-2. **Readability** — `calculate_tax(price)` is clearer than raw math
-3. **Testability** — test the function once, trust it everywhere
+The moment your data science code grows beyond a single notebook cell, you need functions. Without them, every change to your logic requires hunting through hundreds of lines of duplicated code, hoping you caught every copy. With well-designed functions, you change one place and the improvement propagates everywhere. Functions are also the unit of testing — you cannot write reliable tests for a 300-line script, but you can write them for a 15-line function.
 
 ---
 
-## 📝 Defining and Calling Functions
+## Learning Objectives
 
-### Basic Syntax
+By the end of this note, you will be able to:
+
+- Define and call functions with positional, default, `*args`, and `**kwargs` parameters
+- Use early returns to keep function logic flat and readable
+- Return multiple values and unpack them at the call site
+- Write concise docstrings that document intent and parameters
+- Use lambda functions with `map()`, `filter()`, and `sorted()`
+- Explain Python's LEGB scope rules and avoid global variable bugs
+- Treat functions as first-class values and pass them as arguments
+
+---
+
+## What a Function Is and Why It Matters
+
+A function is a named, callable block of code. When you call it, Python jumps to that block, executes it with whatever arguments you provided, and returns a result.
+
+The most important benefit of functions is not code reuse — it is **making code easier to reason about**. A function with a clear name tells you what it does without you needing to read its implementation. `calculate_discount(price, tier)` is self-documenting. The same calculation written inline three times is not.
+
+```python
+# Without functions — three copies of the same logic
+order1_discount = 1500 * 0.10 if 1500 > 1000 else 1500 * 0.05
+order2_discount = 250 * 0.10 if 250 > 1000 else 250 * 0.05
+order3_discount = 3200 * 0.10 if 3200 > 1000 else 3200 * 0.05
+
+# With a function — change the threshold once, it applies everywhere
+def calculate_discount(order_total, high_value_threshold=1000):
+    """Return the discount amount for an order."""
+    rate = 0.10 if order_total > high_value_threshold else 0.05
+    return order_total * rate
+
+order1_discount = calculate_discount(1500)
+order2_discount = calculate_discount(250)
+order3_discount = calculate_discount(3200)
+```
+
+---
+
+## Defining and Calling Functions
+
+### Basic syntax
 
 ```python
 def function_name(parameter1, parameter2):
-    """Docstring: explains what the function does."""
+    """One-line description of what this function does."""
     # function body
     return result
 ```
 
-### Your First Function
+### Your first functions
 
 ```python
-# Define the function
-def greet(name):
-    """Return a personalized greeting."""
-    return f"Hello, {name}!"
+def greet_customer(name, is_premium=False):
+    """Return a greeting tailored to the customer's tier."""
+    if is_premium:
+        return f"Welcome back, {name}! Your exclusive benefits are ready."
+    return f"Hello, {name}! How can we help you today?"
 
-# Call the function
-message = greet("Alice")
-print(message)   # Hello, Alice!
+print(greet_customer("Alice"))
+# Output: Hello, Alice! How can we help you today?
 
-print(greet("Bob"))     # Hello, Bob!
-print(greet("Charlie")) # Hello, Charlie!
+print(greet_customer("Bob", is_premium=True))
+# Output: Welcome back, Bob! Your exclusive benefits are ready.
 ```
 
-### Function Without a Return Value
+### Functions without a return statement
+
+A function that has no `return` statement implicitly returns `None`. This is intentional for functions that perform actions (printing, writing to a file) rather than computing a value.
 
 ```python
-def print_separator(char="-", length=40):
-    """Print a visual separator line."""
-    print(char * length)
+def print_section_header(title, width=60):
+    """Print a formatted section header."""
+    print(f"\n{'=' * width}")
+    print(f"  {title}")
+    print(f"{'=' * width}")
 
-print_separator()            # ----------------------------------------
-print_separator("=")         # ========================================
-print_separator("*", 20)     # ********************
-```
+print_section_header("Model Evaluation Results")
+# Output:
+# ============================================================
+#   Model Evaluation Results
+# ============================================================
 
-> When a function has no `return` statement, it implicitly returns `None`.
-
-```python
-result = print_separator()
-print(result)   # None
+result = print_section_header("test")
+print(result)    # Output: None
 ```
 
 ---
 
-## 📥 Function Parameters
+## Parameters and Arguments
 
-### Required (Positional) Parameters
-
-```python
-def add(a, b):
-    return a + b
-
-print(add(3, 5))    # 8
-print(add(10, 20))  # 30
-# print(add(3))     # TypeError: missing required argument 'b'
-```
-
-### Default Parameters
+### Required (positional) parameters
 
 ```python
-def power(base, exponent=2):
-    """Raise base to the given exponent. Default is squaring."""
-    return base ** exponent
+def euclidean_distance(x1, y1, x2, y2):
+    """Compute straight-line distance between two 2D points."""
+    return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
 
-print(power(3))        # 9  (3^2, exponent defaults to 2)
-print(power(3, 3))     # 27 (3^3)
-print(power(2, 10))    # 1024 (2^10)
+dist = euclidean_distance(0, 0, 3, 4)
+print(dist)    # Output: 5.0  — classic 3-4-5 triangle
 ```
 
-> ⚠️ **Rule:** Parameters with defaults must come **after** required parameters.
+### Default parameters
+
+Default parameters make arguments optional. Place them after all required parameters.
+
+```python
+def normalize(value, min_val=0.0, max_val=1.0):
+    """Scale a value to the range [min_val, max_val]."""
+    return (value - min_val) / (max_val - min_val)
+
+# With defaults
+print(normalize(0.5))              # Output: 0.5  — already in [0, 1]
+
+# Overriding defaults
+print(normalize(75, min_val=0, max_val=100))    # Output: 0.75
+```
+
+> [!warning]
+> **Never use a mutable object as a default parameter.** This is one of Python's most notorious bugs. The default is created once when the function is defined and shared across all calls.
 > ```python
-> def func(required, optional=10):   # ✅ Correct
-> def func(optional=10, required):   # ❌ SyntaxError
+> # Bug — the list persists between calls!
+> def add_record(record, records=[]):
+>     records.append(record)
+>     return records
+>
+> print(add_record("Alice"))    # Output: ['Alice']
+> print(add_record("Bob"))      # Output: ['Alice', 'Bob']  — unexpected!
+>
+> # Fix — use None and create the list inside the function
+> def add_record(record, records=None):
+>     if records is None:
+>         records = []
+>     records.append(record)
+>     return records
+>
+> print(add_record("Alice"))    # Output: ['Alice']
+> print(add_record("Bob"))      # Output: ['Bob']  — correct
 > ```
 
-### Keyword Arguments
+### Keyword arguments
+
+You can pass any argument by name, which removes dependence on order:
 
 ```python
-def describe_person(name, age, city):
-    return f"{name} is {age} years old and lives in {city}."
-
-# Positional — order matters
-print(describe_person("Alice", 30, "Mumbai"))
-
-# Keyword — order doesn't matter!
-print(describe_person(age=30, city="Mumbai", name="Alice"))
-
-# Mix: positional first, then keyword
-print(describe_person("Alice", city="Mumbai", age=30))
-```
-
-### `*args` — Accept Any Number of Positional Arguments
-
-```python
-def add_all(*numbers):
-    """Add any number of values."""
-    total = 0
-    for n in numbers:
-        total += n
-    return total
-
-print(add_all(1, 2))              # 3
-print(add_all(1, 2, 3, 4, 5))    # 15
-print(add_all(10, 20, 30))        # 60
-
-# *args is a TUPLE inside the function
-def show_args(*args):
-    print(type(args))   # <class 'tuple'>
-    print(args)
-```
-
-### `**kwargs` — Accept Any Number of Keyword Arguments
-
-```python
-def describe(**attributes):
-    """Describe anything with keyword attributes."""
-    for key, value in attributes.items():
-        print(f"  {key}: {value}")
-
-describe(name="Alice", age=30, city="Mumbai", job="Data Scientist")
-# Output:
-#   name: Alice
-#   age: 30
-#   city: Mumbai
-#   job: Data Scientist
-
-# **kwargs is a DICT inside the function
-def show_kwargs(**kwargs):
-    print(type(kwargs))   # <class 'dict'>
-```
-
-### Combining All Parameter Types
-
-```python
-def mixed_function(required, default=10, *args, **kwargs):
-    print(f"required: {required}")
-    print(f"default: {default}")
-    print(f"args: {args}")
-    print(f"kwargs: {kwargs}")
-
-mixed_function("hello", 20, 1, 2, 3, name="Alice", city="Delhi")
-# required: hello
-# default: 20
-# args: (1, 2, 3)
-# kwargs: {'name': 'Alice', 'city': 'Delhi'}
-```
-
----
-
-## 📤 Return Values
-
-### Returning Multiple Values
-
-```python
-def min_max(numbers):
-    """Return both minimum and maximum of a list."""
-    return min(numbers), max(numbers)   # returns a tuple
-
-low, high = min_max([3, 1, 7, 2, 8, 4])
-print(f"Min: {low}, Max: {high}")    # Min: 1, Max: 8
-
-# Or capture as one tuple
-result = min_max([3, 1, 7, 2, 8, 4])
-print(result)                         # (1, 8)
-```
-
-### Early Return
-
-```python
-def divide(a, b):
-    """Divide a by b safely."""
-    if b == 0:
-        return None   # early return — avoid division by zero
-    return a / b
-
-print(divide(10, 2))    # 5.0
-print(divide(10, 0))    # None
-```
-
-### Returning Dictionaries (Common in Data Science)
-
-```python
-def compute_stats(numbers):
-    """Compute basic statistics for a list of numbers."""
-    n = len(numbers)
-    total = sum(numbers)
-    mean = total / n
-    sorted_nums = sorted(numbers)
-    median = sorted_nums[n // 2] if n % 2 != 0 else (sorted_nums[n//2 - 1] + sorted_nums[n//2]) / 2
-
+def create_model_config(algorithm, learning_rate=0.01, max_epochs=100, random_seed=42):
+    """Return a model configuration dictionary."""
     return {
-        "count": n,
-        "sum": total,
-        "mean": mean,
-        "min": min(numbers),
-        "max": max(numbers),
-        "median": median,
+        "algorithm": algorithm,
+        "learning_rate": learning_rate,
+        "max_epochs": max_epochs,
+        "random_seed": random_seed,
     }
 
-data = [4, 7, 2, 9, 1, 5, 8, 3, 6]
-stats = compute_stats(data)
+# Passing by keyword — order does not matter
+config = create_model_config(
+    max_epochs=500,
+    algorithm="gradient_boosting",
+    learning_rate=0.05,
+)
+print(config)
+# Output: {'algorithm': 'gradient_boosting', 'learning_rate': 0.05, 'max_epochs': 500, 'random_seed': 42}
+```
 
-for key, value in stats.items():
-    print(f"  {key:10}: {value}")
+### `*args` — variable-length positional arguments
+
+```python
+def weighted_average(*values_and_weights):
+    """
+    Compute a weighted average.
+    Alternating arguments: value, weight, value, weight, ...
+    """
+    total_weighted = 0
+    total_weight = 0
+    for i in range(0, len(values_and_weights), 2):
+        value = values_and_weights[i]
+        weight = values_and_weights[i + 1]
+        total_weighted += value * weight
+        total_weight += weight
+    return total_weighted / total_weight
+
+# Exam score weighted average: score, credit_hours
+gpa = weighted_average(85, 3, 92, 4, 78, 2)
+print(f"Weighted average: {gpa:.1f}")    # Output: Weighted average: 86.2
+```
+
+More commonly, `*args` is used to accept a variable number of similar items:
+
+```python
+def compute_statistics(*values):
+    """Compute mean and range of any number of numeric inputs."""
+    if not values:
+        return None
+    n = len(values)
+    mean = sum(values) / n
+    return {"count": n, "mean": round(mean, 4), "min": min(values), "max": max(values)}
+
+print(compute_statistics(10, 20, 30))
+# Output: {'count': 3, 'mean': 20.0, 'min': 10, 'max': 30}
+
+print(compute_statistics(5))
+# Output: {'count': 1, 'mean': 5.0, 'min': 5, 'max': 5}
+```
+
+> [!info]
+> Inside the function, `*args` is a tuple, not a list. You can iterate over it and index into it, but you cannot append to it. If you need to modify the collection, convert it first: `items = list(args)`.
+
+### `**kwargs` — variable-length keyword arguments
+
+```python
+def log_event(event_type, **metadata):
+    """Log a structured event with arbitrary metadata fields."""
+    import datetime
+    timestamp = datetime.datetime.now().isoformat()
+    log_entry = {
+        "timestamp": timestamp,
+        "event_type": event_type,
+        **metadata    # merge metadata into the log entry
+    }
+    for key, value in log_entry.items():
+        print(f"  {key}: {value}")
+    print()
+
+log_event("model_trained",
+          model_name="XGBoost",
+          accuracy=0.924,
+          training_rows=15000,
+          duration_seconds=47.3)
+# Output:
+#   timestamp: 2024-01-15T14:32:01.123456
+#   event_type: model_trained
+#   model_name: XGBoost
+#   accuracy: 0.924
+#   training_rows: 15000
+#   duration_seconds: 47.3
+```
+
+### Combining all parameter types
+
+The order must be: required → default → `*args` → keyword-only → `**kwargs`.
+
+```python
+def pipeline_step(step_name, verbose=False, *transformations, **config):
+    """Simulate a data pipeline step."""
+    print(f"Running step: {step_name}")
+    if verbose:
+        print(f"  Transformations: {transformations}")
+        print(f"  Config: {config}")
+
+pipeline_step("normalize", True, "scale", "clip", min_val=0, max_val=1)
+# Output:
+# Running step: normalize
+#   Transformations: ('scale', 'clip')
+#   Config: {'min_val': 0, 'max_val': 1}
 ```
 
 ---
 
-## 📚 Docstrings — Document Your Functions
+## Return Values
 
-A **docstring** is a string at the top of a function that explains what it does. It's critical for collaboration and Data Science work.
+### Returning multiple values
+
+Python functions can return multiple values as a tuple. Unpack at the call site for clean code.
 
 ```python
-def clean_text(text, lowercase=True, remove_punctuation=True):
+def compute_train_test_split(data, test_fraction=0.2, random_seed=None):
+    """Split data into training and test sets."""
+    import random
+    if random_seed is not None:
+        random.seed(random_seed)
+
+    shuffled = data[:]
+    random.shuffle(shuffled)
+
+    split_point = int(len(shuffled) * (1 - test_fraction))
+    train_data = shuffled[:split_point]
+    test_data = shuffled[split_point:]
+    return train_data, test_data    # returns a tuple
+
+records = list(range(100))
+train, test = compute_train_test_split(records, test_fraction=0.2, random_seed=42)
+print(f"Train size: {len(train)}")    # Output: Train size: 80
+print(f"Test size:  {len(test)}")     # Output: Test size:  20
+```
+
+### Returning dictionaries for named results
+
+When you need to return more than 2-3 values, a dictionary is clearer than positional tuple unpacking:
+
+```python
+def evaluate_classifier(y_true, y_pred):
+    """Compute classification metrics."""
+    n = len(y_true)
+    correct = sum(t == p for t, p in zip(y_true, y_pred))
+    true_pos = sum(t == 1 and p == 1 for t, p in zip(y_true, y_pred))
+    false_pos = sum(t == 0 and p == 1 for t, p in zip(y_true, y_pred))
+    false_neg = sum(t == 1 and p == 0 for t, p in zip(y_true, y_pred))
+
+    precision = true_pos / (true_pos + false_pos) if (true_pos + false_pos) > 0 else 0
+    recall = true_pos / (true_pos + false_neg) if (true_pos + false_neg) > 0 else 0
+    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
+
+    return {
+        "accuracy": correct / n,
+        "precision": precision,
+        "recall": recall,
+        "f1_score": f1,
+        "n_samples": n,
+    }
+
+y_true = [1, 0, 1, 1, 0, 1, 0, 0, 1, 1]
+y_pred = [1, 0, 1, 0, 0, 1, 1, 0, 1, 0]
+
+metrics = evaluate_classifier(y_true, y_pred)
+for metric, value in metrics.items():
+    print(f"  {metric:<12}: {value:.4f}")
+# Output:
+#   accuracy    : 0.7000
+#   precision   : 0.8000
+#   recall      : 0.6667
+#   f1_score    : 0.7273
+#   n_samples   : 10.0000
+```
+
+---
+
+## Docstrings
+
+A docstring is the string immediately after the `def` line. It is the official way to document a function and is accessible at runtime via `help(function_name)` or `function_name.__doc__`.
+
+```python
+def clean_text_column(text, lowercase=True, strip_punctuation=False):
     """
     Clean a text string for NLP preprocessing.
 
     Args:
-        text (str): The raw input text to clean.
-        lowercase (bool): If True, convert to lowercase. Default: True.
-        remove_punctuation (bool): If True, remove punctuation. Default: True.
+        text (str): The raw input string.
+        lowercase (bool): Convert to lowercase. Default True.
+        strip_punctuation (bool): Remove all punctuation characters. Default False.
 
     Returns:
-        str: The cleaned text string.
+        str: The cleaned string, with leading/trailing whitespace removed.
+
+    Raises:
+        TypeError: If text is not a string.
 
     Examples:
-        >>> clean_text("Hello, World!")
+        >>> clean_text_column("Hello, World!")
+        'hello, world!'
+        >>> clean_text_column("Hello, World!", strip_punctuation=True)
         'hello world'
-        >>> clean_text("Hello, World!", lowercase=False)
-        'Hello World'
     """
-    if lowercase:
-        text = text.lower()
-    if remove_punctuation:
-        import string
-        text = text.translate(str.maketrans("", "", string.punctuation))
-    return text.strip()
+    if not isinstance(text, str):
+        raise TypeError(f"Expected str, got {type(text).__name__}")
 
-# Access the docstring
-help(clean_text)
-print(clean_text.__doc__)
+    result = text.strip()
+    if lowercase:
+        result = result.lower()
+    if strip_punctuation:
+        import string
+        result = result.translate(str.maketrans("", "", string.punctuation))
+    return result
+
+# Test it
+print(clean_text_column("  Hello, World!  "))
+# Output: hello, world!
+
+print(clean_text_column("  Hello, World!  ", strip_punctuation=True))
+# Output: hello world
 ```
+
+> [!tip]
+> Write the docstring before writing the implementation. Describing what a function should do forces you to think clearly about its interface — what it accepts, what it returns, and what can go wrong. This makes the implementation much easier to write.
 
 ---
 
-## ⚡ Lambda Functions — Anonymous One-Liners
+## Lambda Functions
 
-A **lambda** is a small, anonymous function written in one line.
+A lambda is an anonymous function defined in a single expression. Use them when you need a small function in one place and naming it would add more ceremony than clarity.
 
 ```python
 # Regular function
@@ -303,240 +391,291 @@ def square(x):
 
 # Lambda equivalent
 square = lambda x: x ** 2
-
-print(square(5))   # 25
+print(square(9))    # Output: 81
 ```
 
-### Lambdas Are Most Useful With `map()`, `filter()`, `sorted()`
+Lambdas are most useful as arguments to higher-order functions:
 
 ```python
-numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
-# map() — apply function to each element
-squares = list(map(lambda x: x ** 2, numbers))
-print(squares)   # [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
-
-# filter() — keep elements where function returns True
-evens = list(filter(lambda x: x % 2 == 0, numbers))
-print(evens)     # [2, 4, 6, 8, 10]
-
 # sorted() — custom sort key
-students = [("Alice", 85), ("Bob", 92), ("Charlie", 78)]
+leaderboard = [
+    {"name": "Alice", "score": 1450, "level": 8},
+    {"name": "Bob",   "score": 1820, "level": 7},
+    {"name": "Charlie", "score": 1820, "level": 9},
+]
 
-# Sort by score (second element)
-ranked = sorted(students, key=lambda s: s[1], reverse=True)
-print(ranked)    # [('Bob', 92), ('Alice', 85), ('Charlie', 78)]
+# Sort by score descending, then by level descending for ties
+ranked = sorted(leaderboard,
+                key=lambda player: (player["score"], player["level"]),
+                reverse=True)
+for rank, player in enumerate(ranked, 1):
+    print(f"{rank}. {player['name']} — Score: {player['score']}, Level: {player['level']}")
+# Output:
+# 1. Charlie — Score: 1820, Level: 9
+# 2. Bob — Score: 1820, Level: 7
+# 3. Alice — Score: 1450, Level: 8
 
-# Sort strings by length
-words = ["banana", "fig", "apple", "date"]
-by_length = sorted(words, key=lambda w: len(w))
-print(by_length)  # ['fig', 'date', 'apple', 'banana']
+# map() — apply a transformation to every element
+revenues = [85000, 120000, 45000, 200000, 73000]
+in_millions = list(map(lambda r: round(r / 1e6, 3), revenues))
+print(in_millions)    # Output: [0.085, 0.12, 0.045, 0.2, 0.073]
+
+# filter() — keep elements that satisfy a condition
+high_earners = list(filter(lambda r: r > 100000, revenues))
+print(high_earners)    # Output: [120000, 200000]
 ```
 
-### In Pandas (Very Common!)
+### Lambdas in Pandas (extremely common)
 
 ```python
 import pandas as pd
 
-df = pd.DataFrame({"salary": [50000, 80000, 120000, 45000]})
+df = pd.DataFrame({
+    "name": ["Alice", "Bob", "Charlie"],
+    "salary": [72000, 95000, 130000],
+    "years_experience": [3, 7, 12],
+})
 
-# Apply a lambda to a column
-df["salary_category"] = df["salary"].apply(
-    lambda x: "High" if x > 100000 else ("Mid" if x > 60000 else "Low")
+# Create a new column using a lambda
+df["salary_per_year_exp"] = df.apply(
+    lambda row: round(row["salary"] / row["years_experience"]),
+    axis=1
 )
+
 print(df)
+# Output:
+#       name  salary  years_experience  salary_per_year_exp
+# 0    Alice   72000                 3                24000
+# 1      Bob   95000                 7                13571
+# 2  Charlie  130000                12                10833
 ```
+
+> [!warning]
+> Lambdas cannot contain statements (only expressions), cannot have docstrings, and produce unhelpful error messages because they are anonymous. If a lambda is getting complex — multiple conditions, multiple lines — refactor it into a named function. The name alone communicates intent that the lambda cannot.
 
 ---
 
-## 🔍 Scope — Where Variables Live
+## Variable Scope — The LEGB Rule
 
-Python has a concept called **scope**: the region of code where a variable is accessible.
+Python looks up variable names in this order:
 
-### LEGB Rule
-
-Python looks up variables in this order:
 1. **L**ocal — inside the current function
-2. **E**nclosing — in any enclosing function
-3. **G**lobal — at the module level
-4. **B**uilt-in — Python's built-in names
+2. **E**nclosing — inside any function that wraps the current one
+3. **G**lobal — at the module level (top of the file)
+4. **B**uilt-in — Python's own built-in names (`len`, `print`, etc.)
 
 ```python
-x = "global"   # Global scope
+threshold = 0.5    # Global
 
-def outer():
-    x = "enclosing"   # Enclosing scope
+def apply_threshold(scores):
+    # threshold here refers to the global variable
+    # Python found it by walking up: Local (not found) → Global (found)
+    return [s for s in scores if s > threshold]
 
-    def inner():
-        x = "local"   # Local scope
-        print(x)      # "local"
+print(apply_threshold([0.3, 0.7, 0.1, 0.9]))
+# Output: [0.7, 0.9]
 
-    inner()
-    print(x)          # "enclosing"
+def apply_custom_threshold(scores, threshold=0.8):
+    # threshold here is Local — shadows the global
+    return [s for s in scores if s > threshold]
 
-outer()
-print(x)              # "global"
+print(apply_custom_threshold([0.3, 0.7, 0.1, 0.9]))
+# Output: [0.9]
 ```
 
-### The `global` and `nonlocal` Keywords
+### The `global` keyword — use it sparingly
 
 ```python
-count = 0   # global variable
+model_call_count = 0    # module-level counter
 
-def increment():
-    global count   # explicitly reference the global variable
-    count += 1
+def predict(features):
+    global model_call_count    # explicitly modify the global
+    model_call_count += 1
+    # ... prediction logic ...
+    return 0
 
-increment()
-increment()
-print(count)   # 2
+predict([1, 2, 3])
+predict([4, 5, 6])
+print(model_call_count)    # Output: 2
 ```
 
-> **Best practice:** Avoid `global` variables in production code — they make functions hard to test and reason about. Pass values as arguments and return them instead.
+> [!warning]
+> Avoid `global` in production code. Functions that modify global state are hard to test, hard to reason about, and create subtle bugs when the same module is used concurrently. The better pattern is to pass state as arguments and return updated state. If you need a counter shared across calls, use a class with instance state.
 
 ---
 
-## 🧬 First-Class Functions — Functions as Values
+## Functions as First-Class Values
 
-In Python, functions are **first-class citizens** — they can be stored in variables, passed to other functions, and returned from functions.
+Functions in Python are objects. You can store them in variables, put them in lists, pass them to other functions, and return them from functions. This is what makes patterns like callbacks, pipelines, and decorators possible.
 
 ```python
-# Storing a function in a variable
-def greet(name):
-    return f"Hello, {name}!"
+# Storing functions in a data structure
+def min_max_normalize(values):
+    low, high = min(values), max(values)
+    return [(v - low) / (high - low) for v in values]
 
-say_hello = greet   # no parentheses — we're copying the function, not calling it
-print(say_hello("Alice"))   # Hello, Alice!
+def z_score_normalize(values):
+    n = len(values)
+    mean = sum(values) / n
+    std = (sum((v - mean) ** 2 for v in values) / n) ** 0.5
+    return [(v - mean) / std for v in values]
 
-# Passing a function as an argument
-def apply_twice(func, value):
-    return func(func(value))
+def log_transform(values):
+    import math
+    return [math.log(v + 1) for v in values]    # +1 to handle zeros
 
-def double(x):
-    return x * 2
+normalizers = {
+    "min_max": min_max_normalize,
+    "z_score": z_score_normalize,
+    "log":     log_transform,
+}
 
-print(apply_twice(double, 3))   # 12  (double(double(3)) = double(6) = 12)
+# Select and apply at runtime
+raw_data = [2, 8, 1, 15, 4, 23, 7]
+method = "z_score"
+
+normalized = normalizers[method](raw_data)
+print(f"Method: {method}")
+print([round(v, 3) for v in normalized])
+# Output:
+# Method: z_score
+# [-0.638, 0.181, -0.819, 0.92, -0.457, 1.839, 0.0]   (approximate)
 ```
 
-### Higher-Order Functions in Data Science
+### Building a simple transformation pipeline
 
 ```python
-# A function that returns different "cleaning" functions
-def make_outlier_remover(threshold):
-    """Return a function that removes values above threshold."""
-    def remove_outliers(data):
-        return [x for x in data if x <= threshold]
-    return remove_outliers
-
-# Create specialized functions
-remove_above_100 = make_outlier_remover(100)
-remove_above_50  = make_outlier_remover(50)
-
-data = [10, 20, 150, 30, 200, 40]
-print(remove_above_100(data))   # [10, 20, 30, 40]
-print(remove_above_50(data))    # [10, 20, 30, 40]
-```
-
----
-
-## 🧩 Real Data Science Function Examples
-
-### Example 1: Data Validator
-
-```python
-def validate_age(age):
-    """Validate age input and return cleaned value or raise error."""
-    if not isinstance(age, (int, float)):
-        raise TypeError(f"Age must be numeric, got {type(age).__name__}")
-    if age < 0 or age > 150:
-        raise ValueError(f"Age {age} is out of realistic range (0–150)")
-    return int(age)
-
-# Usage with error handling
-test_ages = [25, -5, 200, "thirty", 45.7]
-for a in test_ages:
-    try:
-        clean = validate_age(a)
-        print(f"✅ {a} → {clean}")
-    except (TypeError, ValueError) as e:
-        print(f"❌ {a} → Error: {e}")
-```
-
-### Example 2: Feature Engineering Helper
-
-```python
-def bin_values(value, bins, labels):
+def make_pipeline(*steps):
     """
-    Map a numeric value to a category label.
-
-    Args:
-        value (float): The value to bin.
-        bins (list): Sorted list of threshold values.
-        labels (list): Labels for each bin (len = len(bins) + 1).
-
-    Returns:
-        str: The category label.
+    Create a function that applies a sequence of transformations in order.
+    Each step is a function that takes a list and returns a list.
     """
-    for i, threshold in enumerate(bins):
-        if value <= threshold:
-            return labels[i]
-    return labels[-1]
+    def pipeline(data):
+        result = data
+        for step in steps:
+            result = step(result)
+        return result
+    return pipeline
 
-# Categorize income
-income_bins   = [25000, 50000, 100000, 200000]
-income_labels = ["Very Low", "Low", "Middle", "High", "Very High"]
+def remove_negatives(values):
+    return [v for v in values if v >= 0]
 
-test_incomes = [15000, 35000, 75000, 150000, 300000]
-for income in test_incomes:
-    category = bin_values(income, income_bins, income_labels)
-    print(f"${income:>8,} → {category}")
+def remove_outliers(values, cap=100):
+    return [v for v in values if v <= cap]
+
+def round_values(values, decimals=2):
+    return [round(v, decimals) for v in values]
+
+# Build the pipeline
+clean = make_pipeline(remove_negatives, remove_outliers, round_values)
+
+messy_data = [-5, 2.555, 3.141, 150, 8.9, -1, 75, 0.1]
+print(clean(messy_data))
+# Output: [2.56, 3.14, 8.9, 75, 0.1]
 ```
 
-### Example 3: Summary Statistics
+---
+
+## Real Data Science Function Patterns
+
+### Safe data extraction from nested structures
 
 ```python
-def summarize(data, name="Dataset"):
-    """Print a statistical summary of a numeric list."""
-    if not data:
-        print(f"{name}: Empty dataset")
-        return
+def safe_get(obj, *keys, default=None):
+    """
+    Safely traverse a nested dict/list using a chain of keys.
+    Returns default if any key is missing or the type is wrong.
+    """
+    current = obj
+    for key in keys:
+        try:
+            current = current[key]
+        except (KeyError, IndexError, TypeError):
+            return default
+    return current
 
-    n = len(data)
-    total = sum(data)
-    mean = total / n
-    variance = sum((x - mean) ** 2 for x in data) / n
-    std = variance ** 0.5
-    sorted_data = sorted(data)
+# Nested API response (common in real-world data ingestion)
+api_response = {
+    "status": "success",
+    "data": {
+        "user": {
+            "id": 1001,
+            "profile": {
+                "name": "Alice",
+                "metrics": {"sessions": 47, "revenue": 1250.0}
+            }
+        }
+    }
+}
 
-    print(f"{'=' * 30}")
-    print(f"  Summary: {name}")
-    print(f"{'=' * 30}")
-    print(f"  Count:  {n}")
-    print(f"  Sum:    {total:.2f}")
-    print(f"  Mean:   {mean:.2f}")
-    print(f"  Std:    {std:.2f}")
-    print(f"  Min:    {sorted_data[0]}")
-    print(f"  Max:    {sorted_data[-1]}")
-    print(f"{'=' * 30}")
+print(safe_get(api_response, "data", "user", "profile", "name"))
+# Output: Alice
 
-scores = [85, 92, 78, 61, 45, 90, 88, 73, 55, 67]
-summarize(scores, "Exam Scores")
+print(safe_get(api_response, "data", "user", "profile", "age"))
+# Output: None  — key does not exist
+
+print(safe_get(api_response, "data", "user", "profile", "metrics", "revenue"))
+# Output: 1250.0
+
+print(safe_get(api_response, "data", "orders", 0, "total", default=0.0))
+# Output: 0.0  — path does not exist
+```
+
+### Batch processing with progress tracking
+
+```python
+def process_in_batches(records, batch_size, process_fn, verbose=True):
+    """
+    Apply process_fn to records in batches of batch_size.
+    Returns all results combined.
+    """
+    results = []
+    total = len(records)
+    num_batches = (total + batch_size - 1) // batch_size    # ceiling division
+
+    for batch_num in range(num_batches):
+        start = batch_num * batch_size
+        end = min(start + batch_size, total)
+        batch = records[start:end]
+
+        batch_results = process_fn(batch)
+        results.extend(batch_results)
+
+        if verbose:
+            progress = end / total * 100
+            print(f"  Batch {batch_num + 1}/{num_batches} — {end}/{total} records ({progress:.0f}%)")
+
+    return results
+
+# Simulate processing
+sample_records = list(range(25))
+processed = process_in_batches(
+    records=sample_records,
+    batch_size=8,
+    process_fn=lambda batch: [x * 2 for x in batch]
+)
+print(f"Processed {len(processed)} records")
+# Output:
+#   Batch 1/4 — 8/25 records (32%)
+#   Batch 2/4 — 16/25 records (64%)
+#   Batch 3/4 — 24/25 records (96%)
+#   Batch 4/4 — 25/25 records (100%)
+# Processed 25 records
 ```
 
 ---
 
-## ✅ Key Takeaways
+## Key Takeaways
 
-- Functions make code **reusable, readable, and testable**
-- Use **default parameters** for optional inputs
-- `*args` collects extra positional args as a **tuple**; `**kwargs` as a **dict**
-- Always write **docstrings** — your future self will thank you
-- **Lambda** functions are concise one-liners, great for `map()`, `filter()`, and Pandas `.apply()`
-- Functions are **first-class objects** — they can be passed around like any value
-- Understand **scope** (LEGB rule) to avoid subtle bugs
+> [!success]
+> - Functions make code reusable, testable, and easier to reason about — write one whenever you find yourself repeating logic
+> - Use default parameters for optional behavior; never use mutable objects (lists, dicts) as defaults
+> - `*args` collects extra positional arguments as a tuple; `**kwargs` collects keyword arguments as a dict
+> - Write docstrings that describe what the function does, its parameters, and what it returns
+> - Lambda functions are for short, throwaway expressions — use named functions for anything complex
+> - Python's LEGB scope rule determines where a name is looked up; avoid `global` in production code
+> - Functions are first-class objects — you can store, pass, and return them, which enables clean pipeline and strategy patterns
 
 ---
 
-## 🔗 What's Next?
-
-➡️ [[05-lists-tuples-dictionaries]] — Python's core data structures
+[[03-control-flow]] | [[05-lists-tuples-dictionaries]]

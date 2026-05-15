@@ -1,679 +1,549 @@
-# 06 — NumPy Exercises
-## Practice Problems with Solutions
+# NumPy Exercises
+## Practice Problems — Warm-Up, Main, Stretch
 
-> [!tip] How to Use This File
-> 1. Read the problem carefully
-> 2. **Try to solve it yourself first** — close the notes, open a Jupyter notebook
-> 3. Only look at the solution when you're stuck or want to verify
-> 4. Even if your solution works, read the provided solution — it may show a cleaner approach!
+> [!tip] How to Get the Most From These Exercises
+> Open a Jupyter notebook or Python file. Read the problem. Close these notes and work through it yourself. Only check the solution when you are genuinely stuck or want to compare approaches. A solution you struggled toward is worth ten you read cold. If your solution works but looks different from the provided one, understand *why* — there is usually a reason one approach is preferred.
 
 ---
 
-## 🧭 Table of Contents
+## Warm-Up — Array Basics
 
-- [[#Level 1 — Warm-Up (Array Basics)]]
-- [[#Level 2 — Indexing & Slicing]]
-- [[#Level 3 — Vectorization]]
-- [[#Level 4 — Broadcasting]]
-- [[#Level 5 — Mixed Challenge]]
-- [[#Bonus Challenge — Real World]]
+These confirm that you have the fundamentals and can navigate the API without hesitation.
 
----
+### Exercise W1 — Create and Inspect
 
-## Level 1 — Warm-Up (Array Basics)
-
-### Exercise 1.1 — Create and Inspect
-
-**Task:** Create a 1D array containing the even numbers from 2 to 20 (inclusive). Print its shape, size, dtype, and sum.
-
-> [!example]- Solution 1.1
-> ```python
-> import numpy as np
-> 
-> arr = np.arange(2, 21, 2)
-> # Or: np.linspace(2, 20, 10, dtype=int)
-> 
-> print(arr)          # [ 2  4  6  8 10 12 14 16 18 20]
-> print(arr.shape)    # (10,)
-> print(arr.size)     # 10
-> print(arr.dtype)    # int64
-> print(arr.sum())    # 110
-> ```
-
----
-
-### Exercise 1.2 — Build a Matrix
-
-**Task:** Create a 5×5 matrix where:
-- The border elements are 1
-- The interior elements are 0
+Create a 1-D array of even numbers from 2 to 30 inclusive. Print its shape, size, dtype, sum, and mean.
 
 Expected output:
 ```
-[[1 1 1 1 1]
- [1 0 0 0 1]
- [1 0 0 0 1]
- [1 0 0 0 1]
- [1 1 1 1 1]]
+Array:  [ 2  4  6  8 10 12 14 16 18 20 22 24 26 28 30]
+Shape:  (15,)
+Size:   15
+dtype:  int64
+Sum:    240
+Mean:   16.0
 ```
 
-> [!example]- Solution 1.2
-> ```python
-> import numpy as np
-> 
-> mat = np.zeros((5, 5), dtype=int)
-> mat[0, :]  = 1   # Top row
-> mat[-1, :] = 1   # Bottom row
-> mat[:, 0]  = 1   # Left column
-> mat[:, -1] = 1   # Right column
-> 
-> print(mat)
-> 
-> # Alternative: start with ones, fill interior with zeros
-> mat2 = np.ones((5, 5), dtype=int)
-> mat2[1:-1, 1:-1] = 0
-> print(mat2)
-> ```
+??? "Show answer"
+    ```python
+    import numpy as np
+
+    arr = np.arange(2, 32, 2)
+    print("Array: ", arr)
+    print("Shape: ", arr.shape)
+    print("Size:  ", arr.size)
+    print("dtype: ", arr.dtype)
+    print("Sum:   ", arr.sum())
+    print("Mean:  ", arr.mean())
+    ```
 
 ---
 
-### Exercise 1.3 — Checkerboard
+### Exercise W2 — Border Matrix
 
-**Task:** Create an 8×8 matrix with a checkerboard pattern of 0s and 1s (like a chess board), where `(0,0)` is 0.
+Create a 6×6 integer matrix where border elements are 1 and interior elements are 0. Do not use a loop.
 
-Expected (truncated):
+Expected output:
+```
+[[1 1 1 1 1 1]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [1 1 1 1 1 1]]
+```
+
+??? "Show answer"
+    ```python
+    import numpy as np
+
+    mat = np.ones((6, 6), dtype=int)
+    mat[1:-1, 1:-1] = 0
+    print(mat)
+
+    # Alternative starting from zeros:
+    mat2 = np.zeros((6, 6), dtype=int)
+    mat2[0, :]  = 1
+    mat2[-1, :] = 1
+    mat2[:, 0]  = 1
+    mat2[:, -1] = 1
+    print(mat2)
+    ```
+
+---
+
+### Exercise W3 — Checkerboard
+
+Create an 8×8 integer matrix with a checkerboard pattern of 0s and 1s. `(0, 0)` should be 0. Do not use a loop.
+
+Expected output (partial):
 ```
 [[0 1 0 1 0 1 0 1]
  [1 0 1 0 1 0 1 0]
+ [0 1 0 1 0 1 0 1]
  ...]
 ```
 
-> [!example]- Solution 1.3
-> ```python
-> import numpy as np
-> 
-> # Method 1: using tile
-> row_a = np.array([0, 1, 0, 1, 0, 1, 0, 1])
-> row_b = np.array([1, 0, 1, 0, 1, 0, 1, 0])
-> board = np.array([row_a, row_b] * 4)
-> print(board)
-> 
-> # Method 2: elegant with modulo
-> board2 = np.zeros((8, 8), dtype=int)
-> board2[1::2, ::2]  = 1   # odd rows, even cols
-> board2[::2,  1::2] = 1   # even rows, odd cols
-> print(board2)
-> 
-> # Method 3: most concise
-> board3 = np.indices((8, 8)).sum(axis=0) % 2
-> print(board3)
-> ```
+??? "Show answer"
+    ```python
+    import numpy as np
+
+    # Method 1: index parity
+    board = np.zeros((8, 8), dtype=int)
+    board[1::2, ::2]  = 1   # odd rows, even cols
+    board[::2,  1::2] = 1   # even rows, odd cols
+    print(board)
+
+    # Method 2: sum of indices modulo 2
+    rows, cols = np.indices((8, 8))
+    board2 = (rows + cols) % 2
+    print(board2)
+    ```
 
 ---
 
-### Exercise 1.4 — Array Reshape
+### Exercise W4 — Reshape and Navigate 3-D
 
-**Task:** 
-1. Create an array of 24 numbers from 1 to 24
-2. Reshape it to (2, 3, 4)
-3. Print the element at position [1, 2, 3]
-4. Print the second "layer" (index 1) of the 3D array
+Create an array containing integers 1 through 60. Reshape it to shape `(3, 4, 5)`. Then:
+1. Print the element at position `[2, 3, 4]`
+2. Print the entire second "layer" (index 1 along axis 0)
+3. Print all values greater than 45
 
-> [!example]- Solution 1.4
-> ```python
-> import numpy as np
-> 
-> arr = np.arange(1, 25)           # [1, 2, ..., 24]
-> tensor = arr.reshape(2, 3, 4)    # Shape: (2, 3, 4)
-> 
-> print(tensor)
-> # [[[ 1  2  3  4]
-> #   [ 5  6  7  8]
-> #   [ 9 10 11 12]]
-> #  [[13 14 15 16]
-> #   [17 18 19 20]
-> #   [21 22 23 24]]]
-> 
-> print(tensor[1, 2, 3])   # 24  ← layer 1, row 2, col 3
-> print(tensor[1])          # Second layer
-> # [[13 14 15 16]
-> #  [17 18 19 20]
-> #  [21 22 23 24]]
-> ```
+??? "Show answer"
+    ```python
+    import numpy as np
+
+    arr = np.arange(1, 61).reshape(3, 4, 5)
+
+    # 1. Single element
+    print(arr[2, 3, 4])   # Output: 60  ← last element
+
+    # 2. Second layer (axis 0, index 1)
+    print(arr[1])
+    # Output:
+    # [[21 22 23 24 25]
+    #  [26 27 28 29 30]
+    #  [31 32 33 34 35]
+    #  [36 37 38 39 40]]
+
+    # 3. Values greater than 45
+    print(arr[arr > 45])
+    # Output: [46 47 48 49 50 51 52 53 54 55 56 57 58 59 60]
+    ```
 
 ---
 
-## Level 2 — Indexing & Slicing
+## Main — Indexing, Vectorization, Broadcasting
 
-### Exercise 2.1 — Slicing Patterns
+Realistic problems requiring you to combine multiple concepts.
 
-**Task:** Given the array below, extract using slicing:
-1. Every third element starting from index 0
-2. The last 5 elements in reverse order
-3. Elements at indices 2, 5, 8, 11 (every 3rd starting from 2)
+### Exercise M1 — Slicing Patterns
 
-```python
-arr = np.arange(15)  # [0, 1, 2, ..., 14]
+Given `arr = np.arange(20)`:
+
+1. Extract every third element starting from index 1
+2. Extract the last 6 elements in reverse order
+3. Replace all odd-indexed elements with their negative (in-place)
+
+Expected outputs:
+```
+1: [ 1  4  7 10 13 16 19]
+2: [19 18 17 16 15 14]
+3: [ 0 -1  2 -3  4 -5  6 -7  8 -9 10 -11 12 -13 14 -15 16 -17 18 -19]
 ```
 
-> [!example]- Solution 2.1
-> ```python
-> import numpy as np
-> arr = np.arange(15)
-> 
-> # 1. Every third element from 0
-> print(arr[::3])       # [ 0  3  6  9 12]
-> 
-> # 2. Last 5 elements in reverse
-> print(arr[-1:-6:-1])  # [14 13 12 11 10]
-> # or equivalently:
-> print(arr[-5:][::-1]) # [14 13 12 11 10]
-> 
-> # 3. Indices 2, 5, 8, 11
-> print(arr[2::3])      # [ 2  5  8 11]
-> # or fancy indexing:
-> print(arr[[2, 5, 8, 11]])  # [ 2  5  8 11]
-> ```
+??? "Show answer"
+    ```python
+    import numpy as np
+
+    arr = np.arange(20)
+
+    # 1. Every third, starting at index 1
+    print(arr[1::3])   # Output: [ 1  4  7 10 13 16 19]
+
+    # 2. Last 6 in reverse
+    print(arr[-1:-7:-1])  # Output: [19 18 17 16 15 14]
+
+    # 3. Negate odd-indexed elements in-place
+    arr = np.arange(20)  # reset
+    arr[1::2] = -arr[1::2]
+    print(arr)
+    # Output: [ 0 -1  2 -3  4 -5  6 -7  8 -9 10 -11 12 -13 14 -15 16 -17 18 -19]
+    ```
 
 ---
 
-### Exercise 2.2 — Matrix Surgery
+### Exercise M2 — Boolean Filtering on a Matrix
 
-**Task:** Given this 6×6 matrix, replace:
-1. The entire main diagonal with -1
-2. All elements in the bottom-right 3×3 submatrix with 99
+You have salary data for employees across three departments.
 
 ```python
-matrix = np.arange(36).reshape(6, 6)
+import numpy as np
+rng = np.random.default_rng(42)
+# Shape: (20, 3) — 20 employees, columns: [dept_id, years_exp, salary]
+data = np.column_stack([
+    rng.integers(0, 3, 20),          # dept: 0, 1, or 2
+    rng.integers(1, 15, 20),         # years experience
+    rng.integers(40000, 120000, 20)  # salary
+])
 ```
 
-> [!example]- Solution 2.2
-> ```python
-> import numpy as np
-> matrix = np.arange(36).reshape(6, 6)
-> print("Original:\n", matrix)
-> 
-> # 1. Replace main diagonal with -1
-> np.fill_diagonal(matrix, -1)
-> # Or: matrix[np.arange(6), np.arange(6)] = -1
-> 
-> # 2. Replace bottom-right 3×3 with 99
-> matrix[3:, 3:] = 99
-> 
-> print("Modified:\n", matrix)
-> # [[ -1   1   2   3   4   5]
-> #  [  6  -1   8   9  10  11]
-> #  [ 12  13  -1  15  16  17]
-> #  [ 18  19  20  99  99  99]
-> #  [ 24  25  26  99  99  99]
-> #  [ 30  31  32  99  99  99]]
-> ```
+Without using any loop:
+1. Find all employees in department 1
+2. Find all employees with salary > 80,000 AND experience > 5 years
+3. Count how many employees earn above the overall mean salary
+4. Print the salary of the highest-paid employee in department 2
+
+??? "Show answer"
+    ```python
+    import numpy as np
+    rng = np.random.default_rng(42)
+    data = np.column_stack([
+        rng.integers(0, 3, 20),
+        rng.integers(1, 15, 20),
+        rng.integers(40000, 120000, 20)
+    ])
+
+    # 1. Department 1 employees
+    dept1 = data[data[:, 0] == 1]
+    print(f"Dept 1 employees: {len(dept1)}")
+
+    # 2. High salary AND experienced
+    mask = (data[:, 2] > 80000) & (data[:, 1] > 5)
+    high_earners = data[mask]
+    print(f"High salary + experienced: {len(high_earners)}")
+
+    # 3. Count above mean salary
+    mean_salary = data[:, 2].mean()
+    count_above = np.sum(data[:, 2] > mean_salary)
+    print(f"Mean salary: {mean_salary:.0f}, Above mean: {count_above}")
+
+    # 4. Top salary in department 2
+    dept2_salaries = data[data[:, 0] == 2, 2]
+    print(f"Highest salary in dept 2: {dept2_salaries.max()}")
+    ```
 
 ---
 
-### Exercise 2.3 — Boolean Filtering
+### Exercise M3 — Vectorize This
 
-**Task:** Given an array of 20 random integers between -50 and 50:
-1. Find all values between -10 and 10 (inclusive)
-2. Replace all negative values with their absolute value
-3. Count how many values are above the mean
-
-> [!example]- Solution 2.3
-> ```python
-> import numpy as np
-> np.random.seed(42)
-> arr = np.random.randint(-50, 51, 20)
-> print("Original:", arr)
-> 
-> # 1. Values between -10 and 10
-> near_zero = arr[(arr >= -10) & (arr <= 10)]
-> print("Near zero:", near_zero)
-> 
-> # 2. Replace negatives with absolute values
-> arr_abs = arr.copy()               # Work on a copy!
-> arr_abs[arr_abs < 0] = np.abs(arr_abs[arr_abs < 0])
-> # Simpler:
-> arr_abs = np.abs(arr)
-> print("All positive:", arr_abs)
-> 
-> # 3. Count values above mean
-> mean = arr.mean()
-> count_above = np.sum(arr > mean)   # True = 1, False = 0
-> print(f"Mean: {mean:.1f}, Values above mean: {count_above}")
-> ```
-
----
-
-## Level 3 — Vectorization
-
-### Exercise 3.1 — Vectorize the Loop
-
-**Task:** Rewrite this loop using NumPy vectorization. The function computes `result[i] = (data[i]^2 - mean) / std` for each element.
+Rewrite the following loop as a single vectorized NumPy expression. Verify the results match.
 
 ```python
 import math
 
-data = [5, 8, 2, 12, 3, 9, 7, 14, 1, 6]
+data = [3.5, 7.2, 1.1, 8.8, 4.5, 6.3, 2.9, 9.1, 5.0, 3.7]
 mean = sum(data) / len(data)
-variance = sum((x - mean)**2 for x in data) / len(data)
-std = math.sqrt(variance)
+std  = math.sqrt(sum((x - mean)**2 for x in data) / len(data))
 
 result = []
 for x in data:
-    result.append((x**2 - mean) / std)
+    if x > mean:
+        result.append(math.log(x / mean))
+    else:
+        result.append(-(mean - x) / std)
 ```
 
-> [!example]- Solution 3.1
-> ```python
-> import numpy as np
-> 
-> data = np.array([5, 8, 2, 12, 3, 9, 7, 14, 1, 6])
-> mean = data.mean()
-> std  = data.std()
-> 
-> # One line!
-> result = (data**2 - mean) / std
-> 
-> print(result.round(4))
-> # Verify same as loop result
-> ```
+??? "Show answer"
+    ```python
+    import numpy as np
+
+    data = np.array([3.5, 7.2, 1.1, 8.8, 4.5, 6.3, 2.9, 9.1, 5.0, 3.7])
+    mean = data.mean()
+    std  = data.std()
+
+    # np.where handles the conditional branch vectorized
+    result = np.where(
+        data > mean,
+        np.log(data / mean),
+        -(mean - data) / std
+    )
+    print(result.round(4))
+    # Both approaches produce the same output.
+    ```
 
 ---
 
-### Exercise 3.2 — Temperature Analysis
-
-**Task:** You have temperature data for a week (7 days × 24 hours = 168 hourly readings).
+### Exercise M4 — Weekly Temperature Analysis
 
 ```python
-np.random.seed(0)
-temperatures = 20 + np.random.randn(7, 24) * 5  # shape: (7, 24)
+import numpy as np
+rng = np.random.default_rng(0)
+# 4 weeks × 7 days × 24 hours of temperature readings (Celsius)
+temps = 20 + rng.standard_normal((4, 7, 24)) * 6
+# Shape: (4, 7, 24)
 ```
 
-Answer these using vectorized NumPy (no loops!):
-1. What is the average temperature for each day?
-2. What is the hottest hour (column index) on average across all days?
-3. How many individual hour readings were above 25°C?
-4. What percentage of readings were between 18 and 28°C?
-5. Find the day with the most temperature variation (highest std)
+Using only NumPy (no loops):
 
-> [!example]- Solution 3.2
-> ```python
-> import numpy as np
-> np.random.seed(0)
-> temperatures = 20 + np.random.randn(7, 24) * 5
-> 
-> # 1. Average per day (average across hours = axis=1)
-> daily_avg = temperatures.mean(axis=1)
-> print("Daily averages:", daily_avg.round(2))
-> 
-> # 2. Hottest hour on average (average across days = axis=0)
-> hourly_avg = temperatures.mean(axis=0)  # shape: (24,)
-> hottest_hour = np.argmax(hourly_avg)
-> print(f"Hottest hour: {hottest_hour} ({hourly_avg[hottest_hour]:.2f}°C)")
-> 
-> # 3. Readings above 25°C
-> count_hot = np.sum(temperatures > 25)
-> print(f"Hours above 25°C: {count_hot}")
-> 
-> # 4. Percentage between 18 and 28
-> in_range = (temperatures >= 18) & (temperatures <= 28)
-> percentage = in_range.mean() * 100  # mean of booleans = proportion
-> print(f"In range [18,28]: {percentage:.1f}%")
-> 
-> # 5. Day with most variation
-> daily_std = temperatures.std(axis=1)
-> most_variable_day = np.argmax(daily_std)
-> print(f"Most variable day: Day {most_variable_day} (std={daily_std[most_variable_day]:.2f})")
-> ```
+1. What is the average temperature for each week? (one number per week)
+2. Which hour of the day is coldest on average across all weeks and days?
+3. What fraction of all readings exceeded 30°C?
+4. What is the daily temperature range (max - min) for each day of the first week?
+5. Identify the `(week, day)` combination with the highest single-hour reading
+
+??? "Show answer"
+    ```python
+    import numpy as np
+    rng = np.random.default_rng(0)
+    temps = 20 + rng.standard_normal((4, 7, 24)) * 6
+
+    # 1. Weekly averages: collapse days and hours
+    weekly_avg = temps.mean(axis=(1, 2))
+    print("Weekly averages:", weekly_avg.round(2))
+
+    # 2. Coldest hour: average over weeks and days, then find argmin
+    hourly_avg = temps.mean(axis=(0, 1))   # shape: (24,)
+    coldest_hour = np.argmin(hourly_avg)
+    print(f"Coldest hour: {coldest_hour} ({hourly_avg[coldest_hour]:.2f}°C)")
+
+    # 3. Fraction above 30°C
+    fraction_hot = np.mean(temps > 30)
+    print(f"Fraction > 30°C: {fraction_hot:.3f} ({fraction_hot*100:.1f}%)")
+
+    # 4. Daily range for week 0: max and min across hours (axis=2)
+    week0 = temps[0]          # shape: (7, 24)
+    daily_range = week0.max(axis=1) - week0.min(axis=1)
+    print("Daily range (week 0):", daily_range.round(2))
+
+    # 5. Week and day of highest single reading
+    # Collapse hours: find max per (week, day)
+    daily_max = temps.max(axis=2)    # shape: (4, 7)
+    flat_idx = np.argmax(daily_max)  # index in flattened array
+    week_idx, day_idx = np.unravel_index(flat_idx, daily_max.shape)
+    peak_temp = daily_max[week_idx, day_idx]
+    print(f"Peak reading: week {week_idx}, day {day_idx}, temp={peak_temp:.2f}°C")
+    ```
 
 ---
 
-### Exercise 3.3 — Image Manipulation
+### Exercise M5 — Views vs Copies Detective
 
-**Task:** Simulate image operations on a grayscale image (256×256 array of pixel values 0-255):
+For each operation below, predict whether the result is a view or a copy. Then verify using `.base`.
 
 ```python
-np.random.seed(42)
-image = np.random.randint(0, 256, (256, 256), dtype=np.uint8)
+import numpy as np
+
+arr = np.arange(24).reshape(4, 6)
+
+a = arr[1:3, :]        # prediction: ?
+b = arr[[0, 2], :]     # prediction: ?
+c = arr[arr > 10]      # prediction: ?
+d = arr.T              # prediction: ?
+e = arr.flatten()      # prediction: ?
+f = arr.ravel()        # prediction: ?
+g = arr.reshape(6, 4)  # prediction: ?
 ```
 
-1. Compute the histogram (count of each pixel value) without using `np.histogram`
-2. Flip the image vertically
-3. Increase brightness by 50 (clamped to 255 max)
-4. Create a binary mask: 1 where pixel > 128, 0 elsewhere
+??? "Show answer"
+    ```python
+    import numpy as np
 
-> [!example]- Solution 3.3
-> ```python
-> import numpy as np
-> np.random.seed(42)
-> image = np.random.randint(0, 256, (256, 256), dtype=np.uint8)
-> 
-> # 1. Histogram (count occurrences of each value 0-255)
-> hist = np.bincount(image.flatten(), minlength=256)
-> print(f"Histogram shape: {hist.shape}, Total: {hist.sum()}")
-> 
-> # 2. Flip vertically (reverse rows)
-> flipped = image[::-1, :]
-> print(f"Original top-left: {image[0, 0]}, Flipped top-left: {flipped[0, 0]}")
-> print(f"Original bottom-left: {image[-1, 0]}, Flipped bottom-left: {flipped[-1, 0]}")
-> 
-> # 3. Increase brightness by 50, clamped to 255
-> brighter = np.clip(image.astype(np.int32) + 50, 0, 255).astype(np.uint8)
-> # Must convert to int32 first to avoid overflow with uint8!
-> 
-> # 4. Binary mask
-> mask = (image > 128).astype(np.uint8)  # or just (image > 128)
-> print(f"Pixels > 128: {mask.sum()}, Fraction: {mask.mean():.3f}")
-> ```
+    arr = np.arange(24).reshape(4, 6)
+
+    a = arr[1:3, :]
+    b = arr[[0, 2], :]
+    c = arr[arr > 10]
+    d = arr.T
+    e = arr.flatten()
+    f = arr.ravel()
+    g = arr.reshape(6, 4)
+
+    results = {
+        'a = arr[1:3,:]   (basic slice)': a,
+        'b = arr[[0,2],:] (fancy index)': b,
+        'c = arr[arr>10]  (bool index) ': c,
+        'd = arr.T        (transpose)  ': d,
+        'e = arr.flatten()(flatten)    ': e,
+        'f = arr.ravel()  (ravel)      ': f,
+        'g = arr.reshape  (reshape)    ': g,
+    }
+
+    for name, x in results.items():
+        kind = 'VIEW' if x.base is not None else 'COPY'
+        print(f"{name} → {kind}")
+
+    # Expected output:
+    # a = arr[1:3,:]    → VIEW
+    # b = arr[[0,2],:]  → COPY
+    # c = arr[arr>10]   → COPY
+    # d = arr.T         → VIEW
+    # e = arr.flatten() → COPY
+    # f = arr.ravel()   → VIEW  (usually — depends on memory layout)
+    # g = arr.reshape() → VIEW  (usually)
+    ```
 
 ---
 
-## Level 4 — Broadcasting
+## Stretch — Harder, No Hints
 
-### Exercise 4.1 — Predict the Shape
+These problems require combining multiple ideas. The expected output is shown; the path is yours to find.
 
-**Without running code**, predict whether each operation is valid and what the output shape would be:
+### Exercise S1 — Implement Euclidean Distance Without `np.linalg`
+
+Write a function `pairwise_distances(X)` that takes a 2-D array of shape `(n, d)` (n points in d-dimensional space) and returns the `(n, n)` pairwise distance matrix. No loops, no `np.linalg.norm` on pairs.
 
 ```python
-A = np.ones((6, 1))
-B = np.ones((1, 4))
-C = np.ones((6, 4))
-D = np.ones((4,))
-E = np.ones((3, 6, 4))
-
-# Predict: valid? output shape?
-# 1. A + B
-# 2. A + C
-# 3. C + D
-# 4. A + D
-# 5. E + C
-# 6. E + A
+import numpy as np
+rng = np.random.default_rng(7)
+X = rng.standard_normal((5, 3))
+D = pairwise_distances(X)
+# D[i, j] = Euclidean distance between point i and point j
+# D should be symmetric, and D[i, i] = 0
 ```
 
-> [!example]- Solution 4.1
-> ```
-> 1. A(6,1) + B(1,4)  → (6,4)  ✅  Both dimensions compatible (6vs1, 1vs4)
-> 2. A(6,1) + C(6,4)  → (6,4)  ✅  (6==6, 1→4)
-> 3. C(6,4) + D(4,)   → (6,4)  ✅  D padded to (1,4) → (6,4)
-> 4. A(6,1) + D(4,)   → (6,4)  ✅  D padded to (1,4); A(6,1)+D(1,4) → (6,4)
-> 5. E(3,6,4) + C(6,4) → (3,6,4) ✅  C padded to (1,6,4) → (3,6,4)
-> 6. E(3,6,4) + A(6,1) → (3,6,4) ✅  A padded to (1,6,1) → (3,6,4)
-> ```
+Verify:
+- `D` is symmetric: `np.allclose(D, D.T)` → True
+- Diagonal is zero: `np.allclose(np.diag(D), 0)` → True
+
+??? "Show answer"
+    ```python
+    import numpy as np
+
+    def pairwise_distances(X):
+        # X: (n, d)
+        # Expand to (n, 1, d) and (1, n, d), then broadcast
+        diff = X[:, np.newaxis, :] - X[np.newaxis, :, :]  # (n, n, d)
+        return np.sqrt((diff ** 2).sum(axis=-1))           # (n, n)
+
+    rng = np.random.default_rng(7)
+    X = rng.standard_normal((5, 3))
+    D = pairwise_distances(X)
+
+    print("Symmetric:", np.allclose(D, D.T))       # True
+    print("Zero diag:", np.allclose(np.diag(D), 0)) # True
+    print(D.round(3))
+    ```
 
 ---
 
-### Exercise 4.2 — Normalize Rows
-
-**Task:** Given a matrix where each row represents a data point with multiple features, normalize each **row** so that the values in each row sum to 1 (row normalization, used in softmax, attention, etc.).
+### Exercise S2 — Complete Preprocessing Pipeline
 
 ```python
-matrix = np.array([[1, 2, 3],
-                   [4, 0, 2],
-                   [1, 1, 1]])
-# Expected:
-# row 0: [1/6, 2/6, 3/6] = [0.167, 0.333, 0.5]
-# row 1: [4/6, 0/6, 2/6] = [0.667, 0.0,   0.333]
-# row 2: [1/3, 1/3, 1/3] = [0.333, 0.333, 0.333]
+import numpy as np
+rng = np.random.default_rng(99)
+raw = rng.standard_normal((200, 6)) * np.array([10, 2, 50, 0.5, 100, 1])
+# Introduce some outliers
+raw[::20] *= 5
 ```
 
-> [!example]- Solution 4.2
-> ```python
-> import numpy as np
-> 
-> matrix = np.array([[1, 2, 3],
->                    [4, 0, 2],
->                    [1, 1, 1]], dtype=float)
-> 
-> # Row sums: shape (3,)
-> row_sums = matrix.sum(axis=1)
-> print("Row sums:", row_sums)  # [6. 6. 3.]
-> 
-> # Divide each row by its sum
-> # row_sums shape: (3,) → needs to be (3, 1) for column broadcasting
-> normalized = matrix / row_sums[:, np.newaxis]
-> # Or: matrix / row_sums.reshape(-1, 1)
-> 
-> print(normalized.round(3))
-> # [[0.167 0.333 0.5  ]
-> #  [0.667 0.    0.333]
-> #  [0.333 0.333 0.333]]
-> 
-> # Verify rows sum to 1
-> print(normalized.sum(axis=1))  # [1. 1. 1.]
-> ```
+Build a pipeline (no loops) that:
+
+1. Removes any row where at least one feature is more than 4 standard deviations from that feature's mean
+2. Applies min-max normalization to each feature (scale to [0, 1])
+3. Computes the `(6, 6)` correlation matrix of the normalized features using only NumPy
+4. Finds the pair of features with the highest absolute correlation (excluding self-correlation)
+
+??? "Show answer"
+    ```python
+    import numpy as np
+    rng = np.random.default_rng(99)
+    raw = rng.standard_normal((200, 6)) * np.array([10, 2, 50, 0.5, 100, 1])
+    raw[::20] *= 5
+
+    # Step 1: Remove outlier rows
+    mean = raw.mean(axis=0)          # shape: (6,)
+    std  = raw.std(axis=0)           # shape: (6,)
+    z_scores = np.abs((raw - mean) / std)   # shape: (200, 6)
+    clean_mask = np.all(z_scores <= 4, axis=1)
+    clean = raw[clean_mask]
+    print(f"Rows after outlier removal: {clean.shape[0]}")
+
+    # Step 2: Min-max normalize each feature
+    col_min = clean.min(axis=0)      # shape: (6,)
+    col_max = clean.max(axis=0)      # shape: (6,)
+    normalized = (clean - col_min) / (col_max - col_min)
+
+    # Step 3: Correlation matrix using NumPy
+    # np.corrcoef expects (features, samples) — transpose first
+    corr = np.corrcoef(normalized.T)   # shape: (6, 6)
+    print("Correlation matrix:")
+    print(corr.round(3))
+
+    # Step 4: Find highest off-diagonal absolute correlation
+    # Mask out the diagonal (which is always 1)
+    mask = ~np.eye(6, dtype=bool)
+    abs_corr = np.abs(corr)
+    abs_corr_masked = abs_corr * mask   # zero out diagonal
+
+    flat_idx = np.argmax(abs_corr_masked)
+    i, j = np.unravel_index(flat_idx, corr.shape)
+    print(f"Highest correlation: features {i} and {j}, r = {corr[i, j]:.4f}")
+    ```
 
 ---
 
-### Exercise 4.3 — Grade Curve
+### Exercise S3 — Rolling Window Statistics
 
-**Task:** A professor has grades for 4 students across 5 tests (shape: `(4, 5)`). 
-1. Each test should be curved so the **maximum score becomes 100**. Apply this per test (column).
-2. Then, each student's final grade is the weighted average of their 5 tests using weights `[0.1, 0.1, 0.2, 0.2, 0.4]`.
-3. Assign letter grades: A (≥90), B (≥80), C (≥70), D (≥60), F (<60).
+Compute the rolling mean and rolling standard deviation for a time series using only NumPy (no Pandas, no loops for the window computation).
 
 ```python
-grades = np.array([[70, 85, 60, 90, 75],
-                   [80, 90, 70, 85, 95],
-                   [60, 75, 80, 70, 65],
-                   [90, 80, 90, 95, 88]])
+import numpy as np
+rng = np.random.default_rng(42)
+prices = 100 + np.cumsum(rng.standard_normal(500) * 2)
+window = 20
 ```
 
-> [!example]- Solution 4.3
-> ```python
-> import numpy as np
-> 
-> grades = np.array([[70, 85, 60, 90, 75],
->                    [80, 90, 70, 85, 95],
->                    [60, 75, 80, 70, 65],
->                    [90, 80, 90, 95, 88]], dtype=float)
-> 
-> # Step 1: Curve each test (column) so max becomes 100
-> test_maxes = grades.max(axis=0)           # shape: (5,)
-> curved = grades / test_maxes * 100        # Broadcasting: (4,5) / (5,) → (4,5)
-> print("Curved grades:\n", curved.round(1))
-> 
-> # Step 2: Weighted average per student
-> weights = np.array([0.1, 0.1, 0.2, 0.2, 0.4])
-> # Weighted average = sum of (score * weight) for each student
-> weighted_avg = (curved * weights).sum(axis=1)  # (4,5) * (5,) → (4,5) → sum → (4,)
-> print("Final grades:", weighted_avg.round(2))
-> 
-> # Step 3: Letter grades using np.where chain
-> letters = np.where(weighted_avg >= 90, 'A',
->           np.where(weighted_avg >= 80, 'B',
->           np.where(weighted_avg >= 70, 'C',
->           np.where(weighted_avg >= 60, 'D', 'F'))))
-> print("Letter grades:", letters)
-> ```
+Expected behavior:
+- `rolling_mean[i]` = mean of `prices[i : i + window]` for i in range(len(prices) - window + 1)
+- Result shape: `(len(prices) - window + 1,)` = `(481,)`
+
+??? "Show answer"
+    ```python
+    import numpy as np
+    rng = np.random.default_rng(42)
+    prices = 100 + np.cumsum(rng.standard_normal(500) * 2)
+    window = 20
+    n = len(prices) - window + 1   # 481
+
+    # Build a (n, window) array using stride tricks
+    # Each row is a sliding window view
+    from numpy.lib.stride_tricks import as_strided
+
+    item_size = prices.strides[0]
+    windows = as_strided(
+        prices,
+        shape=(n, window),
+        strides=(item_size, item_size)
+    )
+    # windows[i] = prices[i : i + window]
+
+    rolling_mean = windows.mean(axis=1)
+    rolling_std  = windows.std(axis=1)
+
+    print(f"Shape: {rolling_mean.shape}")   # (481,)
+    print(f"First rolling mean: {rolling_mean[0]:.3f}")
+    print(f"Last rolling mean:  {rolling_mean[-1]:.3f}")
+
+    # Verify first value
+    expected_first = prices[:window].mean()
+    print(f"Manual check: {expected_first:.3f}")  # should match rolling_mean[0]
+
+    # Alternative without stride tricks (using broadcasting index array)
+    indices = np.arange(window) + np.arange(n)[:, np.newaxis]  # shape: (n, window)
+    rolling_mean_v2 = prices[indices].mean(axis=1)
+    print("Methods agree:", np.allclose(rolling_mean, rolling_mean_v2))
+    ```
 
 ---
 
-## Level 5 — Mixed Challenge
-
-### Exercise 5.1 — Moving Average
-
-**Task:** Compute the 3-day moving average of a stock price array (no loops!).
-
-```python
-prices = np.array([100, 102, 101, 104, 107, 105, 108, 110, 109, 112])
-# Moving average window = 3
-# Result should have length 8 (len - window + 1)
-```
-
-> [!example]- Solution 5.1
-> ```python
-> import numpy as np
-> 
-> prices = np.array([100, 102, 101, 104, 107, 105, 108, 110, 109, 112], dtype=float)
-> window = 3
-> 
-> # Method 1: Using convolution
-> kernel = np.ones(window) / window
-> ma = np.convolve(prices, kernel, mode='valid')
-> print("Moving average:", ma.round(2))
-> # [101.   102.33 104.   105.33 106.67 107.67 109.   110.33]
-> 
-> # Method 2: Using strides (advanced)
-> n = len(prices) - window + 1
-> ma2 = np.array([prices[i:i+window].mean() for i in range(n)])
-> # Wait, that's a loop... let's vectorize properly:
-> 
-> # Create index array and use fancy indexing
-> indices = np.arange(window) + np.arange(n)[:, np.newaxis]  # (n, window)
-> ma3 = prices[indices].mean(axis=1)
-> print("Moving average (method 3):", ma3.round(2))
-> ```
-
----
-
-### Exercise 5.2 — Complete Data Pipeline
-
-**Task:** Build a complete data pipeline:
-
-```python
-np.random.seed(123)
-data = np.random.randn(100, 5)  # 100 samples, 5 features
-```
-
-Steps:
-1. Find and print the indices of the 5 rows that have the largest L2 norm (Euclidean length)
-2. Remove the top 5 outlier rows and create a clean dataset
-3. Standardize (Z-score normalize) each feature in the clean dataset
-4. Compute the correlation between features 0 and 1 using only vectorized NumPy
-
-> [!example]- Solution 5.2
-> ```python
-> import numpy as np
-> np.random.seed(123)
-> data = np.random.randn(100, 5)
-> 
-> # Step 1: L2 norm of each row
-> norms = np.sqrt((data**2).sum(axis=1))    # or np.linalg.norm(data, axis=1)
-> top5_indices = np.argsort(norms)[-5:]     # indices of 5 largest norms
-> print("Top 5 outlier indices:", np.sort(top5_indices))
-> 
-> # Step 2: Remove outliers
-> all_indices = np.arange(100)
-> clean_indices = np.setdiff1d(all_indices, top5_indices)
-> clean_data = data[clean_indices]          # Fancy indexing → copy
-> print(f"Clean data shape: {clean_data.shape}")  # (95, 5)
-> 
-> # Step 3: Z-score normalization per feature (column)
-> col_mean = clean_data.mean(axis=0)        # shape: (5,)
-> col_std  = clean_data.std(axis=0)         # shape: (5,)
-> standardized = (clean_data - col_mean) / col_std  # broadcasting
-> 
-> print("After standardization:")
-> print(f"  Means: {standardized.mean(axis=0).round(6)}")   # All ~0
-> print(f"  Stds:  {standardized.std(axis=0).round(6)}")    # All ~1
-> 
-> # Step 4: Correlation between feature 0 and feature 1
-> f0 = standardized[:, 0]
-> f1 = standardized[:, 1]
-> correlation = np.dot(f0, f1) / (len(f0) - 1)  # Pearson r (z-score data)
-> # Or using np.corrcoef:
-> corr_matrix = np.corrcoef(f0, f1)
-> print(f"Correlation (manual): {correlation:.4f}")
-> print(f"Correlation (np.corrcoef): {corr_matrix[0, 1]:.4f}")
-> ```
-
----
-
-## Bonus Challenge — Real World
-
-### 🎯 Challenge: Image Histogram Equalization
-
-**Background:** Histogram equalization is a technique to improve the contrast of an image. The idea: redistribute pixel intensities so they're more uniformly spread.
-
-**Task:**
-
-```python
-np.random.seed(0)
-# Simulate a "dark" image — most pixels clustered in low values
-dark_image = (np.random.exponential(scale=50, size=(64, 64))).clip(0, 255).astype(np.uint8)
-```
-
-1. Plot the histogram (distribution of pixel values) — just print bucket counts
-2. Apply histogram equalization using only NumPy (no OpenCV/PIL)
-3. Verify that the equalized image has a more uniform distribution
-
-**Hint:** Equalization formula: `equalized[i] = round((CDF[pixel[i]] - CDF_min) / (N - CDF_min) * 255)`
-where CDF is the cumulative distribution function.
-
-> [!example]- Solution — Bonus
-> ```python
-> import numpy as np
-> 
-> np.random.seed(0)
-> dark_image = (np.random.exponential(scale=50, size=(64, 64))).clip(0, 255).astype(np.uint8)
-> 
-> print("=== Original Image ===")
-> print(f"Shape: {dark_image.shape}")
-> print(f"Min: {dark_image.min()}, Max: {dark_image.max()}, Mean: {dark_image.mean():.1f}")
-> 
-> # Step 1: Histogram (count of each pixel value 0-255)
-> hist = np.bincount(dark_image.flatten(), minlength=256)
-> print(f"\nHistogram (first 10 buckets): {hist[:10]}")
-> print(f"Total pixels: {hist.sum()}")
-> 
-> # Step 2: Histogram equalization
-> N = dark_image.size   # total number of pixels
-> 
-> # Cumulative Distribution Function (CDF)
-> cdf = hist.cumsum()   # cumsum of histogram
-> 
-> # CDF_min: smallest non-zero CDF value
-> cdf_min = cdf[cdf > 0].min()
-> 
-> # Apply equalization formula using NumPy vectorization
-> # Create a lookup table: for each pixel value 0-255, compute equalized value
-> lookup = np.round((cdf - cdf_min) / (N - cdf_min) * 255).astype(np.uint8)
-> 
-> # Apply lookup table to image (fancy indexing!)
-> equalized = lookup[dark_image]   # dark_image values used as indices into lookup!
-> 
-> print("\n=== Equalized Image ===")
-> print(f"Min: {equalized.min()}, Max: {equalized.max()}, Mean: {equalized.mean():.1f}")
-> 
-> # Step 3: Compare histograms
-> hist_eq = np.bincount(equalized.flatten(), minlength=256)
-> print(f"\nOriginal - pixels below 64: {hist[:64].sum()} / {N}")
-> print(f"Equalized - pixels below 64: {hist_eq[:64].sum()} / {N}")
-> print(f"Equalized - pixels above 192: {hist_eq[192:].sum()} / {N}")
-> # The equalized image should have more even distribution!
-> ```
-
----
-
-## 📊 Progress Tracker
+## Progress Tracker
 
 | Exercise | Solved Without Help? | Understood Solution? |
 |----------|---------------------|---------------------|
-| 1.1 Array Basics | ☐ | ☐ |
-| 1.2 Border Matrix | ☐ | ☐ |
-| 1.3 Checkerboard | ☐ | ☐ |
-| 1.4 Reshape | ☐ | ☐ |
-| 2.1 Slicing | ☐ | ☐ |
-| 2.2 Matrix Surgery | ☐ | ☐ |
-| 2.3 Boolean Filter | ☐ | ☐ |
-| 3.1 Vectorize Loop | ☐ | ☐ |
-| 3.2 Temperature | ☐ | ☐ |
-| 3.3 Image Ops | ☐ | ☐ |
-| 4.1 Predict Shape | ☐ | ☐ |
-| 4.2 Normalize Rows | ☐ | ☐ |
-| 4.3 Grade Curve | ☐ | ☐ |
-| 5.1 Moving Average | ☐ | ☐ |
-| 5.2 Data Pipeline | ☐ | ☐ |
-| Bonus | ☐ | ☐ |
+| W1 — Create and Inspect | ☐ | ☐ |
+| W2 — Border Matrix | ☐ | ☐ |
+| W3 — Checkerboard | ☐ | ☐ |
+| W4 — Reshape 3-D | ☐ | ☐ |
+| M1 — Slicing Patterns | ☐ | ☐ |
+| M2 — Boolean Filtering | ☐ | ☐ |
+| M3 — Vectorize This | ☐ | ☐ |
+| M4 — Temperature Analysis | ☐ | ☐ |
+| M5 — Views vs Copies | ☐ | ☐ |
+| S1 — Pairwise Distance | ☐ | ☐ |
+| S2 — Preprocessing Pipeline | ☐ | ☐ |
+| S3 — Rolling Window | ☐ | ☐ |
 
 ---
 
-## 🔗 Navigation
-
-| Previous | Next |
-|----------|------|
-| [[05-broadcasting]] | [[07-cheat-sheet]] |
-
----
-
-*Tags: #numpy #exercises #practice #vectorization #broadcasting #indexing*
+[[05-broadcasting]] | [[07-cheat-sheet]]

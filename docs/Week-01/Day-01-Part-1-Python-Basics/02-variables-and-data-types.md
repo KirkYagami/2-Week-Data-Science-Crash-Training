@@ -1,51 +1,71 @@
-# 📦 02 – Variables and Data Types
+# Variables and Data Types
 
-> **Prerequisites:** [[01-python-introduction]]  
-> **Time to read:** ~30 minutes
+Every program you write manipulates data. Before you can manipulate it, you need to know how Python stores it, what kinds of values exist, and how Python decides what operations are valid. Get this wrong and you will spend hours debugging type errors and silent precision losses that corrupt your analysis results.
 
 ---
 
-## 🧠 What is a Variable?
+## Learning Objectives
 
-A **variable** is a named container that stores a value in your computer's memory.
+By the end of this note, you will be able to:
 
-Think of it like a **labelled box**:
-- The **label** is the variable name
-- The **contents** are the value
-- You can change the contents at any time
+- Declare variables using correct naming conventions
+- Distinguish between `int`, `float`, `str`, `bool`, and `NoneType`
+- Explain why `0.1 + 0.2 != 0.3` and handle floating point precision correctly
+- Use f-strings for readable, formatted output
+- Understand truthy and falsy values and use them in conditionals
+- Convert between types safely and catch conversion failures
+- Explain the difference between `type()` and `isinstance()`
+- Use multiple assignment and tuple unpacking
+
+---
+
+## What is a Variable?
+
+A variable is a name bound to a value in memory. When you write `age = 25`, Python creates the integer object `25` in memory and binds the name `age` to it. If you then write `age = 26`, Python creates a new integer object `26` and rebinds `age` to point at it. The old `25` object is garbage-collected if nothing else references it.
 
 ```python
-# Creating variables
-age = 25           # label: "age"  |  contents: 25
-name = "Alice"     # label: "name" |  contents: "Alice"
-height = 5.7       # label: "height" | contents: 5.7
+age = 25
+print(id(age))    # memory address, e.g. 140234567
+
+age = 26
+print(id(age))    # different address — a new object!
 ```
 
-### How Variables Work in Memory
+This matters because Python variables are references, not containers. When you write `b = a`, both names point to the same object — they do not copy it.
 
-```
-Variable Name    Memory Address    Value
-    age     →    [0x7f3a...]   →   25
-    name    →    [0x7f3b...]   →   "Alice"
-    height  →    [0x7f3c...]   →   5.7
+```python
+# With immutable types (int, str), this doesn't cause problems
+a = 10
+b = a
+b = 20
+print(a)    # Output: 10 — a is unchanged
+
+# With mutable types (list), it does
+scores = [85, 92, 78]
+backup = scores             # backup points to the SAME list
+backup.append(100)
+print(scores)               # Output: [85, 92, 78, 100] — surprise!
 ```
 
-When you type `age`, Python looks up that label and retrieves `25`.
+> [!warning]
+> This is one of the most common bugs in data science code. When you "copy" a list or dict by assignment, you get a reference to the same object. Use `scores.copy()` or `scores[:]` for a shallow copy, or `copy.deepcopy(scores)` for nested structures.
 
 ---
 
-## 📝 Variable Naming Rules
+## Variable Naming Rules
 
-### Rules (you MUST follow these)
+### Rules you must follow
 
-| Rule | Example of violation | Correct |
-|------|---------------------|---------|
-| Start with letter or `_` | `1name = "Alice"` ❌ | `name1 = "Alice"` ✅ |
-| Only letters, digits, `_` | `my-name = "Alice"` ❌ | `my_name = "Alice"` ✅ |
-| Case-sensitive | `Age` ≠ `age` ≠ `AGE` | Pick one and stick to it |
-| Can't use reserved words | `if = 5` ❌ | `is_valid = 5` ✅ |
+| Rule | Wrong | Right |
+|------|-------|-------|
+| Start with a letter or underscore | `1count = 0` | `count = 0` |
+| Only letters, digits, underscores | `user-name = "x"` | `user_name = "x"` |
+| Case-sensitive | `Age` and `age` are different | Pick one and stick to it |
+| Cannot be a reserved keyword | `if = 5` | `is_valid = 5` |
 
-### Python Reserved Words (don't use as variable names)
+### Python reserved keywords
+
+These names are claimed by the language itself and cannot be used as variable names:
 
 ```
 False    None     True     and      as       assert   async
@@ -55,523 +75,556 @@ import   in       is       lambda   nonlocal not      or
 pass     raise    return   try      while    with     yield
 ```
 
-### Conventions (you SHOULD follow these)
+### Conventions you should follow
 
 ```python
-# snake_case for variables and functions (Python standard)
-user_age = 25
-total_sales = 1500.75
+# snake_case for variables and functions — Python standard
+customer_age = 34
+total_revenue = 285000.50
 
 # UPPER_CASE for constants
-MAX_RETRY_COUNT = 3
-PI = 3.14159
+MAX_RETRIES = 3
+DEFAULT_TIMEOUT_SECONDS = 30
 
-# Descriptive names (not single letters, except in math/loops)
-# BAD
-x = 25
-d = "Alice"
+# Descriptive names — make the intent obvious
+# Poor names
+x = 34
+d = "2024-01-15"
+lst = [85, 92, 78, 61]
 
-# GOOD
-age = 25
-student_name = "Alice"
+# Good names
+customer_age = 34
+transaction_date = "2024-01-15"
+exam_scores = [85, 92, 78, 61]
 ```
+
+> [!tip]
+> In data science, you will often work with DataFrames where column names become variable names. Choose column names that read as clear descriptions: `purchase_amount` not `amt`, `is_churned` not `churn`.
 
 ---
 
-## 🔢 Python's Core Data Types
-
-Python has several built-in data types. For Data Science, these are the most important:
+## Python's Core Data Types
 
 ```
-Python Data Types
+Python Types
 │
 ├── Numeric
-│   ├── int      (integers: -5, 0, 42, 1000000)
-│   ├── float    (decimals: 3.14, -0.001, 2.0)
-│   └── complex  (rarely used in DS: 3+4j)
+│   ├── int      integers: -5, 0, 42, 1_000_000
+│   ├── float    decimals: 3.14, -0.001, 2.0, 6.022e23
+│   └── complex  rarely used in DS: 3+4j
 │
 ├── Text
-│   └── str      ("hello", 'world', """multiline""")
+│   └── str      "hello", 'world', """multiline"""
 │
 ├── Boolean
-│   └── bool     (True, False)
+│   └── bool     True, False
 │
 ├── None
-│   └── NoneType (represents "nothing" / missing)
+│   └── NoneType represents absence of a value
 │
-└── Collections (covered in detail later)
-    ├── list     ([1, 2, 3])
-    ├── tuple    ((1, 2, 3))
-    ├── dict     ({"key": "value"})
-    └── set      ({1, 2, 3})
+└── Collections  (covered in depth in note 05)
+    ├── list     [1, 2, 3]
+    ├── tuple    (1, 2, 3)
+    ├── dict     {"key": "value"}
+    └── set      {1, 2, 3}
 ```
 
 ---
 
-## 🔢 Integers (`int`)
+## Integers (`int`)
 
-Integers are **whole numbers** — no decimal point.
-
-```python
-# Integer examples
-count = 42
-temperature = -10
-population = 8_000_000_000   # underscores for readability (Python 3.6+)
-zero = 0
-
-# Check the type
-print(type(count))           # <class 'int'>
-print(type(temperature))     # <class 'int'>
-```
-
-### Integer Operations
+Integers are whole numbers — no decimal point.
 
 ```python
-a = 17
-b = 5
+user_count = 42
+temperature_celsius = -10
+world_population = 8_000_000_000    # underscores improve readability (Python 3.6+)
 
-print(a + b)    # 22   — Addition
-print(a - b)    # 12   — Subtraction
-print(a * b)    # 85   — Multiplication
-print(a / b)    # 3.4  — Division (always returns float!)
-print(a // b)   # 3    — Floor division (discard remainder)
-print(a % b)    # 2    — Modulo (remainder)
-print(a ** b)   # 1419857 — Exponentiation (17^5)
+print(type(user_count))             # Output: <class 'int'>
 ```
 
-> **Data Science tip:** Integer division `//` and modulo `%` are useful for splitting datasets, pagination, and working with time.
-
-### Big integers — Python handles them perfectly
+### Arithmetic operations
 
 ```python
-# Python integers have unlimited precision (unlike most languages)
-huge = 2 ** 1000
-print(huge)  # prints a 302-digit number!
+items_sold = 17
+price_per_item = 5
+
+total = items_sold * price_per_item     # Output: 85
+remainder = items_sold % 3              # Output: 2  — useful for grouping
+batches = items_sold // 3              # Output: 5  — floor division
+print(2 ** 10)                         # Output: 1024 — exponentiation
 ```
+
+> [!info]
+> Python integers have unlimited precision. Unlike most languages, Python will happily compute `2 ** 1000` — a 302-digit number — without overflow. This matters when working with combinatorics or cryptography, but for data science you will rarely hit practical limits.
+
+### Division always produces a float
+
+```python
+result = 10 / 2
+print(result)           # Output: 5.0 — not 5!
+print(type(result))     # Output: <class 'float'>
+```
+
+This trips up developers coming from Python 2, where `10 / 2` was `5` (integer division). In Python 3, use `//` for integer division.
 
 ---
 
-## 🔣 Floats (`float`)
+## Floats (`float`)
 
-Floats represent **decimal numbers**.
+Floats represent decimal numbers. Internally they use IEEE 754 double precision — 64 bits.
 
 ```python
-# Float examples
-price = 19.99
+item_price = 19.99
 pi = 3.14159265358979
-temperature = -273.15
-scientific = 6.022e23        # 6.022 × 10^23 (scientific notation)
-small = 1.5e-10              # 1.5 × 10^-10
+avogadro = 6.022e23        # scientific notation: 6.022 × 10^23
+planck = 6.626e-34
 
-print(type(price))           # <class 'float'>
+print(type(item_price))    # Output: <class 'float'>
 ```
 
-### ⚠️ Floating Point Precision Warning
+### The floating point precision trap
 
-This is a classic gotcha that trips up beginners:
+This surprises almost every programmer at some point:
 
 ```python
 print(0.1 + 0.2)
+# Output: 0.30000000000000004
 # Expected: 0.3
-# Actual:   0.30000000000000004
 ```
 
-**Why?** Computers store numbers in binary. `0.1` cannot be represented exactly in binary, similar to how `1/3 = 0.333...` cannot be written exactly in decimal.
-
-**Solutions:**
+The cause: `0.1` cannot be represented exactly in binary floating point, just as `1/3` cannot be represented exactly in decimal. The error accumulates during addition.
 
 ```python
 # Option 1: Round for display
 result = 0.1 + 0.2
-print(round(result, 2))      # 0.3
+print(round(result, 2))                         # Output: 0.3
 
-# Option 2: Use decimal module for financial calculations
+# Option 2: Use the decimal module for financial calculations
 from decimal import Decimal
-print(Decimal("0.1") + Decimal("0.2"))  # 0.3  — exact!
+print(Decimal("0.1") + Decimal("0.2"))          # Output: 0.3  — exact
 
-# Option 3: Compare with tolerance (in practice)
-a = 0.1 + 0.2
-b = 0.3
-print(abs(a - b) < 1e-9)     # True — "close enough"
+# Option 3: Compare with tolerance (standard in scientific code)
+import math
+print(math.isclose(0.1 + 0.2, 0.3))            # Output: True
 ```
 
-> **In Data Science:** Pandas and NumPy handle float precision gracefully for most tasks. Just be aware of this when doing financial math.
+> [!warning]
+> Never use `==` to compare two floats. `0.1 + 0.2 == 0.3` is `False`. Use `math.isclose()` or check `abs(a - b) < 1e-9`. In production financial code I have seen this cause incorrect account balances accumulate over millions of transactions.
 
 ---
 
-## 📝 Strings (`str`)
+## Strings (`str`)
 
-Strings are **sequences of characters** — any text.
-
-```python
-# Creating strings — single, double, or triple quotes
-name = "Alice"
-city = 'New York'
-message = """This is a
-multi-line
-string."""
-
-# Strings are immutable — you can't change characters in place
-greeting = "Hello"
-# greeting[0] = "J"  # This would raise an error!
-```
-
-### String Operations
+Strings are sequences of Unicode characters. They are immutable — you cannot change a character in place, you create a new string.
 
 ```python
-first = "Data"
-second = "Science"
-
-# Concatenation
-combined = first + " " + second
-print(combined)                     # "Data Science"
-
-# Repetition
-line = "-" * 20
-print(line)                         # "--------------------"
-
-# Length
-print(len("Hello"))                 # 5
-
-# Indexing (0-based!)
-word = "Python"
-print(word[0])                      # 'P'
-print(word[5])                      # 'n'
-print(word[-1])                     # 'n' (last character)
-print(word[-2])                     # 'o' (second to last)
-
-# Slicing [start:stop:step]
-print(word[0:3])                    # 'Pyt'
-print(word[2:])                     # 'thon'
-print(word[:4])                     # 'Pyth'
-print(word[::2])                    # 'Pto' (every 2nd character)
-print(word[::-1])                   # 'nohtyP' (reversed!)
+# Three quoting styles — same result
+first_name = "Alice"
+last_name = 'Sharma'
+biography = """She is a data scientist
+who specializes in NLP
+and time series analysis."""
 ```
 
-### Essential String Methods
+### Indexing and slicing
 
 ```python
-text = "  Hello, World!  "
+language = "Python"
+#           012345   (positive indices)
+#          -6-5-4-3-2-1  (negative indices)
 
-# Case
-print(text.upper())                 # "  HELLO, WORLD!  "
-print(text.lower())                 # "  hello, world!  "
-print(text.title())                 # "  Hello, World!  "
-print(text.capitalize())            # "  hello, world!  "
-
-# Whitespace
-print(text.strip())                 # "Hello, World!"
-print(text.lstrip())                # "Hello, World!  "
-print(text.rstrip())                # "  Hello, World!"
-
-# Search
-print(text.find("World"))           # 9  (index of first match)
-print("World" in text)              # True
-print(text.count("l"))              # 3
-
-# Replace
-print(text.replace("World", "Python"))  # "  Hello, Python!  "
-
-# Split / Join
-sentence = "apple,banana,cherry"
-fruits = sentence.split(",")        # ['apple', 'banana', 'cherry']
-print(fruits)
-
-joined = " | ".join(fruits)         # 'apple | banana | cherry'
-print(joined)
-
-# Check content
-print("123".isdigit())              # True
-print("abc".isalpha())              # True
-print("abc123".isalnum())           # True
-print("   ".isspace())              # True
+print(language[0])      # Output: P
+print(language[-1])     # Output: n  — last character
+print(language[0:3])    # Output: Pyt  — stop index is exclusive
+print(language[2:])     # Output: thon
+print(language[::-1])   # Output: nohtyP  — reversed
 ```
 
-### String Formatting — The Modern Way (f-strings)
+### Essential string methods
 
 ```python
-name = "Alice"
-age = 30
-score = 95.678
+raw_input = "  Alice Sharma, Data Scientist  "
 
-# f-string (Python 3.6+) — RECOMMENDED
-print(f"Name: {name}, Age: {age}")           # Name: Alice, Age: 30
-print(f"Score: {score:.2f}")                  # Score: 95.68
-print(f"Score: {score:.0f}%")                 # Score: 96%
-print(f"{name!upper}")                        # ALICE — calling method inside f-string
+# Cleaning
+print(raw_input.strip())                    # Output: Alice Sharma, Data Scientist
+print(raw_input.lower())                    # Output:   alice sharma, data scientist
+print(raw_input.upper())                    # Output:   ALICE SHARMA, DATA SCIENTIST
 
-# Padding and alignment
-print(f"{'Left':<10}|")                       # "Left      |"
-print(f"{'Right':>10}|")                      # "     Right|"
-print(f"{'Center':^10}|")                     # "  Center  |"
+# Searching
+print("Sharma" in raw_input)               # Output: True
+print(raw_input.find("Data"))              # Output: 16  (index of match, -1 if not found)
+print(raw_input.count("a"))                # Output: 4
 
-# Thousands separator
-big_number = 1234567.89
-print(f"{big_number:,.2f}")                   # 1,234,567.89
+# Replacing and splitting
+clean = raw_input.strip()
+print(clean.replace("Data Scientist", "ML Engineer"))
+# Output: Alice Sharma, ML Engineer
 
-# Older formatting styles (you'll see these in legacy code)
-print("Name: %s, Age: %d" % (name, age))      # Old style
-print("Name: {}, Age: {}".format(name, age))  # .format() style
+parts = clean.split(", ")
+print(parts)                               # Output: ['Alice Sharma', 'Data Scientist']
+
+# Joining (the inverse of split)
+fields = ["Alice", "30", "Mumbai"]
+csv_row = ",".join(fields)
+print(csv_row)                             # Output: Alice,30,Mumbai
+
+# Validation
+print("42".isdigit())                      # Output: True
+print("hello".isalpha())                   # Output: True
+print("hello42".isalnum())                 # Output: True
 ```
+
+### String formatting — use f-strings
+
+Python has three formatting styles. Use f-strings for all new code.
+
+```python
+customer_name = "Priya"
+order_total = 1234.5678
+item_count = 3
+
+# f-strings (Python 3.6+) — recommended
+print(f"Customer: {customer_name}")                   # Output: Customer: Priya
+print(f"Total: {order_total:.2f}")                    # Output: Total: 1234.57
+print(f"Items: {item_count:04d}")                     # Output: Items: 0003
+print(f"Revenue: {order_total:,.2f}")                 # Output: Revenue: 1,234.57
+
+# Alignment — useful for tabular output
+print(f"{'Name':<15} {'Score':>8}")
+print(f"{'Alice':<15} {85:>8}")
+print(f"{'Bob':<15} {92:>8}")
+# Output:
+# Name                Score
+# Alice                  85
+# Bob                    92
+
+# Expressions inside f-strings
+radius = 5
+print(f"Area: {3.14159 * radius ** 2:.1f}")           # Output: Area: 78.5
+
+# Older styles — you will encounter these in existing code
+print("Customer: %s, Total: %.2f" % (customer_name, order_total))
+print("Customer: {}, Total: {:.2f}".format(customer_name, order_total))
+```
+
+> [!info]
+> f-strings are not just more readable — they are also faster than `.format()` and `%` formatting at runtime. They also catch missing variable names at parse time rather than runtime, which surfaces bugs earlier.
 
 ---
 
-## ✅ Booleans (`bool`)
+## Booleans (`bool`)
 
-Booleans have exactly **two possible values**: `True` or `False`.
+Booleans have exactly two values: `True` and `False`. They are a subtype of `int` — `True` equals `1` and `False` equals `0`.
 
 ```python
-is_raining = True
-is_sunny = False
+is_active = True
+has_missing_data = False
 
-print(type(is_raining))            # <class 'bool'>
-print(True + True)                 # 2 (True = 1, False = 0 in arithmetic)
-print(True * 5)                    # 5
-print(False * 100)                 # 0
+print(type(is_active))          # Output: <class 'bool'>
+print(True + True)              # Output: 2  — Booleans are ints
+print(True * 100)               # Output: 100
+print(sum([True, False, True, True]))  # Output: 3 — count of True values
 ```
 
-### Boolean Operators
+### Boolean operators
 
 ```python
 # and — both must be True
-print(True and True)               # True
-print(True and False)              # False
-print(False and True)              # False
+print(True and True)             # Output: True
+print(True and False)            # Output: False
 
 # or — at least one must be True
-print(True or False)               # True
-print(False or False)              # False
+print(True or False)             # Output: True
+print(False or False)            # Output: False
 
 # not — inverts
-print(not True)                    # False
-print(not False)                   # True
+print(not True)                  # Output: False
+print(not False)                 # Output: True
 ```
 
-### Comparison Operators (return booleans)
+### Comparison operators return booleans
 
 ```python
-x = 10
-y = 20
+revenue = 85000
+target = 100000
 
-print(x == y)      # False  — equal to
-print(x != y)      # True   — not equal to
-print(x < y)       # True   — less than
-print(x > y)       # False  — greater than
-print(x <= y)      # True   — less than or equal
-print(x >= y)      # False  — greater than or equal
+print(revenue == target)         # Output: False
+print(revenue != target)         # Output: True
+print(revenue < target)          # Output: True
+print(revenue >= target)         # Output: False
 
-# Chaining comparisons (Pythonic!)
-age = 25
-print(18 <= age <= 65)             # True — age is between 18 and 65
+# Chained comparisons — very Pythonic
+age = 34
+print(18 <= age <= 65)           # Output: True — is age in working-age range?
+
+# Combining comparisons
+score = 87
+attendance = 80
+passed = score >= 60 and attendance >= 75
+print(passed)                    # Output: True
 ```
 
-### Truthy and Falsy Values
+### Truthy and falsy values
 
-In Python, non-boolean values are evaluated as `True` or `False` in a boolean context:
+Python evaluates any value as `True` or `False` in a boolean context. Understanding this makes your conditionals cleaner.
 
 ```python
-# These are FALSY (evaluate to False)
-bool(0)            # False
-bool(0.0)          # False
-bool("")           # False — empty string
-bool([])           # False — empty list
-bool({})           # False — empty dict
-bool(None)         # False
+# Falsy — these all evaluate to False in an if/while condition
+bool(0)         # False
+bool(0.0)       # False
+bool("")        # False — empty string
+bool([])        # False — empty list
+bool({})        # False — empty dict
+bool(set())     # False — empty set
+bool(None)      # False
 
-# Everything else is TRUTHY
-bool(1)            # True
-bool(-1)           # True
-bool("hello")      # True
-bool([1, 2, 3])    # True
+# Everything else is truthy
+bool(1)         # True
+bool(-0.1)      # True — any nonzero number
+bool("x")       # True — any nonempty string
+bool([0])       # True — a list with one element (even if that element is falsy!)
 ```
 
-**Real-world use:**
 ```python
-user_name = ""   # came from a form
+# Practical use — check for empty results before processing
+def get_top_customers(threshold=1000):
+    # Imagine this queries a database
+    results = []   # empty for now
+    return results
 
-if user_name:
-    print(f"Hello, {user_name}!")
+customers = get_top_customers()
+
+if customers:
+    print(f"Processing {len(customers)} customers")
 else:
-    print("Please enter your name.")   # This runs — empty string is falsy
+    print("No customers above threshold — check your filter")
+# Output: No customers above threshold — check your filter
 ```
+
+> [!tip]
+> In data pipelines, checking `if df.empty:` or `if not results:` before processing prevents downstream errors on empty datasets. Make it a habit.
 
 ---
 
-## 🚫 None (`NoneType`)
+## None (`NoneType`)
 
-`None` represents the **absence of a value** — like "nothing" or "missing".
+`None` represents the absence of a value. It is Python's equivalent of "nothing here," "missing," or "not yet set."
 
 ```python
-result = None
+prediction_result = None    # model has not been run yet
 
-print(result)                      # None
-print(type(result))                # <class 'NoneType'>
-
-# CORRECT way to check for None
-if result is None:
-    print("No result yet")
-
-# Also correct
-if result is not None:
-    print(f"Result: {result}")
-
-# AVOID (but works)
-if result == None:
-    print("No result")
+print(prediction_result)     # Output: None
+print(type(prediction_result))  # Output: <class 'NoneType'>
 ```
 
-> **In Data Science:** `None` is the Python equivalent of `NaN` (Not a Number) in Pandas. Missing values in datasets are often represented as `None` before loading into a DataFrame.
+### How to check for None
+
+```python
+# Correct — use `is`, not `==`
+if prediction_result is None:
+    print("Model has not run yet")
+
+if prediction_result is not None:
+    print(f"Prediction: {prediction_result}")
+
+# This also works but is less Pythonic
+if prediction_result == None:
+    print("Model has not run yet")
+```
+
+> [!warning]
+> Use `is None` rather than `== None`. The `is` operator checks object identity, which is guaranteed to work correctly for `None`. The `==` operator can be overridden by custom classes to return unexpected results.
+
+> [!info]
+> In Pandas, missing values are represented as `NaN` (Not a Number) — a float value from the NumPy library. When you load data from CSV files, `None` in your Python code often becomes `NaN` in a DataFrame. They are related but not identical — `None` is a Python singleton, `NaN` is a special float value.
 
 ---
 
-## 🔄 Type Conversion
+## Type Conversion
 
-Python lets you convert between types using built-in functions:
+Python provides built-in functions to convert between types.
 
 ```python
-# To integer
-int("42")              # 42
-int(3.9)               # 3 — truncates (does NOT round)
-int(True)              # 1
-int(False)             # 0
+# String to number — common when reading CSV data
+row_value = "42"
+count = int(row_value)         # Output: 42
+print(type(count))             # Output: <class 'int'>
 
-# To float
-float("3.14")          # 3.14
-float(42)              # 42.0
-float("1e5")           # 100000.0
+price_str = "19.99"
+price = float(price_str)       # Output: 19.99
 
-# To string
-str(42)                # "42"
-str(3.14)              # "3.14"
-str(True)              # "True"
+# Number to string
+record_id = 1001
+id_str = str(record_id)        # Output: "1001"
+print("Record: " + id_str)     # Output: Record: 1001  — concatenation needs strings
 
-# To boolean
-bool(1)                # True
-bool(0)                # False
-bool("hello")          # True
-bool("")               # False
+# int() truncates, it does not round
+print(int(3.9))                # Output: 3  — not 4!
+print(int(-3.9))               # Output: -3  — not -4!
+
+# Boolean conversions
+print(int(True))               # Output: 1
+print(int(False))              # Output: 0
+print(bool(0))                 # Output: False
+print(bool(""))                # Output: False
+print(bool("False"))           # Output: True  — nonempty string!
 ```
 
-### Type Conversion Errors
+### Handling conversion failures
 
 ```python
-# These will raise ValueError
-int("hello")           # ValueError: invalid literal for int()
-float("abc")           # ValueError: could not convert string to float
+# These raise ValueError
+# int("hello")      # ValueError: invalid literal for int()
+# float("N/A")      # ValueError: could not convert string to float
 
-# Safe conversion pattern
-def safe_int(value):
+# Safe conversion pattern — use this in data cleaning code
+def to_float(value, default=None):
+    """Convert a value to float, returning default if conversion fails."""
     try:
-        return int(value)
+        return float(value)
     except (ValueError, TypeError):
-        return None
+        return default
 
-print(safe_int("42"))       # 42
-print(safe_int("hello"))    # None
+# Cleaning messy data from a spreadsheet
+raw_values = ["19.99", "N/A", "25.00", "", "invalid", "30.50"]
+clean_prices = [to_float(v, default=0.0) for v in raw_values]
+print(clean_prices)
+# Output: [19.99, 0.0, 25.0, 0.0, 0.0, 30.5]
+```
+
+> [!warning]
+> `int("3.14")` raises a `ValueError` — Python will not convert a float-looking string directly to int. You need `int(float("3.14"))`. This comes up frequently when parsing CSV data where numbers have decimal points.
+
+---
+
+## Checking Types
+
+```python
+age = 34
+score = 87.5
+name = "Alice"
+is_active = True
+
+# type() — returns the exact type
+print(type(age))              # Output: <class 'int'>
+print(type(score))            # Output: <class 'float'>
+print(type(name))             # Output: <class 'str'>
+
+# isinstance() — preferred, handles inheritance
+print(isinstance(age, int))         # Output: True
+print(isinstance(score, float))     # Output: True
+print(isinstance(name, str))        # Output: True
+
+# isinstance checks inheritance — bool is a subclass of int
+print(isinstance(is_active, bool))  # Output: True
+print(isinstance(is_active, int))   # Output: True  — bool IS an int
+
+# Use isinstance when you want to accept multiple types
+def process_value(value):
+    if isinstance(value, (int, float)):
+        return value * 2
+    elif isinstance(value, str):
+        return value.upper()
+    else:
+        raise TypeError(f"Cannot process type: {type(value).__name__}")
+
+print(process_value(21))          # Output: 42
+print(process_value(3.14))        # Output: 6.28
+print(process_value("hello"))     # Output: HELLO
 ```
 
 ---
 
-## 🔍 Checking Types with `type()` and `isinstance()`
+## Dynamic Typing
+
+Python is dynamically typed — the type is attached to the value, not the variable name. The same name can point to different types at different times.
 
 ```python
-x = 42
-y = 3.14
-z = "hello"
-a = True
+result = 42
+print(type(result))     # Output: <class 'int'>
 
-# type() — exact type
-print(type(x))                     # <class 'int'>
-print(type(y))                     # <class 'float'>
-print(type(z))                     # <class 'str'>
+result = "forty-two"
+print(type(result))     # Output: <class 'str'>
 
-# type comparison
-print(type(x) == int)              # True
-print(type(x) == float)            # False
-
-# isinstance() — recommended, handles inheritance
-print(isinstance(x, int))          # True
-print(isinstance(y, float))        # True
-print(isinstance(z, str))          # True
-print(isinstance(a, bool))         # True
-print(isinstance(a, int))          # True! (bool is a subclass of int)
+result = [4, 2]
+print(type(result))     # Output: <class 'list'>
 ```
+
+This is convenient during exploration but can cause subtle bugs in production code. Python 3.5+ added optional type hints to address this:
+
+```python
+def calculate_discount(price: float, rate: float) -> float:
+    """Return the discounted price."""
+    return price * (1 - rate)
+
+# Type hints are not enforced at runtime — they are documentation and tooling hints
+result = calculate_discount(100.0, 0.2)
+print(result)    # Output: 80.0
+```
+
+> [!tip]
+> Add type hints to any function you write in a production codebase. They do not change runtime behavior, but they let editors warn you about type mismatches before you run the code.
 
 ---
 
-## 🔄 Dynamic Typing — Python's Superpower
-
-Python is **dynamically typed** — variables can change types:
+## Multiple Assignment and Unpacking
 
 ```python
-x = 42           # x is int
-print(type(x))   # <class 'int'>
-
-x = "hello"      # x is now str (no error!)
-print(type(x))   # <class 'str'>
-
-x = [1, 2, 3]   # x is now list
-print(type(x))   # <class 'list'>
-```
-
-Compare to **Java** (statically typed):
-```java
-int x = 42;
-x = "hello";    // ERROR! You declared x as int
-```
-
-> **In Data Science:** Dynamic typing is convenient for exploration, but can cause bugs in production. Always validate input types when writing reusable functions.
-
----
-
-## 🧪 Multiple Assignment & Swapping
-
-```python
-# Assign multiple variables at once
+# Assign multiple variables in one line
 x, y, z = 1, 2, 3
-print(x, y, z)             # 1 2 3
+print(x, y, z)               # Output: 1 2 3
 
-# Assign same value to multiple variables
-a = b = c = 0
-print(a, b, c)             # 0 0 0
+# Assign the same value to multiple variables
+minimum = maximum = 0
+print(minimum, maximum)      # Output: 0 0
 
-# Swap values — Pythonic one-liner!
-x, y = 10, 20
-x, y = y, x
-print(x, y)                # 20 10
+# Swap without a temporary variable
+latitude = 40.7128
+longitude = -74.0060
+latitude, longitude = longitude, latitude    # swap
+print(latitude, longitude)   # Output: -74.006 40.7128
 
-# Unpack from a list
-coordinates = [40.7128, -74.0060]   # NYC
+# Unpack from a list or tuple
+coordinates = (48.8566, 2.3522)    # Paris
 lat, lon = coordinates
-print(lat, lon)             # 40.7128 -74.006
+print(f"Paris — lat: {lat}, lon: {lon}")
+# Output: Paris — lat: 48.8566, lon: 2.3522
+
+# Extended unpacking with *
+first, *rest = [10, 20, 30, 40, 50]
+print(first)    # Output: 10
+print(rest)     # Output: [20, 30, 40, 50]
+
+head, *middle, tail = [10, 20, 30, 40, 50]
+print(head, middle, tail)    # Output: 10 [20, 30, 40] 50
 ```
 
 ---
 
-## 📊 Data Types in Data Science — Quick Reference
+## Data Types in Data Science — Reference
 
-| Type | Python | Pandas | Use Case |
-|------|--------|--------|----------|
-| Whole numbers | `int` | `int64` | Counts, IDs, ages |
-| Decimals | `float` | `float64` | Prices, measurements, probabilities |
-| Text | `str` | `object` | Names, categories, text data |
-| Yes/No | `bool` | `bool` | Flags, binary features |
-| Missing | `None` | `NaN` | Missing values |
-
----
-
-## ✅ Key Takeaways
-
-- Variables are **named containers** for values — choose descriptive names
-- Python has 4 main scalar types: **int, float, str, bool**
-- **None** represents the absence of a value (important in Data Science!)
-- Python is **dynamically typed** — variables can change types
-- Use **f-strings** for string formatting (modern, readable, fast)
-- Watch out for **floating point precision** in financial calculations
-- `isinstance()` is preferred over `type()` for type checking
+| Python type | Pandas dtype | Typical use |
+|-------------|-------------|-------------|
+| `int` | `int64` | Counts, IDs, ages, years |
+| `float` | `float64` | Prices, measurements, probabilities, scores |
+| `str` | `object` | Names, categories, raw text |
+| `bool` | `bool` | Flags, binary features, filter masks |
+| `None` | `NaN` | Missing values before and after loading |
 
 ---
 
-## 🔗 What's Next?
+## Key Takeaways
 
-➡️ [[03-control-flow]] — Make decisions and repeat actions with if/elif/else and loops
+> [!success]
+> - Variables are names bound to objects in memory — assignment does not copy mutable objects
+> - Python has four core scalar types: `int`, `float`, `str`, and `bool`
+> - `None` is the explicit representation of "no value" — check for it with `is None`
+> - Float arithmetic has precision limits — never compare floats with `==`
+> - Use f-strings for all string formatting — they are readable, fast, and catch errors early
+> - `isinstance()` is better than `type()` because it handles inheritance
+> - Python is dynamically typed — add type hints to production functions as documentation
+
+---
+
+[[01-python-introduction]] | [[03-control-flow]]

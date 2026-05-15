@@ -1,42 +1,47 @@
-# 📅 Day 02 — Part 1: NumPy Fundamentals
+# Day 02 — Part 1: NumPy Fundamentals
 ## Agenda & Learning Roadmap
 
-> [!info] Overview
-> Welcome to **Day 2, Part 1** of your Data Science journey! Today we dive deep into **NumPy** — the foundational library that powers almost all scientific computing in Python. By the end of today, you'll think in arrays, not loops.
+> [!info] What You Are Walking Into
+> NumPy is not just a library. It is the memory model, the speed contract, and the coordinate system that every serious numerical tool in Python is built on. Pandas DataFrames sit on NumPy arrays. Scikit-learn models expect NumPy arrays. TensorFlow and PyTorch mimic NumPy's API. The hour you spend truly understanding NumPy pays compound interest for your entire data science career.
 
 ---
 
-## 🗺️ Today's Roadmap
+## Today's Roadmap
 
 ```
 NumPy Fundamentals
 │
 ├── 01 → Introduction to NumPy
-│         Why NumPy? | Installing | Importing | ndarray basics
+│         Why Python lists fail at scale | The ndarray concept
+│         Memory layout | dtype system and why it matters
 │
 ├── 02 → Array Creation
-│         np.array | np.zeros | np.ones | np.arange | np.linspace
-│         np.random | np.eye | np.full
+│         np.array | zeros/ones/full | arange vs linspace (when each)
+│         Random module | eye/diag | zeros_like | reshape
 │
 ├── 03 → Indexing & Slicing
-│         1D | 2D | 3D | Boolean indexing | Fancy indexing
+│         1D / 2D / 3D indexing | Negative indices | Step slicing
+│         Boolean indexing (the workhorse) | Fancy indexing | np.where
+│         Views vs Copies — the silent bug factory
 │
 ├── 04 → Vectorization
-│         Element-wise ops | Universal Functions (ufuncs) | Performance
+│         For-loop vs vectorized timing | Universal functions (ufuncs)
+│         Axis-wise aggregation | Why it is fast (SIMD, cache locality)
 │
 ├── 05 → Broadcasting
-│         Rules | Shape alignment | Real-world use cases
+│         The 3 rules | Visual intuition | Row and column broadcasting
+│         Practical patterns | Shape errors and how to read them
 │
 ├── 06 → Exercises
-│         Hands-on practice problems with solutions
+│         Warm-up → Main → Stretch — realistic data science problems
 │
 └── 07 → Cheat Sheet
-          Quick-reference for everything covered today
+          Dense quick-reference with code for every operation
 ```
 
 ---
 
-## ⏱️ Time Allocation
+## Time Allocation
 
 | # | Topic | Duration | Type |
 |---|-------|----------|------|
@@ -52,64 +57,61 @@ NumPy Fundamentals
 
 ---
 
-## 🎯 Learning Objectives
+## Learning Objectives
 
 By the end of this session, you will be able to:
 
-- [ ] Explain what NumPy is and why it's faster than plain Python
-- [ ] Create arrays using 8+ different NumPy functions
-- [ ] Access and modify array elements using indexing and slicing
-- [ ] Apply vectorized operations instead of writing for-loops
-- [ ] Use broadcasting to operate on arrays of different shapes
-- [ ] Write clean, efficient NumPy code confidently
+- Explain why NumPy arrays are faster than Python lists and what makes that possible at the hardware level
+- Create arrays using the right function for the situation — not just the one you remember first
+- Access and modify array data using indexing, slicing, boolean masks, and fancy indexing
+- Predict whether an operation will return a view or a copy, and explain why this matters
+- Replace explicit for-loops with vectorized operations and measure the speedup
+- Apply broadcasting to operate on differently-shaped arrays without writing extra code
+- Read a broadcasting error message and fix the shape mismatch
 
 ---
 
-## 🔧 Prerequisites
+## Prerequisites
 
-- [ ] Python basics (variables, lists, loops, functions)
-- [ ] Anaconda / pip installed
-- [ ] Jupyter Notebook or VS Code with Python extension
+- Python basics: variables, lists, loops, functions
+- Python installed with NumPy (`pip install numpy` or `conda install numpy`)
+- A way to run code: Jupyter Notebook, VS Code, or a Python script
 
 ---
 
-## 📦 Setup Check
+## Setup Check
 
-Run this in your terminal to verify NumPy is installed:
+Run this before the session:
 
 ```python
 import numpy as np
-print(np.__version__)  # Should print 1.24+ or higher
+print(np.__version__)  # 1.24 or higher is fine
 ```
 
-> [!tip] First Time?
-> If NumPy isn't installed: `pip install numpy` or `conda install numpy`
+> [!tip] Version Note
+> NumPy 1.24+ and 2.x are both fine for everything in these notes. The `np.random.default_rng()` API used here requires 1.17+.
 
 ---
 
-## 📚 Files In This Module
+## Files In This Module
 
 | File | Topic |
 |------|-------|
-| `01-introduction-to-numpy.md` | What is NumPy, ndarray, memory model |
-| `02-array-creation.md` | All the ways to create arrays |
-| `03-indexing-and-slicing.md` | Accessing & modifying array data |
-| `04-vectorization.md` | Fast math without loops |
-| `05-broadcasting.md` | Operating on different-shaped arrays |
-| `06-numpy-exercises.md` | Practice problems with solutions |
-| `07-cheat-sheet.md` | Quick reference card |
+| `01-introduction-to-numpy.md` | Why NumPy, the ndarray, memory layout, dtype |
+| `02-array-creation.md` | Every way to build arrays, when to use each |
+| `03-indexing-and-slicing.md` | Accessing data, views vs copies, boolean indexing |
+| `04-vectorization.md` | Fast math without loops, ufuncs, axis operations |
+| `05-broadcasting.md` | Operating on different-shaped arrays with visual intuition |
+| `06-numpy-exercises.md` | Practice problems — warm-up, main, stretch |
+| `07-cheat-sheet.md` | Dense quick-reference |
 
 ---
 
-## 💡 How to Use These Notes
+## How to Use These Notes
 
-> [!example] Study Strategy
-> 1. Read the lecture notes **actively** — type every code example yourself
-> 2. Don't copy-paste! Muscle memory matters in coding
-> 3. After each section, close the notes and try to recall the key ideas
-> 4. Do the exercises **before** looking at solutions
-> 5. Keep the cheat sheet open during practice
+> [!tip] Study Strategy
+> Type every code example yourself — do not paste. The mistakes you make while typing teach you more than reading does. After each section, close the notes and try to reproduce the key ideas from memory. Do the exercises before checking solutions. Struggling for ten minutes before looking at the answer is worth more than reading it cold.
 
 ---
 
-*Let's build your NumPy foundation! 🚀*
+[[01-introduction-to-numpy]]

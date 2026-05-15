@@ -1,463 +1,499 @@
-# 🧪 06 – Mini Exercises: Advanced Python
+# Mini Exercises: Advanced Python
 
-> **Prerequisites:** [[01-oop-basics]], [[02-file-handling]], [[03-modules-and-packages]], [[04-exception-handling]], [[05-python-best-practices]]  
-> **Time to complete:** ~30 minutes
+Work through these in order. Each one is small enough to finish in a few minutes, but each one practices a pattern you will reuse constantly in real data science work.
 
----
+**Prerequisites:** [[01-oop-basics]], [[02-file-handling]], [[03-modules-and-packages]], [[04-exception-handling]], [[05-python-best-practices]]
 
-## 🎯 Goal
+**Time:** ~30 minutes for warm-up and main problems, ~45 minutes with stretch goals.
 
-Practice the skills from Day 01 Part 2 by solving small, realistic problems that combine:
-
-- classes and objects
-- file reading and writing
-- modules from the standard library
-- exception handling
-- clean, Pythonic code
-
-Work through these in order. Each exercise is intentionally small, but each one mirrors a pattern you will reuse in Data Science projects.
+> [!tip]
+> Type the code yourself — do not copy-paste. The friction of typing is part of learning. Run each solution before moving on.
 
 ---
 
-## Exercise 1 – Student Class
+## Exercise 1 — Student Grade Tracker (OOP Warm-up)
 
-Create a `Student` class with:
+**Topic:** Classes, instance methods, `__repr__`
 
-- `name`
-- `scores`
-- `average()` method
-- `grade()` method
+Create a `Student` class that:
 
-### Requirements
-
-- `average()` should return the mean score.
-- `grade()` should return:
-  - `"A"` for average >= 90
-  - `"B"` for average >= 80
-  - `"C"` for average >= 70
-  - `"D"` for average >= 60
-  - `"F"` otherwise
+- Stores `name` and a list of `scores`
+- Has an `average()` method returning the mean score
+- Has a `grade()` method returning `"A"` / `"B"` / `"C"` / `"D"` / `"F"` based on the average
+- Has a `__repr__` that shows the student's name and grade
 
 ### Starter Code
 
 ```python
 class Student:
-    def __init__(self, name, scores):
+    def __init__(self, name: str, scores: list[float]):
         self.name = name
         self.scores = scores
 
-    def average(self):
+    def average(self) -> float:
+        # your code here
         pass
 
-    def grade(self):
+    def grade(self) -> str:
+        # your code here
+        pass
+
+    def __repr__(self) -> str:
+        # your code here
         pass
 
 
-student = Student("Alice", [88, 92, 79])
-print(student.average())
-print(student.grade())
+alice = Student("Alice", [88, 92, 79, 95])
+bob = Student("Bob", [55, 62, 48, 70])
+
+print(alice.average())
+print(alice.grade())
+print(repr(alice))
 ```
 
 ### Expected Output
 
-```text
-86.33333333333333
+```
+88.5
 B
-```
-
-### Hint
-
-Use `sum()` and `len()`.
-
----
-
-## Exercise 2 – Safe Number Parser
-
-Write a function called `safe_float(value)` that converts a value to `float`.
-
-### Requirements
-
-- Return the converted number if conversion succeeds.
-- Return `None` if conversion fails.
-- Handle both `ValueError` and `TypeError`.
-
-### Example
-
-```python
-values = ["10.5", "42", "bad", None, "7.25"]
-
-clean_values = []
-for value in values:
-    number = safe_float(value)
-    if number is not None:
-        clean_values.append(number)
-
-print(clean_values)
-```
-
-### Expected Output
-
-```text
-[10.5, 42.0, 7.25]
-```
-
-### Hint
-
-```python
-try:
-    ...
-except (ValueError, TypeError):
-    ...
-```
-
----
-
-## Exercise 3 – Read and Summarize CSV Data
-
-Create a file called `sales.csv` with this content:
-
-```csv
-product,quantity,price
-Laptop,2,75000
-Mouse,5,600
-Keyboard,3,1200
-Monitor,2,15000
-```
-
-Write a Python script that:
-
-- reads the CSV file
-- calculates `total = quantity * price` for each row
-- prints each product and its total
-- prints the grand total
-
-### Expected Output
-
-```text
-Laptop: 150000
-Mouse: 3000
-Keyboard: 3600
-Monitor: 30000
-Grand Total: 186600
-```
-
-### Starter Code
-
-```python
-import csv
-
-grand_total = 0
-
-with open("sales.csv", "r", newline="") as file:
-    reader = csv.DictReader(file)
-
-    for row in reader:
-        quantity = int(row["quantity"])
-        price = float(row["price"])
-        total = quantity * price
-        grand_total += total
-        print(f"{row['product']}: {total:g}")
-
-print(f"Grand Total: {grand_total:g}")
+Student('Alice', grade=B)
 ```
 
 ### Stretch Goal
 
-Handle bad rows gracefully. If `quantity` or `price` cannot be converted, skip the row and print a warning.
+Add a `top_score()` and `needs_improvement()` method (returns `True` if any individual score is below 60). Test with `bob`.
 
 ---
 
-## Exercise 4 – JSON Configuration Loader
+## Exercise 2 — Safe Data Parser (Exception Handling Warm-up)
 
-Create a JSON file called `config.json`:
+**Topic:** `try / except`, returning `None` on failure
+
+Write a function `safe_parse_record(raw: dict) -> dict | None` that:
+
+- Converts `name` to a stripped, title-cased string
+- Converts `age` to `int`
+- Converts `salary` to `float`
+- Returns `None` if any field is missing or cannot be converted
+- Does not crash on any input
+
+### Starter Code
+
+```python
+def safe_parse_record(raw: dict) -> dict | None:
+    # your code here
+    pass
+
+
+records = [
+    {"name": "  alice  ", "age": "31", "salary": "72000"},
+    {"name": "BOB", "age": "not available", "salary": "55000"},
+    {"name": "carol", "salary": "88000"},  # missing age
+    {"name": "", "age": "28", "salary": "-500"},  # empty name
+]
+
+for rec in records:
+    result = safe_parse_record(rec)
+    print(result)
+```
+
+### Expected Output
+
+```
+{'name': 'Alice', 'age': 31, 'salary': 72000.0}
+None
+None
+{'name': '', 'age': 28, 'salary': -500.0}
+```
+
+> [!info]
+> The empty name case still parses successfully — the function does not validate business rules, it only converts types. Validation is a separate concern.
+
+### Stretch Goal
+
+Modify the function to also return an error reason when it fails:
+
+```python
+result, error = safe_parse_record(rec)
+# ("{'name': ...}", None) on success
+# (None, "Cannot convert age: invalid literal...") on failure
+```
+
+---
+
+## Exercise 3 — CSV Revenue Calculator (File Handling)
+
+**Topic:** `csv.DictReader`, type conversion, accumulation
+
+Create `sales.csv` with this content:
+
+```csv
+product,quantity,unit_price
+Laptop,12,75000
+Monitor,8,15000
+Keyboard,25,1200
+Mouse,40,600
+Headset,invalid,3500
+,15,2000
+```
+
+Write a script that:
+
+1. Reads the CSV
+2. Computes `revenue = quantity * unit_price` for each valid row
+3. Prints each product and its revenue
+4. Skips invalid rows with a warning message
+5. Prints the total revenue at the end
+
+### Expected Output
+
+```
+Laptop: 900,000
+Monitor: 120,000
+Keyboard: 30,000
+Mouse: 24,000
+Warning: Skipping row — cannot parse 'quantity': invalid literal for int() with base 10: 'invalid'
+Warning: Skipping row — cannot parse 'product': empty product name
+Total Revenue: 1,074,000
+```
+
+### Stretch Goal
+
+Save the valid rows (with a `revenue` column added) to `sales_with_revenue.csv`.
+
+---
+
+## Exercise 4 — JSON Config Loader (File Handling + Exception Handling)
+
+**Topic:** `json.load`, `FileNotFoundError`, `json.JSONDecodeError`
+
+Write a function `load_model_config(path: str) -> dict` that:
+
+- Loads and returns a JSON config file
+- Raises a clear `FileNotFoundError` if the file does not exist
+- Raises a clear `ValueError` if the JSON is malformed
+- Validates that `"model_type"` and `"target_column"` keys are present, raising `KeyError` if either is missing
+
+### Config File
+
+Create `model_config.json`:
 
 ```json
 {
-  "dataset_path": "data/customers.csv",
-  "model_name": "linear_regression",
+  "model_type": "random_forest",
+  "target_column": "churn",
   "test_size": 0.2,
-  "random_state": 42
+  "random_state": 42,
+  "feature_columns": ["age", "tenure", "monthly_charges"]
 }
 ```
-
-Write a function `load_config(path)` that:
-
-- opens the JSON file
-- returns the config as a dictionary
-- raises a clear error message if the file does not exist
-- raises a clear error message if the JSON is invalid
 
 ### Starter Code
 
 ```python
 import json
+from pathlib import Path
 
 
-def load_config(path):
-    try:
-        with open(path, "r") as file:
-            return json.load(file)
-    except FileNotFoundError:
-        raise FileNotFoundError(f"Config file not found: {path}")
-    except json.JSONDecodeError as error:
-        raise ValueError(f"Invalid JSON in config file: {error}")
+def load_model_config(path: str) -> dict:
+    # your code here
+    pass
 
 
-config = load_config("config.json")
-print(config["model_name"])
+# Test 1: valid config
+config = load_model_config("model_config.json")
+print(config["model_type"])
+print(config["feature_columns"])
+
+# Test 2: missing file
+try:
+    load_model_config("nonexistent.json")
+except FileNotFoundError as e:
+    print(f"Caught: {e}")
 ```
 
 ### Expected Output
 
-```text
-linear_regression
+```
+random_forest
+['age', 'tenure', 'monthly_charges']
+Caught: Config file not found: nonexistent.json
 ```
 
 ---
 
-## Exercise 5 – Build a Reusable Utility Module
+## Exercise 5 — Utility Module (Modules + Pythonic Code)
 
-Create a file called `data_utils.py` with these functions:
+**Topic:** Creating a module, `if __name__ == "__main__"`
 
-- `calculate_mean(values)`
-- `calculate_min(values)`
-- `calculate_max(values)`
-- `remove_missing(values)`
-
-Then create another file called `main.py` that imports and uses these functions.
-
-### Example
+Create a file called `stats_utils.py` with these functions:
 
 ```python
-# data_utils.py
+def remove_nulls(values: list) -> list:
+    """Remove None values from a list."""
+    ...
 
-def remove_missing(values):
-    return [value for value in values if value is not None]
+def mean(values: list) -> float | None:
+    """Return arithmetic mean, ignoring None values. Return None if empty."""
+    ...
 
+def variance(values: list) -> float | None:
+    """Return population variance, ignoring None values. Return None if fewer than 2 values."""
+    ...
 
-def calculate_mean(values):
-    values = remove_missing(values)
-    if not values:
-        return None
-    return sum(values) / len(values)
-
-
-def calculate_min(values):
-    values = remove_missing(values)
-    return min(values) if values else None
-
-
-def calculate_max(values):
-    values = remove_missing(values)
-    return max(values) if values else None
+def normalize(values: list) -> list:
+    """Min-max normalize to [0, 1]. Return original if all values are equal."""
+    ...
 ```
 
+Include `if __name__ == "__main__":` with test cases.
+
+Then create `main.py` that imports and uses these functions:
+
 ```python
-# main.py
+from stats_utils import mean, variance, normalize
 
-from data_utils import calculate_mean, calculate_min, calculate_max
+exam_scores = [88, None, 92, 78, None, 95, 85, None, 70]
 
-scores = [80, 90, None, 75, 100]
-
-print(calculate_mean(scores))
-print(calculate_min(scores))
-print(calculate_max(scores))
+print(f"Mean: {mean(exam_scores):.2f}")
+print(f"Variance: {variance(exam_scores):.2f}")
+print(f"Normalized: {normalize([s for s in exam_scores if s is not None])}")
 ```
 
 ### Expected Output
 
-```text
-86.25
-75
-100
 ```
+Mean: 84.67
+Variance: 62.22
+Normalized: [0.727, 1.0, 0.364, 1.0, 0.636, 0.0]
+```
+
+(Values approximate — exact output depends on your implementation.)
 
 ---
 
-## Exercise 6 – Mini Data Validation Class
+## Exercise 6 — Data Validator Class (OOP + Exception Handling)
 
-Create a `DataValidator` class that validates records before they enter a dataset.
+**Topic:** Classes, custom exceptions, validation patterns
+
+Build a `RecordValidator` class that validates employee records.
 
 ### Requirements
 
-Each record is a dictionary:
+Each record is a dict: `{"name": str, "age": int, "department": str, "salary": float}`
 
-```python
-{"name": "Alice", "age": 25, "salary": 50000}
-```
+The validator must:
 
-The class should check:
+- Check `name` is a non-empty string
+- Check `age` is an int in range 18–70
+- Check `department` is in an allowed list
+- Check `salary` is a positive float
 
-- `name` is present and not empty
-- `age` is an integer between 0 and 120
-- `salary` is a positive number
+Return a list of error strings (empty list = valid).
 
 ### Starter Code
 
 ```python
-class DataValidator:
-    def validate(self, record):
-        errors = []
+class RecordValidator:
+    ALLOWED_DEPARTMENTS = {"Engineering", "Marketing", "Sales", "Finance", "Operations"}
 
-        if not record.get("name"):
-            errors.append("name is required")
+    def __init__(self):
+        self._valid_count = 0
+        self._invalid_count = 0
 
-        age = record.get("age")
-        if not isinstance(age, int) or not 0 <= age <= 120:
-            errors.append("age must be an integer between 0 and 120")
+    def validate(self, record: dict) -> list[str]:
+        # return a list of error strings
+        pass
 
-        salary = record.get("salary")
-        if not isinstance(salary, (int, float)) or salary <= 0:
-            errors.append("salary must be a positive number")
-
-        return errors
+    @property
+    def stats(self) -> dict:
+        pass
 
 
-validator = DataValidator()
+validator = RecordValidator()
 
-records = [
-    {"name": "Alice", "age": 25, "salary": 50000},
-    {"name": "", "age": 130, "salary": -100},
+test_records = [
+    {"name": "Alice", "age": 31, "department": "Engineering", "salary": 95000.0},
+    {"name": "", "age": 31, "department": "Engineering", "salary": 95000.0},
+    {"name": "Bob", "age": 17, "department": "Marketing", "salary": 55000.0},
+    {"name": "Carol", "age": 29, "department": "Unknown", "salary": -1000.0},
 ]
 
-for record in records:
-    errors = validator.validate(record)
-    if errors:
-        print("Invalid:", errors)
-    else:
-        print("Valid:", record)
+for rec in test_records:
+    errors = validator.validate(rec)
+    status = "VALID" if not errors else f"INVALID: {errors}"
+    print(f"{rec.get('name', '?')!r:10} — {status}")
+
+print(validator.stats)
 ```
 
 ### Expected Output
 
-```text
-Valid: {'name': 'Alice', 'age': 25, 'salary': 50000}
-Invalid: ['name is required', 'age must be an integer between 0 and 120', 'salary must be a positive number']
+```
+'Alice'    — VALID
+''         — INVALID: ['name must be a non-empty string']
+'Bob'      — INVALID: ['age must be an int between 18 and 70']
+'Carol'    — INVALID: ["department 'Unknown' not in allowed list", 'salary must be a positive number']
+{'total': 4, 'valid': 1, 'invalid': 3, 'pass_rate': 0.25}
 ```
 
 ---
 
-## Exercise 7 – Pythonic Refactoring
+## Exercise 7 — Pythonic Refactoring (Best Practices)
 
-Refactor this code to make it more Pythonic:
+**Topic:** Comprehensions, `enumerate`, `zip`, `any`, `all`
+
+Refactor each snippet to idiomatic Python. Do not change what the code does — only how it does it.
+
+### Snippet A
 
 ```python
-numbers = [1, 2, 3, 4, 5, 6]
-
+# Original
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 result = []
 i = 0
 while i < len(numbers):
     if numbers[i] % 2 == 0:
-        result.append(numbers[i] * numbers[i])
-    i = i + 1
-
+        result.append(numbers[i] ** 2)
+    i += 1
 print(result)
 ```
 
-### Expected Refactor
+Expected refactored output: `[4, 16, 36, 64, 100]`
+
+### Snippet B
 
 ```python
-numbers = [1, 2, 3, 4, 5, 6]
-squared_evens = [number**2 for number in numbers if number % 2 == 0]
+# Original
+products = ["Laptop", "Mouse", "Keyboard"]
+prices = [75000, 600, 1200]
 
-print(squared_evens)
+print("Products:")
+i = 0
+for product in products:
+    print(str(i + 1) + ". " + product + ": " + str(prices[i]))
+    i += 1
 ```
 
-### Expected Output
+Expected output:
+```
+Products:
+1. Laptop: 75000
+2. Mouse: 600
+3. Keyboard: 1200
+```
 
-```text
-[4, 16, 36]
+### Snippet C
+
+```python
+# Original
+scores = [85, 91, 72, 68, 55, 90]
+
+has_failure = False
+for s in scores:
+    if s < 60:
+        has_failure = True
+        break
+
+all_pass = True
+for s in scores:
+    if s < 70:
+        all_pass = False
+        break
+
+print(has_failure)
+print(all_pass)
+```
+
+Expected output:
+```
+True
+False
 ```
 
 ---
 
-## ✅ Final Challenge – Tiny Data Cleaning Pipeline
+## Final Challenge — End-to-End Data Pipeline
 
-Write a program that takes raw employee records, cleans them, validates them, and writes valid records to a JSON file.
+This exercise combines everything from the session.
 
-### Raw Data
+### The Task
+
+Write a program that:
+
+1. Reads `raw_employees.csv` (you will create it)
+2. Parses and validates each row
+3. Skips invalid rows and logs why
+4. Saves valid rows to `clean_employees.json`
+5. Saves a summary (total rows, valid rows, error log) to `pipeline_summary.json`
+
+### Create the input file
 
 ```python
-raw_records = [
-    {"name": " alice ", "age": "25", "salary": "50000"},
-    {"name": "BOB", "age": "not available", "salary": "60000"},
-    {"name": "", "age": "31", "salary": "70000"},
-    {"name": "charlie", "age": "29", "salary": "invalid"},
+import csv
+
+raw_data = [
+    {"name": " alice ", "age": "31", "department": "Engineering", "salary": "95000"},
+    {"name": "BOB", "age": "not available", "department": "Marketing", "salary": "72000"},
+    {"name": "", "age": "28", "department": "Sales", "salary": "55000"},
+    {"name": "carol", "age": "29", "department": "Unknown", "salary": "88000"},
+    {"name": "Dave", "age": "34", "department": "Finance", "salary": "invalid"},
+    {"name": "Eve", "age": "26", "department": "Engineering", "salary": "78000"},
+]
+
+with open("raw_employees.csv", "w", newline="", encoding="utf-8") as f:
+    writer = csv.DictWriter(f, fieldnames=["name", "age", "department", "salary"])
+    writer.writeheader()
+    writer.writerows(raw_data)
+```
+
+### The Pipeline Script
+
+Write `pipeline.py` that:
+
+- Reads the CSV with error handling
+- Cleans each record: strip name, title-case, convert types
+- Validates: name non-empty, age 18–70, department in allowed set, salary positive
+- Saves valid records and a summary
+
+### Expected `clean_employees.json`
+
+```json
+[
+  {"name": "Alice", "age": 31, "department": "Engineering", "salary": 95000.0},
+  {"name": "Eve", "age": 26, "department": "Engineering", "salary": 78000.0}
 ]
 ```
 
-### Requirements
+### Expected `pipeline_summary.json`
 
-- Strip whitespace from names.
-- Convert names to title case.
-- Convert `age` to `int`.
-- Convert `salary` to `float`.
-- Skip invalid records.
-- Save valid records to `clean_employees.json`.
-
-### One Possible Solution
-
-```python
-import json
-
-
-def clean_record(record):
-    try:
-        cleaned = {
-            "name": record["name"].strip().title(),
-            "age": int(record["age"]),
-            "salary": float(record["salary"]),
-        }
-    except (KeyError, ValueError, TypeError):
-        return None
-
-    if not cleaned["name"]:
-        return None
-
-    return cleaned
-
-
-raw_records = [
-    {"name": " alice ", "age": "25", "salary": "50000"},
-    {"name": "BOB", "age": "not available", "salary": "60000"},
-    {"name": "", "age": "31", "salary": "70000"},
-    {"name": "charlie", "age": "29", "salary": "invalid"},
-]
-
-clean_records = []
-
-for record in raw_records:
-    cleaned = clean_record(record)
-    if cleaned is not None:
-        clean_records.append(cleaned)
-
-with open("clean_employees.json", "w") as file:
-    json.dump(clean_records, file, indent=2)
-
-print(clean_records)
-```
-
-### Expected Output
-
-```text
-[{'name': 'Alice', 'age': 25, 'salary': 50000.0}]
+```json
+{
+  "total_rows": 6,
+  "valid_rows": 2,
+  "invalid_rows": 4,
+  "errors": [
+    {"row": 2, "name": "Bob", "reason": "cannot convert age: 'not available'"},
+    {"row": 3, "name": "", "reason": "name must be non-empty"},
+    {"row": 4, "name": "Carol", "reason": "department 'Unknown' not in allowed list"},
+    {"row": 5, "name": "Dave", "reason": "cannot convert salary: 'invalid'"}
+  ]
+}
 ```
 
 ---
 
-## ✅ Self-Check
+## Self-Check
 
-You are ready to move on if you can:
+You are ready for Day 02 if you can:
 
-- [ ] create a small class with methods
-- [ ] use `with open(...)` for safe file handling
-- [ ] read CSV and JSON data
-- [ ] handle bad inputs using `try/except`
-- [ ] split reusable functions into a module
-- [ ] refactor loops into Pythonic code
+- [ ] Write a class with `__init__`, instance methods, and `__repr__` from scratch
+- [ ] Use `with open()` for CSV reading and JSON writing without looking up the syntax
+- [ ] Catch specific exceptions and return a sensible default rather than crashing
+- [ ] Import a function from a module you wrote yourself
+- [ ] Refactor a `while` loop index into a list comprehension or `enumerate`
+- [ ] Explain what `if __name__ == "__main__":` does and why it matters
 
 ---
 
-## 🔗 What's Next?
-
-➡️ [[07-interview-questions]] — Practice explaining Advanced Python concepts clearly
+[[05-python-best-practices|← Best Practices]] | [[07-interview-questions|Interview Questions →]]

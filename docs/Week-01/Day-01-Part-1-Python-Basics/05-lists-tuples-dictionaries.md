@@ -1,563 +1,653 @@
-# 📚 05 – Lists, Tuples & Dictionaries
+# Lists, Tuples, and Dictionaries
 
-> **Prerequisites:** [[04-functions]]  
-> **Time to read:** ~30 minutes
-
----
-
-## 🗂️ Python's Core Data Structures
-
-A **data structure** is a way of organizing multiple values. Python has four built-in collection types:
-
-| Structure | Syntax | Ordered | Mutable | Duplicates |
-|-----------|--------|---------|---------|------------|
-| **List** | `[1, 2, 3]` | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Tuple** | `(1, 2, 3)` | ✅ Yes | ❌ No | ✅ Yes |
-| **Dictionary** | `{"key": "val"}` | ✅ Yes (3.7+) | ✅ Yes | Keys: No |
-| **Set** | `{1, 2, 3}` | ❌ No | ✅ Yes | ❌ No |
-
-> **Mutable** means you can change the contents after creation.
+Before Pandas DataFrames existed, data scientists processed data using lists and dictionaries. Even now, understanding these structures deeply makes you faster and less likely to produce subtle bugs. Every Pandas operation — groupby, apply, merge — returns objects built on these foundations. When Pandas fails or is unavailable, you fall back to these.
 
 ---
 
-## 📋 Lists
+## Learning Objectives
 
-A **list** is an ordered, mutable collection. It's Python's most versatile data structure and the backbone of most data processing.
+By the end of this note, you will be able to:
 
-### Creating Lists
+- Create, index, slice, and modify lists with confidence
+- Understand the difference between in-place methods and those that return new objects
+- Choose between lists and tuples based on mutability and intent
+- Use tuple unpacking, including extended unpacking with `*`
+- Build, access, and iterate over dictionaries
+- Use `.get()` safely to avoid `KeyError` on missing keys
+- Write list, dict, and set comprehensions for data transformation
+- Use sets for deduplication and O(1) membership testing
+
+---
+
+## Python's Core Collection Types
+
+| Structure | Syntax | Ordered | Mutable | Allows Duplicates |
+|-----------|--------|---------|---------|-------------------|
+| List | `[1, 2, 3]` | Yes | Yes | Yes |
+| Tuple | `(1, 2, 3)` | Yes | No | Yes |
+| Dictionary | `{"key": "val"}` | Yes (3.7+) | Yes | Keys: No |
+| Set | `{1, 2, 3}` | No | Yes | No |
+
+Choosing the right structure matters. Using a list when you need a set (for membership testing) can make a program 10,000x slower on large datasets.
+
+---
+
+## Lists
+
+A list is an ordered, mutable sequence. It is Python's most-used collection type and the foundation of most data processing loops.
+
+### Creating lists
 
 ```python
-# Empty list
-empty = []
-also_empty = list()
+# Literal syntax
+feature_names = ["age", "income", "credit_score", "loan_amount"]
+exam_scores = [85, 92, 78, 61, 90]
+empty_results = []
 
-# With values
-numbers = [1, 2, 3, 4, 5]
-names = ["Alice", "Bob", "Charlie"]
+# From range — create sequences of numbers
+batch_indices = list(range(0, 100, 10))   # [0, 10, 20, ..., 90]
 
-# Mixed types (possible, but usually a sign of bad design)
-mixed = [1, "hello", 3.14, True, None]
+# From another iterable
+chars = list("Python")                    # ['P', 'y', 't', 'h', 'o', 'n']
 
-# Nested lists (like a 2D matrix)
-matrix = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9]
+# Nested lists — 2D structures, like a matrix or a table
+confusion_matrix = [
+    [52, 3, 1],    # true: cat
+    [2, 47, 4],    # true: dog
+    [0, 1, 38],    # true: bird
 ]
-
-# List from range
-first_10 = list(range(1, 11))       # [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
-# List from string
-chars = list("Python")              # ['P', 'y', 't', 'h', 'o', 'n']
 ```
 
-### Indexing and Slicing
+### Indexing and slicing
 
 ```python
-fruits = ["apple", "banana", "cherry", "date", "elderberry"]
-#          0        1         2         3       4
-#         -5       -4        -3        -2      -1
+prices = [10.5, 22.0, 8.75, 31.0, 15.25, 19.99]
+#          0     1     2     3      4      5
+#         -6    -5    -4    -3     -2     -1
 
-# Indexing
-print(fruits[0])      # "apple"       (first)
-print(fruits[2])      # "cherry"      (third)
-print(fruits[-1])     # "elderberry"  (last)
-print(fruits[-2])     # "date"        (second to last)
+print(prices[0])        # Output: 10.5  — first element
+print(prices[-1])       # Output: 19.99 — last element
+print(prices[2])        # Output: 8.75
 
-# Slicing [start:stop:step]   (stop is exclusive!)
-print(fruits[1:3])    # ['banana', 'cherry']
-print(fruits[:3])     # ['apple', 'banana', 'cherry']  (first 3)
-print(fruits[2:])     # ['cherry', 'date', 'elderberry']
-print(fruits[::2])    # ['apple', 'cherry', 'elderberry']  (every 2nd)
-print(fruits[::-1])   # ['elderberry', 'date', 'cherry', 'banana', 'apple'] (reversed)
+# Slicing [start:stop:step] — stop is exclusive
+print(prices[1:4])      # Output: [22.0, 8.75, 31.0]
+print(prices[:3])       # Output: [10.5, 22.0, 8.75]  — first 3
+print(prices[3:])       # Output: [31.0, 15.25, 19.99] — from index 3 onward
+print(prices[::2])      # Output: [10.5, 8.75, 15.25]  — every second element
+print(prices[::-1])     # Output: [19.99, 15.25, 31.0, 8.75, 22.0, 10.5] — reversed
 
-# Copy a list via slicing
-copy = fruits[:]      # Creates a new list with same content
+# Slicing never raises an IndexError — out-of-range indices are clamped
+print(prices[100:200])  # Output: []  — empty, not an error
 ```
 
-### Modifying Lists
+> [!warning]
+> Direct indexing with `prices[6]` raises `IndexError` if the index is out of range. But slicing `prices[6:10]` returns `[]` without error. This asymmetry catches many beginners off guard.
+
+### Modifying lists
 
 ```python
-colors = ["red", "green", "blue"]
+records = ["Alice", "Bob", "Charlie"]
 
-# Change an element
-colors[1] = "yellow"
-print(colors)             # ['red', 'yellow', 'blue']
+# Change by index
+records[1] = "Barbara"
+print(records)    # Output: ['Alice', 'Barbara', 'Charlie']
 
-# append — add to the end
-colors.append("purple")
-print(colors)             # ['red', 'yellow', 'blue', 'purple']
+# append — add one item to the end (O(1))
+records.append("Diana")
+print(records)    # Output: ['Alice', 'Barbara', 'Charlie', 'Diana']
 
-# insert — add at specific position
-colors.insert(1, "orange")
-print(colors)             # ['red', 'orange', 'yellow', 'blue', 'purple']
+# extend — add all items from another iterable (O(k) where k is length of added)
+records.extend(["Eve", "Frank"])
+print(records)    # Output: ['Alice', 'Barbara', 'Charlie', 'Diana', 'Eve', 'Frank']
 
-# extend — add multiple items
-colors.extend(["pink", "brown"])
-print(colors)             # ['red', 'orange', 'yellow', 'blue', 'purple', 'pink', 'brown']
+# insert — add at a specific position (O(n) — shifts everything after)
+records.insert(1, "Arun")
+print(records)    # Output: ['Alice', 'Arun', 'Barbara', 'Charlie', 'Diana', 'Eve', 'Frank']
 
-# remove — remove first occurrence of value
-colors.remove("yellow")
-print(colors)             # ['red', 'orange', 'blue', 'purple', 'pink', 'brown']
+# remove — remove first occurrence of a value (raises ValueError if not found)
+records.remove("Arun")
+print(records)    # Output: ['Alice', 'Barbara', 'Charlie', 'Diana', 'Eve', 'Frank']
 
-# pop — remove and return item (last by default)
-last = colors.pop()
-print(last)               # 'brown'
-first = colors.pop(0)
-print(first)              # 'red'
+# pop — remove and return by index (last element if no index given)
+last = records.pop()
+print(f"Removed: {last}")    # Output: Removed: Frank
+first = records.pop(0)
+print(f"Removed: {first}")   # Output: Removed: Alice
 
-# del — delete by index or slice
-del colors[1]             # removes 'blue'
-print(colors)             # ['orange', 'purple', 'pink']
-
-# clear — remove all items
-# colors.clear()          # would make colors = []
+# del — remove by index or slice without returning the value
+del records[1]               # removes 'Charlie'
+print(records)               # Output: ['Barbara', 'Diana', 'Eve']
 ```
 
-### Essential List Methods
+### Essential list methods and functions
 
 ```python
-numbers = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]
+scores = [73, 88, 64, 91, 55, 88, 77, 64, 95, 82]
 
-# Information
-print(len(numbers))                 # 11
-print(numbers.count(5))             # 3  (5 appears 3 times)
-print(numbers.index(9))             # 5  (first index of value 9)
-print(min(numbers))                 # 1
-print(max(numbers))                 # 9
-print(sum(numbers))                 # 44
+print(len(scores))              # Output: 10
+print(min(scores))              # Output: 55
+print(max(scores))              # Output: 95
+print(sum(scores))              # Output: 777
+print(scores.count(88))         # Output: 2  — how many times 88 appears
+print(scores.index(91))         # Output: 3  — first index of value 91
+
+# Membership check (O(n) for lists)
+print(88 in scores)             # Output: True
+print(100 in scores)            # Output: False
 
 # Sorting
-numbers.sort()                      # Sorts IN PLACE (modifies original)
-print(numbers)                      # [1, 1, 2, 3, 3, 4, 5, 5, 5, 6, 9]
+sorted_copy = sorted(scores)                 # returns new list, original unchanged
+print(sorted_copy)               # Output: [55, 64, 64, 73, 77, 82, 88, 88, 91, 95]
+print(scores)                    # Output: [73, 88, ...] — unchanged
 
-numbers.sort(reverse=True)          # Descending
-print(numbers)                      # [9, 6, 5, 5, 5, 4, 3, 3, 2, 1, 1]
+scores.sort()                    # sorts IN PLACE, returns None
+print(scores)                    # Output: [55, 64, 64, 73, 77, 82, 88, 88, 91, 95]
 
-original = [3, 1, 4, 1, 5, 9]
-sorted_copy = sorted(original)      # Returns NEW list, original unchanged
-print(original)                     # [3, 1, 4, 1, 5, 9]
-print(sorted_copy)                  # [1, 1, 3, 4, 5, 9]
+scores.sort(reverse=True)        # descending in place
+print(scores[:3])                # Output: [95, 91, 88]
 
-# Reverse
-numbers.reverse()                   # Reverses IN PLACE
-print(list(reversed(original)))     # Returns new reversed iterator
+# Sorting with a custom key
+students = [("Alice", 82), ("Bob", 91), ("Charlie", 74), ("Diana", 91)]
+ranked = sorted(students, key=lambda s: (-s[1], s[0]))    # score desc, name asc for ties
+print(ranked)
+# Output: [('Bob', 91), ('Diana', 91), ('Alice', 82), ('Charlie', 74)]
 ```
 
-### Common List Patterns
+> [!warning]
+> `list.sort()` modifies the list in place and returns `None`. A common mistake is writing `scores = scores.sort()`, which sets `scores` to `None`. Use `sorted(scores)` when you need a new sorted list and want to preserve the original.
+
+### Copying lists
 
 ```python
-# Check membership
-fruits = ["apple", "banana", "cherry"]
-print("banana" in fruits)           # True
-print("grape" in fruits)            # False
-print("grape" not in fruits)        # True
+original = [1, 2, 3, 4, 5]
+
+# These all create REFERENCES — not copies
+alias = original
+alias.append(6)
+print(original)    # Output: [1, 2, 3, 4, 5, 6]  — original changed!
+
+# Shallow copy methods — safe for flat lists
+copy1 = original.copy()
+copy2 = original[:]
+copy3 = list(original)
+
+# Deep copy for nested lists
+import copy
+matrix = [[1, 2], [3, 4]]
+deep = copy.deepcopy(matrix)
+deep[0][0] = 99
+print(matrix)    # Output: [[1, 2], [3, 4]]  — original unchanged
+```
+
+### List comprehensions
+
+List comprehensions are the standard Python way to build transformed or filtered lists. They are more readable than `for` + `append()` and faster at the bytecode level.
+
+```python
+# Clean and normalize a column of price strings
+raw_prices = ["$10.99", "$25.00", "N/A", "$5.49", "missing", "$15.00"]
+
+valid_prices = [
+    float(p[1:])       # strip the '$'
+    for p in raw_prices
+    if p.startswith("$")    # skip non-price strings
+]
+print(valid_prices)    # Output: [10.99, 25.0, 5.49, 15.0]
+
+# Create bin labels for a continuous feature
+ages = [23, 45, 17, 67, 31, 52, 8, 38]
+age_groups = [
+    "Child" if a < 18 else "Young Adult" if a < 35 else "Middle Aged" if a < 60 else "Senior"
+    for a in ages
+]
+print(age_groups)
+# Output: ['Young Adult', 'Middle Aged', 'Child', 'Senior', 'Young Adult', 'Middle Aged', 'Child', 'Middle Aged']
 
 # Flatten a nested list
-nested = [[1, 2], [3, 4], [5, 6]]
-flat = [x for sublist in nested for x in sublist]
-print(flat)                         # [1, 2, 3, 4, 5, 6]
-
-# Remove duplicates while preserving order
-data = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3]
-seen = set()
-unique = []
-for x in data:
-    if x not in seen:
-        unique.append(x)
-        seen.add(x)
-print(unique)   # [3, 1, 4, 5, 9, 2, 6]
-
-# Or using dict.fromkeys (preserves order, Python 3.7+)
-unique = list(dict.fromkeys(data))
-print(unique)   # [3, 1, 4, 5, 9, 2, 6]
-
-# Zip two lists into pairs
-keys = ["a", "b", "c"]
-vals = [1, 2, 3]
-pairs = list(zip(keys, vals))       # [('a', 1), ('b', 2), ('c', 3)]
-```
-
-### List Comprehension (Advanced)
-
-```python
-# Filter and transform in one line
-numbers = range(1, 21)
-
-# Squares of even numbers
-even_squares = [x**2 for x in numbers if x % 2 == 0]
-print(even_squares)   # [4, 16, 36, 64, 100, 144, 196, 256, 324, 400]
-
-# Nested comprehension: flatten 2D to 1D
-matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-flat = [cell for row in matrix for cell in row]
-print(flat)   # [1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-# Dictionary comprehension
-squared = {x: x**2 for x in range(1, 6)}
-print(squared)   # {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
+batch_results = [[0.82, 0.91], [0.75, 0.88, 0.93], [0.67]]
+all_scores = [score for batch in batch_results for score in batch]
+print(all_scores)    # Output: [0.82, 0.91, 0.75, 0.88, 0.93, 0.67]
 ```
 
 ---
 
-## 📌 Tuples
+## Tuples
 
-A **tuple** is an ordered, **immutable** (unchangeable) collection.
+A tuple is an ordered, **immutable** sequence. Once created, it cannot be changed. This immutability is the point — use tuples when the data should not change.
 
-### When to Use Tuples vs Lists
+### When to use tuples instead of lists
 
-| Use Tuple | Use List |
-|-----------|----------|
-| Data that shouldn't change (coordinates, RGB colors) | Data that will grow or change |
-| Function return values | Items to be sorted or filtered |
-| Dictionary keys | Accumulating results |
-| Fixed configurations | Any dynamic collection |
+- Coordinates: `(latitude, longitude)`
+- RGB colors: `(255, 128, 0)`
+- Function return values when returning multiple items
+- Dictionary keys (lists cannot be dict keys because they are not hashable)
+- Any fixed collection where accidental modification would be a bug
 
 ```python
-# Creating tuples
-point = (3, 7)
-rgb_red = (255, 0, 0)
-empty_tuple = ()
-single_item = (42,)          # IMPORTANT: trailing comma for single-element tuple
-also_tuple = 1, 2, 3         # parentheses optional!
+# Fixed geographic coordinates — should never change after assignment
+berlin_coords = (52.5200, 13.4050)
+nyc_coords = (40.7128, -74.0060)
 
-# Indexing and slicing — same as lists
-print(point[0])               # 3
-print(rgb_red[-1])            # 0
+# Tuples can be dict keys; lists cannot
+city_data = {
+    (52.5200, 13.4050): "Berlin",
+    (40.7128, -74.0060): "New York",
+}
+print(city_data[(52.5200, 13.4050)])    # Output: Berlin
 
-# Immutability — this raises an error
+# Attempting to modify raises TypeError
 try:
-    point[0] = 5
+    berlin_coords[0] = 53.0
 except TypeError as e:
-    print(f"Error: {e}")      # Error: 'tuple' object does not support item assignment
+    print(f"Error: {e}")
+# Output: Error: 'tuple' object does not support item assignment
 ```
 
-### Tuple Unpacking
+### Creating tuples
 
 ```python
-# Basic unpacking
-x, y = (10, 20)
-print(x, y)                   # 10 20
+empty = ()
+single = (42,)          # the trailing comma is required for a single-element tuple
+pair = (3.14, "pi")
+triple = 1, 2, 3        # parentheses are optional!
 
-# Swap variables (uses tuple packing/unpacking)
-a, b = 5, 10
-a, b = b, a
-print(a, b)                   # 10 5
-
-# Unpack with *rest
-first, *rest = (1, 2, 3, 4, 5)
-print(first)                  # 1
-print(rest)                   # [2, 3, 4, 5]
-
-first, *middle, last = (1, 2, 3, 4, 5)
-print(first, middle, last)    # 1 [2, 3, 4] 5
-
-# Ignore values with _
-_, important, _ = ("ignore", "keep this", "also ignore")
-print(important)              # "keep this"
-
-# From function return
-def get_coordinates():
-    return 40.7128, -74.0060   # returns a tuple
-
-lat, lon = get_coordinates()
-print(f"Lat: {lat}, Lon: {lon}")
+print(type(single))     # Output: <class 'tuple'>
+print(type((42)))       # Output: <class 'int'>  — no comma, just int in parentheses!
 ```
 
-### Named Tuples — Best of Both Worlds
+> [!warning]
+> `(42)` is not a tuple — it is the integer `42` in parentheses. To create a single-element tuple you must write `(42,)`. This is a common source of bugs when building tuple collections programmatically.
+
+### Tuple unpacking
+
+```python
+# Basic unpacking — assign to multiple names at once
+lat, lon = (40.7128, -74.0060)
+print(f"Lat: {lat}, Lon: {lon}")
+# Output: Lat: 40.7128, Lon: -74.006
+
+# Swap variables without a temp — Python uses tuple packing/unpacking
+a, b = 10, 20
+a, b = b, a
+print(a, b)    # Output: 20 10
+
+# Extended unpacking with *
+first, *middle, last = (10, 20, 30, 40, 50)
+print(first)     # Output: 10
+print(middle)    # Output: [20, 30, 40]
+print(last)      # Output: 50
+
+# Skip values you do not need with _
+_, score, _ = ("Alice", 92, "A")    # _ is a convention for "ignored"
+print(score)    # Output: 92
+
+# Unpack inside a for loop — common with .items() and enumerate()
+student_scores = [("Alice", 85), ("Bob", 92), ("Charlie", 78)]
+for name, score in student_scores:
+    grade = "A" if score >= 90 else "B" if score >= 80 else "C"
+    print(f"{name}: {score} → {grade}")
+# Output:
+# Alice: 85 → B
+# Bob: 92 → A
+# Charlie: 78 → C
+```
+
+### Named tuples — readable fixed records
+
+Named tuples are tuples where each position has a name. They are useful for representing small data records without defining a full class.
 
 ```python
 from collections import namedtuple
 
-# Define a named tuple type
-Point = namedtuple("Point", ["x", "y"])
-Person = namedtuple("Person", ["name", "age", "city"])
+ModelResult = namedtuple("ModelResult", ["model_name", "accuracy", "f1_score", "training_time"])
 
-# Create instances
-p = Point(3, 7)
-alice = Person("Alice", 30, "Mumbai")
+results = [
+    ModelResult("LogisticRegression", 0.842, 0.838, 1.2),
+    ModelResult("RandomForest",       0.891, 0.887, 18.4),
+    ModelResult("XGBoost",            0.903, 0.899, 45.1),
+]
 
-# Access by name OR index
-print(p.x, p.y)                    # 3 7
-print(p[0], p[1])                  # 3 7
+for r in results:
+    print(f"{r.model_name:<22} accuracy={r.accuracy:.3f}  f1={r.f1_score:.3f}")
+# Output:
+# LogisticRegression     accuracy=0.842  f1=0.838
+# RandomForest           accuracy=0.891  f1=0.887
+# XGBoost                accuracy=0.903  f1=0.899
 
-print(alice.name)                  # Alice
-print(alice.age)                   # 30
-
-# Still immutable
-# alice.age = 31  # AttributeError
+# Best model by accuracy
+best = max(results, key=lambda r: r.accuracy)
+print(f"\nBest model: {best.model_name} ({best.accuracy:.1%})")
+# Output: Best model: XGBoost (90.3%)
 ```
 
 ---
 
-## 📖 Dictionaries
+## Dictionaries
 
-A **dictionary** is a collection of **key-value pairs** — like a real dictionary where you look up a word (key) to get its definition (value).
+A dictionary maps keys to values. It is Python's implementation of a hash table, which gives O(1) average-case lookup — looking up a key in a million-entry dict takes the same time as looking it up in a ten-entry dict.
 
-### Creating Dictionaries
+### Creating dictionaries
 
 ```python
-# Empty dictionary
-empty = {}
-also_empty = dict()
-
-# With data
-person = {
-    "name": "Alice",
-    "age": 30,
-    "city": "Mumbai",
-    "is_employed": True
+# Literal syntax
+customer = {
+    "customer_id": 10042,
+    "name": "Alice Sharma",
+    "tier": "gold",
+    "lifetime_value": 12450.0,
+    "is_active": True,
 }
 
-# From keyword arguments
-config = dict(host="localhost", port=5432, database="mydb")
+# From keyword arguments (keys must be valid identifiers)
+config = dict(host="localhost", port=5432, database="analytics_db")
 
-# From list of tuples
-pairs = [("a", 1), ("b", 2), ("c", 3)]
-d = dict(pairs)
-print(d)    # {'a': 1, 'b': 2, 'c': 3}
+# From a list of (key, value) pairs
+column_types = dict([("age", int), ("name", str), ("salary", float)])
+
+# From two parallel lists using zip
+headers = ["id", "name", "score"]
+row_values = [1001, "Alice", 92.5]
+record = dict(zip(headers, row_values))
+print(record)    # Output: {'id': 1001, 'name': 'Alice', 'score': 92.5}
 ```
 
-### Accessing Values
+### Accessing values
 
 ```python
-person = {"name": "Alice", "age": 30, "city": "Mumbai"}
+customer = {"name": "Alice", "age": 30, "tier": "gold"}
 
-# Direct access (KeyError if key doesn't exist)
-print(person["name"])             # Alice
+# Direct access — raises KeyError if key is missing
+print(customer["name"])       # Output: Alice
 
-# Safe access with .get() (returns None if key missing)
-print(person.get("age"))          # 30
-print(person.get("email"))        # None
-print(person.get("email", "N/A")) # N/A  — custom default!
+# .get() — returns None (or a default) if key is missing, never raises
+print(customer.get("email"))              # Output: None
+print(customer.get("email", "unknown"))   # Output: unknown
 
-# Check if key exists
-print("name" in person)           # True
-print("email" in person)          # False
+# Check before accessing
+if "tier" in customer:
+    print(f"Tier: {customer['tier']}")    # Output: Tier: gold
 ```
 
-### Modifying Dictionaries
+> [!tip]
+> Always use `.get()` when the key might not be present — especially when processing external data (API responses, CSV rows, user input). Direct `dict[key]` access will crash on the first missing key. In production code I have seen pipelines fail silently for days because a dict access raised `KeyError` that was caught too broadly upstream.
+
+### Modifying dictionaries
 
 ```python
-person = {"name": "Alice", "age": 30}
+profile = {"name": "Alice", "age": 30}
 
-# Add / update
-person["email"] = "alice@example.com"   # Add new key
-person["age"] = 31                       # Update existing key
+# Add or update a single key
+profile["email"] = "alice@example.com"    # add new key
+profile["age"] = 31                        # update existing key
 
-# Update multiple keys at once
-person.update({"city": "Delhi", "age": 32})
+# Update from another dict
+profile.update({"city": "Mumbai", "tier": "gold"})
+print(profile)
+# Output: {'name': 'Alice', 'age': 31, 'email': 'alice@example.com', 'city': 'Mumbai', 'tier': 'gold'}
 
-# Remove
-del person["email"]                      # Raises KeyError if not found
+# Merge dicts (Python 3.9+)
+defaults = {"timeout": 30, "retries": 3, "verbose": False}
+overrides = {"timeout": 60, "verbose": True}
+config = defaults | overrides    # overrides wins on conflict
+print(config)
+# Output: {'timeout': 60, 'retries': 3, 'verbose': True}
 
-removed = person.pop("city")             # Remove and return value
-print(removed)                           # Delhi
-
-# Remove last inserted item
-last = person.popitem()                  # Returns (key, value) tuple
-print(last)                              # ('age', 32)
+# Remove a key
+del profile["email"]                       # raises KeyError if not present
+removed_value = profile.pop("tier", None)  # remove and return; default avoids KeyError
+print(removed_value)                       # Output: gold
 ```
 
-### Iterating Over Dictionaries
+### Iterating over dictionaries
 
 ```python
-scores = {"Alice": 85, "Bob": 92, "Charlie": 78, "Diana": 95}
+model_scores = {
+    "LogisticRegression": 0.842,
+    "RandomForest": 0.891,
+    "XGBoost": 0.903,
+    "NeuralNetwork": 0.887,
+}
 
 # Iterate over keys (default)
-for name in scores:
-    print(name)                          # Alice, Bob, Charlie, Diana
+for model in model_scores:
+    print(model)
 
 # Iterate over values
-for score in scores.values():
-    print(score)                         # 85, 92, 78, 95
+average_score = sum(model_scores.values()) / len(model_scores)
+print(f"Average score: {average_score:.3f}")
+# Output: Average score: 0.881
 
-# Iterate over key-value pairs — MOST COMMON
-for name, score in scores.items():
-    grade = "A" if score >= 90 else "B" if score >= 80 else "C"
-    print(f"{name}: {score} ({grade})")
-
-# Get keys/values as lists
-keys = list(scores.keys())              # ['Alice', 'Bob', 'Charlie', 'Diana']
-values = list(scores.values())          # [85, 92, 78, 95]
+# Iterate over key-value pairs — most common pattern
+print(f"\n{'Model':<22} {'Score':>8} {'vs Avg':>8}")
+print("-" * 40)
+for model_name, score in model_scores.items():
+    delta = score - average_score
+    sign = "+" if delta >= 0 else ""
+    print(f"{model_name:<22} {score:>8.3f} {sign + f'{delta:.3f}':>8}")
+# Output:
+# Model                    Score   vs Avg
+# ----------------------------------------
+# LogisticRegression       0.842   -0.039
+# RandomForest             0.891   +0.010
+# XGBoost                  0.903   +0.022
+# NeuralNetwork            0.887   +0.006
 ```
 
-### Dictionary Comprehension
+### Dictionary comprehensions
 
 ```python
-# Square numbers dict
-squares = {x: x**2 for x in range(1, 6)}
-print(squares)    # {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
+# Map feature names to their missing value counts
+features = ["age", "income", "education", "occupation"]
+raw_missing = [3, 12, 0, 5]
 
-# Filter students above average
-scores = {"Alice": 85, "Bob": 92, "Charlie": 60, "Diana": 75}
-avg = sum(scores.values()) / len(scores)
-above_avg = {name: s for name, s in scores.items() if s > avg}
-print(above_avg)  # {'Alice': 85, 'Bob': 92}
+missing_counts = {feat: count for feat, count in zip(features, raw_missing)}
+print(missing_counts)
+# Output: {'age': 3, 'income': 12, 'education': 0, 'occupation': 5}
 
-# Invert a dictionary (swap keys and values)
-original = {"a": 1, "b": 2, "c": 3}
-inverted = {v: k for k, v in original.items()}
-print(inverted)   # {1: 'a', 2: 'b', 3: 'c'}
+# Filter to only features with missing values
+has_missing = {feat: count for feat, count in missing_counts.items() if count > 0}
+print(has_missing)
+# Output: {'age': 3, 'income': 12, 'occupation': 5}
+
+# Invert a mapping (swap keys and values)
+country_codes = {"India": "IN", "Germany": "DE", "Japan": "JP"}
+code_to_country = {code: country for country, code in country_codes.items()}
+print(code_to_country)
+# Output: {'IN': 'India', 'DE': 'Germany', 'JP': 'Japan'}
 ```
 
-### Nested Dictionaries
+### Nested dictionaries — representing structured records
 
 ```python
-# Representing a dataset record
-employee = {
-    "id": 1001,
-    "name": "Alice",
-    "department": "Data Science",
+customer_record = {
+    "customer_id": 10042,
+    "name": "Alice Sharma",
     "contact": {
-        "email": "alice@company.com",
-        "phone": "+91-9876543210"
+        "email": "alice@example.com",
+        "phone": "+91-9876543210",
+        "address": {
+            "city": "Mumbai",
+            "state": "Maharashtra",
+            "pin": "400001"
+        }
     },
-    "skills": ["Python", "SQL", "Machine Learning"],
-    "performance": {
-        "2023": {"score": 4.2, "rating": "Exceeds"},
-        "2024": {"score": 4.5, "rating": "Outstanding"}
-    }
+    "purchases": [
+        {"date": "2024-01-10", "amount": 1250.0, "category": "Electronics"},
+        {"date": "2024-02-14", "amount": 340.0, "category": "Clothing"},
+    ]
 }
 
-# Deep access
-print(employee["contact"]["email"])                # alice@company.com
-print(employee["skills"][0])                       # Python
-print(employee["performance"]["2024"]["rating"])   # Outstanding
+# Access nested data
+print(customer_record["contact"]["email"])
+# Output: alice@example.com
 
-# Safe deep access
-rating = employee.get("performance", {}).get("2025", {}).get("rating", "Not evaluated")
-print(rating)   # "Not evaluated"
+print(customer_record["contact"]["address"]["city"])
+# Output: Mumbai
+
+print(customer_record["purchases"][0]["amount"])
+# Output: 1250.0
+
+# Safe access for uncertain paths
+rating = (customer_record
+          .get("profile", {})
+          .get("loyalty_score", "Not rated"))
+print(rating)    # Output: Not rated
 ```
 
 ---
 
-## 🔧 Sets (Bonus)
+## Sets
 
-A **set** is an unordered collection of **unique** items.
+A set is an unordered collection of unique items backed by a hash table. Two primary uses: deduplication and fast membership testing.
+
+### Creating and using sets
 
 ```python
-# Creating sets
-fruits = {"apple", "banana", "cherry", "apple"}   # duplicate removed!
-print(fruits)    # {'apple', 'banana', 'cherry'} (order may vary)
+# Literal syntax — duplicates are automatically removed
+unique_categories = {"Electronics", "Clothing", "Books", "Electronics", "Food"}
+print(unique_categories)    # Output: {'Electronics', 'Clothing', 'Books', 'Food'}  (order varies)
 
-# From a list
-numbers = list({3, 1, 4, 1, 5, 9, 2, 6, 5, 3})
-print(numbers)   # [1, 2, 3, 4, 5, 6, 9]  (unique, unordered)
+# Convert a list to set to remove duplicates
+raw_tags = ["python", "sql", "python", "ml", "sql", "deep-learning", "ml"]
+unique_tags = set(raw_tags)
+print(sorted(unique_tags))    # Output: ['deep-learning', 'ml', 'python', 'sql']
+```
 
-# Set operations — very useful in Data Science!
-a = {1, 2, 3, 4, 5}
-b = {4, 5, 6, 7, 8}
+### Membership testing — sets vs lists
 
-print(a | b)     # Union: {1, 2, 3, 4, 5, 6, 7, 8}
-print(a & b)     # Intersection: {4, 5}
-print(a - b)     # Difference: {1, 2, 3}
-print(a ^ b)     # Symmetric diff: {1, 2, 3, 6, 7, 8}
+```python
+# List membership: O(n) — scans every element
+import time
 
-# Fast membership check (O(1) vs O(n) for list)
-big_set = set(range(1_000_000))
-print(999999 in big_set)   # True — instant!
+large_list = list(range(1_000_000))
+large_set = set(large_list)
+
+target = 999_999
+
+start = time.perf_counter()
+result = target in large_list
+list_time = time.perf_counter() - start
+
+start = time.perf_counter()
+result = target in large_set
+set_time = time.perf_counter() - start
+
+print(f"List lookup: {list_time * 1000:.3f} ms")
+print(f"Set lookup:  {set_time * 1000:.3f} ms")
+# Typical output:
+# List lookup: 12.847 ms
+# Set lookup:  0.002 ms
+```
+
+> [!tip]
+> When you need to check membership repeatedly against a fixed collection, convert it to a set once. A common data science pattern: `valid_ids = set(reference_df["id"])` then `df[df["id"].isin(valid_ids)]`. Pandas `.isin()` does this internally, but if you are writing pure Python, the conversion matters.
+
+### Set operations for data analysis
+
+```python
+# Which features are in the training data but not the test data?
+train_features = {"age", "income", "credit_score", "employment_years", "loan_amount"}
+test_features  = {"age", "income", "credit_score", "marital_status", "loan_amount"}
+
+in_train_not_test = train_features - test_features
+print(f"Train only: {in_train_not_test}")     # Output: {'employment_years'}
+
+in_test_not_train = test_features - train_features
+print(f"Test only:  {in_test_not_train}")      # Output: {'marital_status'}
+
+common_features = train_features & test_features
+print(f"Common:     {common_features}")        # Output: {'age', 'income', 'credit_score', 'loan_amount'}
+
+all_features = train_features | test_features
+print(f"All:        {all_features}")           # Output: all 6 features
 ```
 
 ---
 
-## 🧩 Data Science Examples
+## Practical Patterns
 
-### Example 1: Word Frequency Counter
+### Count frequencies with a dict
 
 ```python
-text = "the cat sat on the mat the cat ate the rat"
-words = text.split()
+# Simulate a column of category labels from a dataset
+transaction_categories = [
+    "Electronics", "Clothing", "Food", "Electronics", "Books",
+    "Clothing", "Electronics", "Food", "Electronics", "Books",
+]
 
-# Count word frequencies using a dict
+# Count occurrences
 freq = {}
-for word in words:
-    freq[word] = freq.get(word, 0) + 1
+for category in transaction_categories:
+    freq[category] = freq.get(category, 0) + 1
 
 # Sort by frequency
-sorted_freq = sorted(freq.items(), key=lambda x: x[1], reverse=True)
-for word, count in sorted_freq:
-    print(f"  {word:10}: {count}")
+for category, count in sorted(freq.items(), key=lambda x: x[1], reverse=True):
+    bar = "#" * count
+    print(f"{category:<15} {bar} ({count})")
+# Output:
+# Electronics     #### (4)
+# Clothing        ## (2)
+# Food            ## (2)
+# Books           ## (2)
 ```
 
-### Example 2: Data Cleaning Pipeline
+### Group records by a key
 
 ```python
-# Raw customer data (messy)
-raw_records = [
-    {"name": "alice", "age": "29", "salary": "50000"},
-    {"name": "BOB", "age": "35", "salary": "invalid"},
-    {"name": "  Charlie  ", "age": "42", "salary": "80000"},
-    {"name": "diana", "age": "-5", "salary": "65000"},
+# Group customers by tier — a common pre-aggregation pattern
+customers = [
+    {"name": "Alice",   "tier": "gold",   "ltv": 12400},
+    {"name": "Bob",     "tier": "silver", "ltv": 4200},
+    {"name": "Charlie", "tier": "gold",   "ltv": 8900},
+    {"name": "Diana",   "tier": "bronze", "ltv": 1100},
+    {"name": "Eve",     "tier": "silver", "ltv": 5600},
 ]
 
-def clean_record(record):
-    """Clean a single record dict."""
-    try:
-        age = int(record["age"])
-        if age < 0 or age > 120:
-            raise ValueError("Invalid age")
-    except ValueError:
-        age = None
+# Build a dict of tier → list of customers
+by_tier = {}
+for customer in customers:
+    tier = customer["tier"]
+    if tier not in by_tier:
+        by_tier[tier] = []
+    by_tier[tier].append(customer["name"])
 
-    try:
-        salary = float(record["salary"])
-    except ValueError:
-        salary = None
-
-    return {
-        "name": record["name"].strip().title(),
-        "age": age,
-        "salary": salary,
-        "is_valid": age is not None and salary is not None
-    }
-
-cleaned = [clean_record(r) for r in raw_records]
-for r in cleaned:
-    print(r)
+for tier, names in sorted(by_tier.items()):
+    print(f"{tier}: {', '.join(names)}")
+# Output:
+# bronze: Diana
+# gold: Alice, Charlie
+# silver: Bob, Eve
 ```
 
-### Example 3: Group Data by Category
+### Flatten a list of lists
 
 ```python
-# Group students by grade
-students = [
-    {"name": "Alice", "score": 92},
-    {"name": "Bob", "score": 75},
-    {"name": "Charlie", "score": 88},
-    {"name": "Diana", "score": 60},
-    {"name": "Eve", "score": 95},
-]
+# Common when collecting results from batched processing
+batch_predictions = [[0.82, 0.91, 0.75], [0.88, 0.67], [0.93, 0.79, 0.85, 0.71]]
 
-# Group into A/B/C
-groups = {"A": [], "B": [], "C": []}
+# Comprehension approach
+all_predictions = [score for batch in batch_predictions for score in batch]
+print(all_predictions)
+# Output: [0.82, 0.91, 0.75, 0.88, 0.67, 0.93, 0.79, 0.85, 0.71]
 
-for student in students:
-    if student["score"] >= 90:
-        groups["A"].append(student["name"])
-    elif student["score"] >= 75:
-        groups["B"].append(student["name"])
-    else:
-        groups["C"].append(student["name"])
-
-for grade, names in groups.items():
-    print(f"Grade {grade}: {', '.join(names)}")
+# Alternative: itertools.chain (more efficient for large datasets)
+import itertools
+all_predictions = list(itertools.chain.from_iterable(batch_predictions))
 ```
 
 ---
 
-## ✅ Key Takeaways
+## Key Takeaways
 
-- **Lists** are ordered, mutable sequences — use them for most collections
-- **Tuples** are ordered, immutable — use them for fixed data and multiple return values
-- **Dictionaries** are key-value stores — use them to represent structured records and look up data by name
-- **Sets** are unordered unique collections — use them for membership tests and set operations
-- **List comprehensions** and **dict comprehensions** are the Pythonic way to build collections
-- Master `enumerate()`, `zip()`, `.items()`, `.get()` — you'll use them in every Data Science project
+> [!success]
+> - Lists are ordered, mutable sequences — the default choice for collections of similar items
+> - `list.sort()` modifies in place and returns `None`; `sorted(list)` returns a new list — never confuse them
+> - Tuples are immutable and hashable — use them for fixed data, function returns, and dict keys
+> - Single-element tuples require a trailing comma: `(42,)` not `(42)`
+> - Dictionaries give O(1) key lookup — always use `.get(key, default)` when the key might be absent
+> - Sets give O(1) membership testing — convert to set before checking `in` on large collections
+> - List and dict comprehensions are the Pythonic way to transform and filter collections
 
 ---
 
-## 🔗 What's Next?
-
-➡️ [[06-practice-problems]] — Solidify your knowledge with hands-on challenges
+[[04-functions]] | [[06-practice-problems]]

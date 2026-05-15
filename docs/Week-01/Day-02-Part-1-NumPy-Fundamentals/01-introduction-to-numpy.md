@@ -1,337 +1,293 @@
-# 01 — Introduction to NumPy
+# Introduction to NumPy
 ## The Foundation of Scientific Python
 
-> [!quote] "NumPy is the reason Python became the language of data science."
+When you process a dataset with a million rows, you cannot afford to wait. The choice between a Python list and a NumPy array is the difference between a script that runs in 80 milliseconds and one that takes 8 seconds. That gap only widens as data grows. Understanding *why* NumPy is fast — not just *that* it is fast — makes you a better engineer because you stop guessing when to use it.
+
+## Learning Objectives
+
+- Explain the fundamental memory difference between Python lists and NumPy arrays
+- Describe what the ndarray is and why it is designed that way
+- Read and interpret the key array attributes: `shape`, `ndim`, `size`, `dtype`, `itemsize`, `nbytes`
+- Choose the correct dtype for a use case and understand the consequence of getting it wrong
+- Recognize where NumPy sits in the Python data science ecosystem
 
 ---
 
-## 🧭 Table of Contents
+## The Problem With Python Lists
 
-- [[#What is NumPy?]]
-- [[#Why NumPy? The Problem with Python Lists]]
-- [[#How NumPy Solves This]]
-- [[#The ndarray — NumPy's Core Object]]
-- [[#Key Terminology]]
-- [[#Your First NumPy Program]]
-- [[#NumPy in the Ecosystem]]
-- [[#Summary]]
-
----
-
-## What is NumPy?
-
-**NumPy** stands for **Numerical Python**.
-
-It is an open-source Python library that provides:
-- A powerful **N-dimensional array object** (`ndarray`)
-- **Mathematical functions** that operate on entire arrays at once
-- Tools for **linear algebra**, **Fourier transforms**, and **random number generation**
-- A foundation that **Pandas, Matplotlib, Scikit-learn, TensorFlow** all build upon
-
-> [!info] Quick Fact
-> NumPy was created by **Travis Oliphant** in 2005. It combined the best of two older libraries: `Numeric` and `Numarray`. Today it has hundreds of millions of downloads per month.
-
----
-
-## Why NumPy? The Problem with Python Lists
-
-### 🐢 Python Lists Are Slow for Math
-
-Imagine you have 1 million numbers and want to double each one.
-
-**Pure Python way:**
-
-```python
-# Create a list of 1 million numbers
-data = list(range(1_000_000))
-
-# Double each number
-result = []
-for x in data:
-    result.append(x * 2)
-```
-
-This works, but it is **slow and verbose**. Why?
-
-### 🔍 Under the Hood: Why Lists Are Slow
-
-Python lists have a fundamental problem for numerical work:
-
-```
-Python List Memory Layout:
-┌──────────────────────────────────────────────┐
-│  [ptr1] [ptr2] [ptr3] [ptr4] [ptr5] ...      │
-│    ↓       ↓      ↓      ↓      ↓            │
-│  [obj]  [obj]  [obj]  [obj]  [obj]           │
-│  type   type   type   type   type            │
-│  value  value  value  value  value           │
-│  ref    ref    ref    ref    ref             │
-└──────────────────────────────────────────────┘
-```
-
-Each Python **integer** is actually a full Python **object** (28 bytes!). A list stores **pointers** to these objects scattered in memory.
-
-**Problems:**
-1. 🏃 **No vectorization** — Python loops one element at a time
-2. 🧠 **Extra memory** — each number carries type info, reference count, etc.
-3. 📍 **No contiguous memory** — objects scattered everywhere (bad for CPU cache)
-4. 🔒 **Type flexibility** — Python must check types at runtime for every operation
-
-### ⏱️ Benchmark: List vs NumPy
+Python lists are general-purpose. They can hold a mix of integers, strings, objects, other lists — anything. That flexibility has a cost.
 
 ```python
 import numpy as np
-import time
 
-# Python list approach
-data_list = list(range(1_000_000))
-start = time.time()
-result_list = [x * 2 for x in data_list]
-list_time = time.time() - start
+# A Python integer is a full object: type tag, reference count, value
+# Each one consumes ~28 bytes on CPython
+import sys
+print(sys.getsizeof(42))        # Output: 28
 
-# NumPy approach
-data_array = np.arange(1_000_000)
-start = time.time()
-result_array = data_array * 2
-numpy_time = time.time() - start
-
-print(f"List time:  {list_time:.4f} seconds")
-print(f"NumPy time: {numpy_time:.4f} seconds")
-print(f"NumPy is {list_time / numpy_time:.0f}x faster!")
-
-# Typical output:
-# List time:  0.0821 seconds
-# NumPy time: 0.0008 seconds
-# NumPy is ~100x faster!
+# A list of 1 million integers
+data = list(range(1_000_000))
+# The list stores 1M pointers (8 bytes each) to 1M scattered objects
+# Total: ~36 MB just for the list structure, plus the objects themselves
 ```
+
+Three things make lists slow for numerical work:
+
+**Scattered memory.** Each list element is a pointer to an object stored somewhere in the heap. When you iterate, the CPU constantly chases pointers to random memory locations. This destroys cache efficiency — the CPU prefetcher cannot predict where to look next.
+
+**Type overhead per element.** Every Python integer carries metadata: a type pointer, a reference count, and the actual value. That is 28 bytes for a number that needs 8. For large arrays, this is a 3.5x memory waste.
+
+**No SIMD.** Modern CPUs can perform the same operation on multiple values simultaneously (Single Instruction, Multiple Data). This only works on contiguous blocks of the same type. Python loops cannot use it.
 
 ---
 
 ## How NumPy Solves This
 
-NumPy arrays solve every problem Python lists have:
+A NumPy array stores its data as a contiguous block of a single, fixed type:
 
 ```
+Python List Memory Layout:
+┌──────────────────────────────────────────────┐
+│  [ptr] → [obj: type|refcount|28] scattered   │
+│  [ptr] → [obj: type|refcount|28] scattered   │
+│  [ptr] → [obj: type|refcount|28] scattered   │
+└──────────────────────────────────────────────┘
+
 NumPy Array Memory Layout:
-┌────────────────────────────────────────────────┐
-│  [val1][val2][val3][val4][val5][val6]...        │
-│  float64 · float64 · float64 · float64 ...     │
-│  ← contiguous block of memory →                │
-└────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────┐
+│  [8B][8B][8B][8B][8B][8B][8B][8B]...        │
+│  ← contiguous float64 values in one block → │
+└─────────────────────────────────────────────┘
 ```
 
-| Feature | Python List | NumPy Array |
-|---------|------------|-------------|
-| Memory layout | Scattered pointers | **Contiguous block** |
-| Element type | Mixed (any object) | **Single fixed type** |
-| Math operations | Element-by-element loop | **Vectorized (C speed)** |
-| Memory per number | ~28 bytes | **8 bytes (float64)** |
-| Speed for math | Slow | **10–1000x faster** |
-| Multi-dimensional | Nested lists | **True N-D arrays** |
+The benefits cascade:
 
-### 🚀 How NumPy Gets Its Speed
+- The CPU's prefetcher loads the next values before you ask for them
+- SIMD instructions process 4 or 8 values per clock cycle
+- Computation happens in compiled C code, not interpreted Python bytecode
+- Memory usage is 3–4x lower for typical numeric data
 
-1. **Implemented in C** — the actual computation happens in compiled C code
-2. **Contiguous memory** — CPU caches work efficiently on sequential data
-3. **SIMD instructions** — modern CPUs process multiple numbers simultaneously
-4. **No type checking** — all elements are the same type, decided upfront
-5. **BLAS/LAPACK** — uses optimized math libraries under the hood
+```python
+import numpy as np
+import time
+
+# Build the same data as a list and as an array
+data_list = list(range(1_000_000))
+data_array = np.arange(1_000_000, dtype=np.float64)
+
+# Python list: loop and square each element
+start = time.perf_counter()
+result_list = [x * x for x in data_list]
+list_time = time.perf_counter() - start
+
+# NumPy: vectorized squaring
+start = time.perf_counter()
+result_array = data_array ** 2
+numpy_time = time.perf_counter() - start
+
+print(f"List time:  {list_time * 1000:.1f} ms")
+print(f"NumPy time: {numpy_time * 1000:.1f} ms")
+print(f"Speedup:    {list_time / numpy_time:.0f}x")
+# Output:
+# List time:  82.3 ms
+# NumPy time:  0.8 ms
+# Speedup:    100x
+```
+
+> [!info] Why 100x?
+> The exact speedup depends on what the operation is and the hardware. Embarrassingly parallel operations like element-wise math typically run 50–200x faster. Operations with data dependencies (e.g., iterative algorithms) see smaller gains. The speedup comes from eliminating Python interpreter overhead, not from magic.
 
 ---
 
 ## The ndarray — NumPy's Core Object
 
-Everything in NumPy revolves around the **`ndarray`** (N-Dimensional Array).
+Every NumPy array is an instance of `numpy.ndarray`. You rarely construct one directly — you use creation functions — but understanding what it stores matters.
+
+An ndarray has:
+- A **data buffer**: the raw contiguous block of bytes
+- A **dtype**: describes what each element is (float64, int32, bool, etc.)
+- A **shape**: a tuple of integers giving the size along each dimension
+- **Strides**: how many bytes to jump to move one step along each axis
+
+Strides are the mechanism that makes slicing without copying possible. When you take a slice, NumPy creates a new array object pointing into the same buffer with adjusted strides — no data is moved.
 
 ```python
 import numpy as np
 
-# Create your first ndarray
-arr = np.array([1, 2, 3, 4, 5])
-print(arr)        # [1 2 3 4 5]
-print(type(arr))  # <class 'numpy.ndarray'>
-```
-
-### 📐 Dimensions (Axes)
-
-NumPy arrays can have any number of dimensions:
-
-```python
-# 0-D array (scalar)
+# 0-D: a scalar wrapped in an array
 scalar = np.array(42)
-print(scalar.ndim)   # 0
-print(scalar.shape)  # ()
+print(scalar.ndim)   # Output: 0
+print(scalar.shape)  # Output: ()
 
-# 1-D array (vector)
-vector = np.array([1, 2, 3, 4])
-print(vector.ndim)   # 1
-print(vector.shape)  # (4,)
+# 1-D: a vector
+vector = np.array([1.0, 2.0, 3.0, 4.0])
+print(vector.ndim)   # Output: 1
+print(vector.shape)  # Output: (4,)
 
-# 2-D array (matrix)
+# 2-D: a matrix (rows × columns)
 matrix = np.array([[1, 2, 3],
                    [4, 5, 6]])
-print(matrix.ndim)   # 2
-print(matrix.shape)  # (2, 3)  ← 2 rows, 3 columns
+print(matrix.ndim)   # Output: 2
+print(matrix.shape)  # Output: (2, 3)
 
-# 3-D array (tensor)
+# 3-D: a tensor (think stack of matrices)
 tensor = np.array([[[1, 2], [3, 4]],
                    [[5, 6], [7, 8]]])
-print(tensor.ndim)   # 3
-print(tensor.shape)  # (2, 2, 2)
+print(tensor.ndim)   # Output: 3
+print(tensor.shape)  # Output: (2, 2, 2)
 ```
 
-### 🏷️ Essential Array Attributes
+### The Axis Convention
 
-Every `ndarray` has these attributes you'll use constantly:
+```
+1-D array:   [a, b, c, d]
+              ← axis 0 →
+
+2-D array:
+              ← axis 1 →
+           ↑  [a, b, c]
+    axis 0 |  [d, e, f]
+           ↓  [g, h, i]
+
+3-D array: shape (depth, rows, cols)
+  axis 0 → which matrix in the stack (depth)
+  axis 1 → which row within that matrix
+  axis 2 → which column within that row
+```
+
+> [!tip] Reading Shapes
+> For 2-D arrays, shape is always `(rows, columns)`. For higher dimensions, the axes go from outermost to innermost — the last two are always rows and columns.
+
+---
+
+## Key Array Attributes
 
 ```python
+import numpy as np
+
 arr = np.array([[1.0, 2.0, 3.0],
                 [4.0, 5.0, 6.0]])
 
-print(arr.ndim)    # 2           ← number of dimensions
-print(arr.shape)   # (2, 3)      ← size of each dimension
-print(arr.size)    # 6           ← total number of elements
-print(arr.dtype)   # float64     ← data type of elements
-print(arr.itemsize)# 8           ← bytes per element
-print(arr.nbytes)  # 48          ← total bytes used (size × itemsize)
+print(arr.ndim)     # Output: 2          — number of dimensions
+print(arr.shape)    # Output: (2, 3)     — size along each axis
+print(arr.size)     # Output: 6          — total number of elements
+print(arr.dtype)    # Output: float64    — data type of each element
+print(arr.itemsize) # Output: 8          — bytes per element
+print(arr.nbytes)   # Output: 48         — total memory (size × itemsize)
+
+# Strides tell you how many bytes to move per step along each axis
+print(arr.strides)  # Output: (24, 8) — 24 bytes per row, 8 bytes per column
 ```
 
-> [!tip] Shape is Always a Tuple
-> `shape` returns `(rows, columns)` for 2D arrays. For 1D: `(n,)` — notice the trailing comma, that's how Python makes a 1-element tuple.
+> [!info] Why `nbytes` Matters
+> When your dataset has 10 million float64 values, `nbytes` tells you it takes 80 MB. If you switch to float32, that drops to 40 MB. For deep learning models with billions of parameters, this difference is everything.
 
 ---
 
-## Key Terminology
+## The dtype System
 
-| Term | Meaning | Example |
-|------|---------|---------|
-| **ndarray** | NumPy's array object | `np.array([1,2,3])` |
-| **axis** | A dimension of the array | axis=0 is rows, axis=1 is columns |
-| **rank** | Number of dimensions (ndim) | A matrix has rank 2 |
-| **shape** | Size along each dimension | `(3, 4)` = 3 rows, 4 cols |
-| **dtype** | Data type of elements | `float64`, `int32`, `bool` |
-| **scalar** | A 0-D array (single value) | `np.array(5)` |
-| **vector** | A 1-D array | `np.array([1,2,3])` |
-| **matrix** | A 2-D array | `np.array([[1,2],[3,4]])` |
-| **tensor** | A 3-D or higher array | Used in deep learning |
-
-### 📊 Visual: Axis Convention
-
-```
-1-D array:  [a, b, c, d]
-             ←  axis 0  →
-
-2-D array:
-            ←  axis 1  →
-          ↑  [a, b, c]
-  axis 0  |  [d, e, f]
-          ↓  [g, h, i]
-
-3-D array: Think of it as a stack of matrices
-  axis 0 → which matrix (depth)
-  axis 1 → which row
-  axis 2 → which column
-```
-
----
-
-## Data Types (dtype)
-
-NumPy supports many numeric types. The most common:
-
-```python
-# Integer types
-np.int8    # -128 to 127
-np.int16   # -32,768 to 32,767
-np.int32   # -2.1B to 2.1B
-np.int64   # Very large integers (default on 64-bit systems)
-
-# Unsigned integer types
-np.uint8   # 0 to 255 (great for image pixels!)
-np.uint32  # 0 to 4.3B
-
-# Float types
-np.float16 # Half precision (saves memory)
-np.float32 # Single precision (common in deep learning)
-np.float64 # Double precision (default, most precise)
-
-# Other
-np.bool_   # True / False
-np.complex128  # Complex numbers
-
-# Checking and setting dtype:
-arr = np.array([1, 2, 3])
-print(arr.dtype)  # int64 (on most 64-bit systems)
-
-arr_float = np.array([1.0, 2.0, 3.0])
-print(arr_float.dtype)  # float64
-
-# Specify dtype explicitly
-arr_int32 = np.array([1, 2, 3], dtype=np.int32)
-print(arr_int32.dtype)  # int32
-
-# Convert dtype
-arr_as_float = arr.astype(np.float64)
-print(arr_as_float.dtype)  # float64
-```
-
-> [!warning] Be Careful with dtypes!
-> If you create `np.array([1, 2, 3])` it becomes `int64`. If you then try to store `3.14` in it, it gets truncated to `3`! Always use the right dtype from the start.
-
----
-
-## Your First NumPy Program
-
-Let's put it all together with a meaningful example:
+dtype is not cosmetic. It controls how much memory each element uses and what values it can represent. Getting dtype wrong creates two categories of bug: silent overflow (values wrap around silently) and unnecessary memory waste.
 
 ```python
 import numpy as np
 
-# ─── Problem: Analyze student test scores ───
+# Integer types — range grows with bit width
+np.int8    # -128 to 127
+np.int16   # -32,768 to 32,767
+np.int32   # -2.1 billion to 2.1 billion
+np.int64   # default on 64-bit systems, very large range
 
-# 5 students, 3 tests each
-scores = np.array([
-    [85, 92, 78],    # Student 1
-    [90, 88, 95],    # Student 2
-    [72, 65, 80],    # Student 3
-    [88, 91, 87],    # Student 4
-    [60, 70, 75],    # Student 5
-])
+# Unsigned integers — useful when values cannot be negative
+np.uint8   # 0 to 255  ← the standard for image pixels
+np.uint16  # 0 to 65,535
 
-print("=== Student Score Analysis ===")
-print(f"Shape: {scores.shape}")        # (5, 3)
-print(f"Total elements: {scores.size}") # 15
-print(f"Data type: {scores.dtype}")    # int64
+# Float types — precision vs memory tradeoff
+np.float16 # half precision, used in GPU training to save VRAM
+np.float32 # single precision, standard in deep learning
+np.float64 # double precision, NumPy default, highest precision
 
-# Average score per student (average across columns, axis=1)
-student_averages = scores.mean(axis=1)
-print(f"\nStudent averages: {student_averages}")
-# [85. 91. 72.33 88.67 68.33]
+# Other
+np.bool_   # True / False, 1 byte each
+np.complex128  # complex numbers
 
-# Average score per test (average across rows, axis=0)
-test_averages = scores.mean(axis=0)
-print(f"Test averages: {test_averages}")
-# [79. 81.2 83.]
+# NumPy infers dtype from the input
+arr_int   = np.array([1, 2, 3])
+arr_float = np.array([1.0, 2.0, 3.0])
+arr_bool  = np.array([True, False, True])
 
-# Highest score in the whole dataset
-print(f"\nHighest score: {scores.max()}")    # 95
-print(f"Lowest score: {scores.min()}")      # 60
-print(f"Overall average: {scores.mean():.2f}")  # 79.73
+print(arr_int.dtype)   # Output: int64
+print(arr_float.dtype) # Output: float64
+print(arr_bool.dtype)  # Output: bool
 
-# Who passed (above 75)?
-passed = scores > 75
-print(f"\nPassed matrix:\n{passed}")
+# Specify dtype explicitly
+arr_f32 = np.array([1, 2, 3], dtype=np.float32)
+print(arr_f32.dtype)   # Output: float32
+
+# Convert dtype with astype (returns a new array)
+arr_f64 = arr_f32.astype(np.float64)
+print(arr_f64.dtype)   # Output: float64
 ```
+
+> [!warning] Integer Overflow Is Silent
+> ```python
+> # uint8 holds 0 to 255. What happens at 256?
+> arr = np.array([254, 255], dtype=np.uint8)
+> arr = arr + 2
+> print(arr)  # Output: [0 1]  ← wrapped around silently!
+>
+> # This is a real bug in image processing code.
+> # Always cast to int32 before arithmetic, then cast back.
+> arr = np.array([200], dtype=np.uint8)
+> result = arr.astype(np.int32) + 100
+> result = result.clip(0, 255).astype(np.uint8)
+> print(result)  # Output: [255]  ← correctly clamped
+> ```
+
+> [!warning] Mixed Types Cause Upcasting
+> ```python
+> arr = np.array([1, 2, 3])        # int64
+> result = arr + 1.5               # float64, because int + float → float
+> print(result.dtype)              # Output: float64
+>
+> # This is usually fine, but if you expected int output, check your dtypes.
+> ```
 
 ---
 
-## NumPy in the Ecosystem
+## Memory Layout: C vs Fortran Order
 
-NumPy doesn't work alone — it's the **foundation** everything else is built on:
+This is advanced but worth knowing. NumPy stores 2-D arrays in **row-major order** (C order) by default: the elements of each row are contiguous in memory.
+
+```
+2-D array [[1, 2, 3],      C order (row-major):
+            [4, 5, 6]]:    memory → [1, 2, 3, 4, 5, 6]
+
+                           Fortran order (column-major):
+                           memory → [1, 4, 2, 5, 3, 6]
+```
+
+```python
+import numpy as np
+
+arr = np.array([[1, 2, 3], [4, 5, 6]])
+print(arr.strides)         # Output: (24, 8) — row stride 24B, col stride 8B
+
+arr_f = np.asfortranarray(arr)
+print(arr_f.strides)       # Output: (8, 16) — col stride 8B, row stride 16B
+```
+
+> [!info] When Does This Matter?
+> For most day-to-day work, it does not. It matters when you call BLAS/LAPACK routines (used by `np.linalg`) or pass arrays to external libraries that expect Fortran-order (some legacy scientific code). NumPy handles the conversion automatically in most cases.
+
+---
+
+## NumPy In the Ecosystem
+
+NumPy does not work alone. It is the foundation that every major data science library builds on:
 
 ```
               ┌─────────────────────────────────────┐
-              │           Your Code / App           │
+              │       Your Analysis / Model         │
               └─────────────────────────────────────┘
                     ↓           ↓          ↓
          ┌──────────────┐ ┌─────────┐ ┌──────────────┐
@@ -339,38 +295,61 @@ NumPy doesn't work alone — it's the **foundation** everything else is built on
          │  DataFrames  │ │  Plots  │ │  ML Models   │
          └──────────────┘ └─────────┘ └──────────────┘
                     ↓           ↓          ↓
-              ┌─────────────────────────────────────┐
-              │              NumPy                  │
-              │          (ndarray + math)           │
-              └─────────────────────────────────────┘
+         ┌──────────────────────────────────────────┐
+         │                  NumPy                   │
+         │           ndarray + math functions       │
+         └──────────────────────────────────────────┘
                               ↓
-              ┌─────────────────────────────────────┐
-              │         C / BLAS / LAPACK           │
-              │      (Low-level, fast math)         │
-              └─────────────────────────────────────┘
+         ┌──────────────────────────────────────────┐
+         │         C / BLAS / LAPACK / SIMD         │
+         └──────────────────────────────────────────┘
 ```
 
+When Pandas says `.values`, it returns a NumPy array. When Scikit-learn fits a model, it works on NumPy arrays internally. When PyTorch moves data to CPU, it mirrors NumPy's interface. Learning NumPy well means you understand what all these libraries are actually doing with your data.
+
 ---
 
-## Summary
+## Your First Meaningful Program
+
+```python
+import numpy as np
+
+# Five students, three exams each
+scores = np.array([
+    [85, 92, 78],
+    [90, 88, 95],
+    [72, 65, 80],
+    [88, 91, 87],
+    [60, 70, 75],
+])
+
+print(f"Shape: {scores.shape}")          # Output: (5, 3)
+print(f"dtype: {scores.dtype}")          # Output: int64
+print(f"Memory: {scores.nbytes} bytes")  # Output: 120 bytes
+
+# Average score per student (collapse across columns)
+per_student = scores.mean(axis=1)
+print(per_student.round(1))
+# Output: [85.  91.  72.3 88.7 68.3]
+
+# Average score per exam (collapse across rows)
+per_exam = scores.mean(axis=0)
+print(per_exam.round(1))
+# Output: [79.  81.2 83. ]
+
+# Who passed all three exams?
+passing = np.all(scores >= 70, axis=1)
+print(passing)
+# Output: [ True  True False  True False]
+```
 
 > [!success] Key Takeaways
-> 
-> 1. **NumPy = Numerical Python** — the foundation of scientific computing in Python
-> 2. **Arrays beat lists** for numerical work: faster, less memory, cleaner code
-> 3. **ndarray** is NumPy's core — an N-dimensional, homogeneous, fixed-type array
-> 4. Key attributes: `shape`, `ndim`, `size`, `dtype`, `itemsize`, `nbytes`
-> 5. **dtype matters** — float64 is default for decimals, int64 for integers
-> 6. NumPy is the **bedrock** — Pandas, Matplotlib, and ML libraries all use it
+> - NumPy is fast because of contiguous memory, fixed dtype, and compiled C code
+> - The ndarray has `shape`, `ndim`, `size`, `dtype`, `itemsize`, `nbytes` — know all six
+> - dtype determines memory use and overflow behavior — set it explicitly when it matters
+> - NumPy is the foundation every major data science library builds on
+> - Axes go outermost to innermost; `axis=0` is rows, `axis=1` is columns
 
 ---
 
-## 🔗 Navigation
-
-| Previous | Next |
-|----------|------|
-| [[00-agenda]] | [[02-array-creation]] |
-
----
-
-*Tags: #numpy #python #datascience #arrays #ndarray #fundamentals*
+[[00-agenda]] | [[02-array-creation]]

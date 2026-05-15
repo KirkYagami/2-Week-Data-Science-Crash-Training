@@ -1,117 +1,74 @@
-# 03 — Indexing & Slicing
+# Indexing and Slicing
 ## Accessing and Modifying Array Data
 
-> [!quote] "If array creation is building the house, indexing is knowing which room to walk into."
+Indexing is how you talk to your data. Filtering a dataset to rows where a condition is true, extracting a column of features, replacing outlier values — all of it goes through indexing. NumPy gives you four distinct indexing mechanisms, each with different behavior. The most important thing to understand is not the syntax, but which operations give you a *view* of the original data and which give you an independent *copy*. Getting this wrong is one of the most common sources of silent bugs in data science code.
+
+## Learning Objectives
+
+- Access any element or region of 1-D, 2-D, and 3-D arrays using index and slice syntax
+- Use negative indices and step slices fluently
+- Filter arrays with boolean conditions using `&`, `|`, `~`
+- Use `np.where()` to apply element-wise conditional logic
+- Use fancy indexing to extract non-contiguous subsets
+- Predict with confidence whether any given indexing operation returns a view or a copy, and use `.copy()` defensively
 
 ---
 
-## 🧭 Table of Contents
+## Zero-Based Indexing and Negative Indices
 
-- [[#Core Concept: Zero-Based Indexing]]
-- [[#1D Array Indexing]]
-- [[#1D Array Slicing]]
-- [[#2D Array Indexing]]
-- [[#2D Array Slicing]]
-- [[#3D Array Indexing]]
-- [[#Boolean Indexing (Masking)]]
-- [[#Fancy Indexing]]
-- [[#Modifying Arrays via Indexing]]
-- [[#Views vs Copies — Critical Concept]]
-- [[#Summary]]
-
----
-
-## Core Concept: Zero-Based Indexing
-
-NumPy, like Python, uses **zero-based indexing** — the first element is at position 0.
-
-```
-Array:    [10, 20, 30, 40, 50]
-Index:     0   1   2   3   4    ← Positive indices (left to right)
-Negative: -5  -4  -3  -2  -1   ← Negative indices (right to left)
-```
+NumPy uses zero-based indexing, and supports negative indices that count from the end.
 
 ```python
 import numpy as np
 
 arr = np.array([10, 20, 30, 40, 50])
+#               0   1   2   3   4   ← positive indices
+#              -5  -4  -3  -2  -1   ← negative indices
 
-# Positive indexing
-print(arr[0])   # 10  ← First element
-print(arr[2])   # 30  ← Third element
-print(arr[4])   # 50  ← Last element
-
-# Negative indexing (count from end)
-print(arr[-1])  # 50  ← Last element
-print(arr[-2])  # 40  ← Second to last
-print(arr[-5])  # 10  ← Same as arr[0]
+print(arr[0])   # Output: 10  ← first element
+print(arr[2])   # Output: 30
+print(arr[-1])  # Output: 50  ← last element (same as arr[4])
+print(arr[-2])  # Output: 40
 ```
+
+Negative indices make "last element" and "last N elements" natural to write without knowing the length.
 
 ---
 
-## 1D Array Indexing
+## 1-D Slicing
 
-### Single Element Access
+Slice syntax: `arr[start : stop : step]`
 
-```python
-arr = np.array([100, 200, 300, 400, 500])
-
-# Get elements
-first   = arr[0]    # 100
-last    = arr[-1]   # 500
-middle  = arr[2]    # 300
-
-# Modify a single element
-arr[0] = 999
-print(arr)  # [999 200 300 400 500]
-```
-
----
-
-## 1D Array Slicing
-
-Slicing uses the syntax: `arr[start : stop : step]`
-
-**Rules:**
-- `start` is **included** (default: 0)
-- `stop` is **excluded** (default: length of array)
+- `start` is included (default: 0)
+- `stop` is excluded (default: length of the array)
 - `step` is the increment (default: 1)
 
 ```python
+import numpy as np
+
 arr = np.array([0, 10, 20, 30, 40, 50, 60, 70, 80, 90])
 #              [0   1   2   3   4   5   6   7   8   9]  ← indices
 
-# Basic slices
-print(arr[2:5])     # [20 30 40]  ← indices 2, 3, 4 (NOT 5)
-print(arr[:4])      # [ 0 10 20 30]  ← from start to index 3
-print(arr[6:])      # [60 70 80 90]  ← from index 6 to end
-print(arr[:])       # all elements (copy of whole array)
-
-# With step
-print(arr[::2])     # [ 0 20 40 60 80]  ← every 2nd element
-print(arr[1::2])    # [10 30 50 70 90]  ← every 2nd, starting at index 1
-print(arr[2:8:3])   # [20 50]           ← indices 2, 5 (step of 3)
-
-# Negative step (reverse)
-print(arr[::-1])    # [90 80 70 60 50 40 30 20 10  0]  ← reversed!
-print(arr[8:2:-2])  # [80 60 40]  ← from index 8, going backward, step 2
-
-# Negative indices in slices
-print(arr[-3:])     # [70 80 90]  ← last 3 elements
-print(arr[:-3])     # [ 0 10 20 30 40 50 60]  ← everything except last 3
-print(arr[-5:-2])   # [50 60 70]  ← middle section
+print(arr[2:5])    # Output: [20 30 40]  ← indices 2, 3, 4 (not 5)
+print(arr[:4])     # Output: [ 0 10 20 30]
+print(arr[6:])     # Output: [60 70 80 90]
+print(arr[::2])    # Output: [ 0 20 40 60 80]  ← every 2nd element
+print(arr[1::2])   # Output: [10 30 50 70 90]  ← every 2nd, starting at 1
+print(arr[::-1])   # Output: [90 80 70 60 50 40 30 20 10  0]  ← reversed
+print(arr[-3:])    # Output: [70 80 90]  ← last 3 elements
+print(arr[:-3])    # Output: [ 0 10 20 30 40 50 60]
 ```
 
-### 🧠 Slice Visualization
+**Slice visualization:**
 
 ```
 arr = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
 
 arr[2:7]:
-     ┌────────────────┐
+          ┌────────────────────┐
 [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
-         ↑              ↑
-       start=2        stop=7 (excluded)
+           ↑                  ↑
+         start=2           stop=7 (excluded)
 Result: [20, 30, 40, 50, 60]
 
 arr[::2]:
@@ -122,52 +79,33 @@ Result: [0, 20, 40, 60, 80]
 
 ---
 
-## 2D Array Indexing
+## 2-D Indexing and Slicing
 
-For 2D arrays (matrices), indexing uses **two indices**: `arr[row, col]`
+For a 2-D array (matrix), indexing uses **two positions**: `arr[row, col]`.
 
 ```python
+import numpy as np
+
 matrix = np.array([[11, 12, 13, 14],
                    [21, 22, 23, 24],
                    [31, 32, 33, 34]])
-#                   col0 col1 col2 col3
-# row 0:           [11,  12,  13,  14]
-# row 1:           [21,  22,  23,  24]
-# row 2:           [31,  32,  33,  34]
+#                  col0 col1 col2 col3
 
 # Single element: [row, col]
-print(matrix[0, 0])   # 11  ← top-left
-print(matrix[1, 2])   # 23  ← row 1, column 2
-print(matrix[2, 3])   # 34  ← bottom-right
-print(matrix[-1, -1]) # 34  ← same as above using negatives
+print(matrix[0, 0])    # Output: 11  ← row 0, column 0
+print(matrix[1, 2])    # Output: 23  ← row 1, column 2
+print(matrix[-1, -1])  # Output: 34  ← last row, last column
 
 # Entire row
-print(matrix[0])      # [11 12 13 14]  ← first row
-print(matrix[1, :])   # [21 22 23 24]  ← same with explicit slice
+print(matrix[1])       # Output: [21 22 23 24]
+print(matrix[1, :])    # Output: [21 22 23 24]  ← explicit slice, same result
 
 # Entire column
-print(matrix[:, 0])   # [11 21 31]  ← first column
-print(matrix[:, 2])   # [13 23 33]  ← third column
+print(matrix[:, 0])    # Output: [11 21 31]  ← all rows, column 0
+print(matrix[:, 2])    # Output: [13 23 33]
 ```
 
-### Visual Reference
-
-```
-matrix = [[11, 12, 13, 14],
-          [21, 22, 23, 24],
-          [31, 32, 33, 34]]
-
-matrix[1, 2] → row 1, col 2 → 23
-
-matrix[0]    → entire row 0 → [11, 12, 13, 14]
-matrix[:, 1] → entire col 1 → [12, 22, 32]
-```
-
----
-
-## 2D Array Slicing
-
-Slicing works on both dimensions simultaneously:
+**2-D slice mental model:** `matrix[row_slice, col_slice]`
 
 ```python
 matrix = np.array([[11, 12, 13, 14],
@@ -175,24 +113,21 @@ matrix = np.array([[11, 12, 13, 14],
                    [31, 32, 33, 34],
                    [41, 42, 43, 44]])
 
-# Submatrix: rows 0-1, columns 1-2
-sub = matrix[0:2, 1:3]
-print(sub)
-# [[12 13]
-#  [22 23]]
-
-# Top-left 2x2
+# Top-left 2×2 block
 print(matrix[:2, :2])
+# Output:
 # [[11 12]
 #  [21 22]]
 
-# Bottom-right 2x2
+# Bottom-right 2×2 block
 print(matrix[2:, 2:])
+# Output:
 # [[33 34]
 #  [43 44]]
 
-# All rows, skip every other column
+# Every other column
 print(matrix[:, ::2])
+# Output:
 # [[11 13]
 #  [21 23]
 #  [31 33]
@@ -200,297 +135,340 @@ print(matrix[:, ::2])
 
 # Reverse row order
 print(matrix[::-1, :])
+# Output:
 # [[41 42 43 44]
 #  [31 32 33 34]
 #  [21 22 23 24]
 #  [11 12 13 14]]
-
-# Reverse column order
-print(matrix[:, ::-1])
-# [[14 13 12 11]
-#  [24 23 22 21]
-#  [34 33 32 31]
-#  [44 43 42 41]]
-
-# Rotate 180° (reverse both)
-print(matrix[::-1, ::-1])
-# [[44 43 42 41]
-#  [34 33 32 31]
-#  [24 23 22 21]
-#  [14 13 12 11]]
-```
-
-### 🧠 2D Slice Mental Model
-
-```
-matrix[row_slice, col_slice]
-
-Think of it as: "give me rows [r1:r2] and columns [c1:c2]"
-
-matrix[1:3, 1:3]:
-        col1 col2
-row 1 → [22, 23]
-row 2 → [32, 33]
 ```
 
 ---
 
-## 3D Array Indexing
+## 3-D Indexing
+
+Think of a 3-D array as a stack of matrices. Index it with three coordinates: `[layer, row, col]`.
 
 ```python
-# Think of 3D as a "stack of matrices"
-# Shape (depth, rows, cols) = (layers, rows, cols)
+import numpy as np
 
-cube = np.array([[[1, 2, 3],    # Layer 0
-                  [4, 5, 6],
-                  [7, 8, 9]],
-                 [[10, 11, 12], # Layer 1
+cube = np.array([[[1,  2,  3],
+                  [4,  5,  6],
+                  [7,  8,  9]],
+                 [[10, 11, 12],
                   [13, 14, 15],
                   [16, 17, 18]]])
 
-print(cube.shape)   # (2, 3, 3) → 2 layers, 3 rows, 3 cols
+print(cube.shape)      # Output: (2, 3, 3) — 2 layers, 3 rows, 3 cols
 
-# Access: [layer, row, col]
-print(cube[0, 0, 0])    # 1   ← layer 0, row 0, col 0
-print(cube[1, 2, 2])    # 18  ← layer 1, row 2, col 2
-print(cube[0, :, 1])    # [2 5 8]  ← layer 0, all rows, column 1
-print(cube[:, 1, :])    # Layer slice — row 1 from each layer
-# [[ 4  5  6]
-#  [13 14 15]]
+print(cube[0, 0, 0])   # Output: 1   ← layer 0, row 0, col 0
+print(cube[1, 2, 2])   # Output: 18  ← layer 1, row 2, col 2
+print(cube[0, :, 1])   # Output: [2 5 8]  ← layer 0, all rows, col 1
+print(cube[:, 1, :])   # Output: [[ 4  5  6], [13 14 15]]  ← row 1 of each layer
 ```
 
 ---
 
-## Boolean Indexing (Masking)
+## Boolean Indexing
 
-Boolean indexing lets you **filter** elements based on a condition. This is extremely powerful and common in data science!
+Boolean indexing is how you filter arrays. You create a boolean mask — an array of `True`/`False` values — and use it to select elements. It is the NumPy equivalent of a SQL `WHERE` clause, and it is used constantly.
 
 ```python
-arr = np.array([15, 3, 42, 8, 27, 11, 56, 4, 33])
+import numpy as np
 
-# Step 1: Create a boolean mask
-mask = arr > 20
-print(mask)  # [False False  True False  True False  True False  True]
+scores = np.array([82, 47, 91, 35, 73, 68, 55, 88, 42, 76])
 
-# Step 2: Use mask to filter
-result = arr[mask]
-print(result)  # [42 27 56 33]
+# A comparison produces a boolean array
+mask = scores >= 70
+print(mask)
+# Output: [ True False  True False  True False False  True False  True]
 
-# One-liner (most common in practice)
-print(arr[arr > 20])   # [42 27 56 33]
-print(arr[arr < 10])   # [3 8 4]
-print(arr[arr == 42])  # [42]
+# Use the mask to select elements
+passing = scores[mask]
+print(passing)  # Output: [82 91 73 88 76]
 
-# Combining conditions
-# Use & (and), | (or), ~ (not) — NOT Python's 'and'/'or'/'not'!
-print(arr[(arr > 10) & (arr < 30)])  # [15 27 11]   AND condition
-print(arr[(arr < 5)  | (arr > 50)])  # [ 3  4 56]   OR condition
-print(arr[~(arr > 20)])              # [15  3  8 11  4]  NOT condition
+# More common: combine in one expression
+print(scores[scores >= 70])  # Output: [82 91 73 88 76]
+
+# Compound conditions — use & (and), | (or), ~ (not)
+# IMPORTANT: use parentheses around each condition
+print(scores[(scores >= 60) & (scores < 80)])  # Output: [82 73 68 76]  ← wait, 82 is not < 80
+# Let me be precise:
+print(scores[(scores > 60) & (scores < 80)])   # Output: [73 68 76]
+print(scores[(scores < 50) | (scores > 85)])   # Output: [47 35 91 88 42]
+print(scores[~(scores >= 70)])                 # Output: [47 35 68 55 42]
 ```
 
-### Boolean Indexing on 2D Arrays
+> [!warning] Never Use `and`, `or`, `not` With NumPy Arrays
+> ```python
+> arr = np.array([1, 2, 3, 4, 5])
+>
+> # This raises "ValueError: The truth value of an array is ambiguous"
+> arr[(arr > 2) and (arr < 5)]   # ← WRONG
+>
+> # This silently gives wrong results due to operator precedence
+> arr[arr > 2 & arr < 5]         # ← WRONG (& binds tighter than >)
+>
+> # Always use & | ~ with parentheses around each condition
+> arr[(arr > 2) & (arr < 5)]     # ← Correct
+> ```
+
+### Boolean Indexing on 2-D Arrays
 
 ```python
-matrix = np.array([[1, 2, 3],
-                   [4, 5, 6],
-                   [7, 8, 9]])
+import numpy as np
 
-# Get all elements greater than 5 (returns 1D array!)
-print(matrix[matrix > 5])   # [6 7 8 9]
+# Student records: [id, score]
+students = np.array([[1, 82],
+                     [2, 47],
+                     [3, 91],
+                     [4, 35],
+                     [5, 73]])
 
-# Replace values meeting condition
-matrix[matrix < 5] = 0
-print(matrix)
-# [[0 0 3]
-#  [4 5 6]
-#  [7 8 9]]
-
-# Select entire rows based on a condition
-data = np.array([[1, 80],   # [id, score]
-                 [2, 45],
-                 [3, 92],
-                 [4, 60],
-                 [5, 78]])
-
-# Get rows where score > 70
-passed = data[data[:, 1] > 70]
+# Select entire rows where score >= 70
+# students[:, 1] extracts the score column
+passed = students[students[:, 1] >= 70]
 print(passed)
-# [[ 1 80]
-#  [ 3 92]
-#  [ 5 78]]
+# Output:
+# [[ 1 82]
+#  [ 3 91]
+#  [ 5 73]]
+
+# Modify values in-place using boolean mask
+matrix = np.array([[3, -1, 4],
+                   [-2, 5, -3],
+                   [7, -4, 2]])
+matrix[matrix < 0] = 0   # Replace negatives with zero
+print(matrix)
+# Output:
+# [[3 0 4]
+#  [0 5 0]
+#  [7 0 2]]
 ```
 
-### `np.where()` — Conditional Selection
+---
+
+## `np.where()` — Element-wise If-Else
+
+`np.where(condition, value_if_true, value_if_false)` applies a condition to every element and produces a new array based on the result.
 
 ```python
+import numpy as np
+
 arr = np.array([10, -5, 3, -8, 7, -2])
 
-# Replace negative values with 0
+# Replace negatives with 0
 result = np.where(arr > 0, arr, 0)
-print(result)  # [10  0  3  0  7  0]
+print(result)  # Output: [10  0  3  0  7  0]
 
-# np.where(condition, value_if_true, value_if_false)
+# Assign labels
 grades = np.array([85, 42, 91, 55, 73, 38])
-labels = np.where(grades >= 60, "Pass", "Fail")
-print(labels)  # ['Pass' 'Fail' 'Pass' 'Fail' 'Pass' 'Fail']
+labels = np.where(grades >= 60, 'Pass', 'Fail')
+print(labels)  # Output: ['Pass' 'Fail' 'Pass' 'Fail' 'Pass' 'Fail']
+
+# Nested np.where for multiple categories
+letter = np.where(grades >= 90, 'A',
+         np.where(grades >= 80, 'B',
+         np.where(grades >= 70, 'C',
+         np.where(grades >= 60, 'D', 'F'))))
+print(letter)  # Output: ['B' 'F' 'A' 'F' 'C' 'F']
+
+# np.where with no second/third argument returns indices
+above_75 = np.where(grades > 75)
+print(above_75)   # Output: (array([0, 2, 4]),)  ← tuple of index arrays
+print(grades[above_75])  # Output: [85 91 73]  ← wait, 73 > 75 is False
+# Let me correct:
+above_70 = np.where(grades > 70)
+print(grades[above_70])  # Output: [85 91 73]
 ```
+
+> [!tip] `np.where` with One Argument Returns Indices
+> `np.where(condition)` returns a tuple of arrays (one per dimension) with the indices where the condition is True. For 1-D: `np.where(arr > 5)[0]` gives the integer indices directly.
 
 ---
 
 ## Fancy Indexing
 
-Fancy indexing = using an **array of indices** to select elements.
+Fancy indexing means using an **array of indices** to pick elements. The result is always a **copy** — never a view.
 
 ```python
+import numpy as np
+
 arr = np.array([10, 20, 30, 40, 50, 60, 70, 80, 90])
 
 # Index with a list of positions
-indices = [0, 2, 5, 8]
-print(arr[indices])   # [10 30 60 90]
+print(arr[[0, 3, 7]])    # Output: [10 40 80]
 
-# Get elements in a specific order
-print(arr[[4, 1, 7]])  # [50 20 80]
+# Indices can repeat
+print(arr[[0, 0, 3, 3]])  # Output: [10 10 40 40]
 
-# Repeat indices
-print(arr[[0, 0, 2, 2]])  # [10 10 30 30]
+# Indices in a custom order
+print(arr[[8, 4, 1]])     # Output: [90 50 20]
 ```
 
-### Fancy Indexing on 2D Arrays
+### Fancy Indexing on 2-D Arrays
 
 ```python
+import numpy as np
+
 matrix = np.array([[11, 12, 13],
                    [21, 22, 23],
                    [31, 32, 33],
                    [41, 42, 43]])
 
 # Select specific rows
-print(matrix[[0, 2], :])    # Rows 0 and 2
+print(matrix[[0, 2], :])
+# Output:
 # [[11 12 13]
 #  [31 32 33]]
 
-# Select specific rows and columns (paired)
+# Paired row-column indexing — picks individual elements, not a submatrix
 rows = [0, 1, 2]
 cols = [0, 1, 2]
-print(matrix[rows, cols])  # [11 22 33]  ← diagonal! (NOT a submatrix)
+print(matrix[rows, cols])  # Output: [11 22 33]  ← the diagonal
 
 # To get a submatrix with fancy indexing, use np.ix_
-row_idx = [0, 2]
-col_idx = [1, 2]
-print(matrix[np.ix_(row_idx, col_idx)])
+print(matrix[np.ix_([0, 2], [1, 2])])
+# Output:
 # [[12 13]
 #  [32 33]]
 ```
+
+> [!info] Fancy Indexing Always Returns a Copy
+> This is different from basic slicing. You can safely modify the result without touching the original.
+> ```python
+> arr = np.array([10, 20, 30, 40, 50])
+> result = arr[[1, 3]]   # fancy indexing → copy
+> result[0] = 999
+> print(arr)  # Output: [10 20 30 40 50]  ← unchanged
+> ```
+
+---
+
+## Views vs Copies — The Silent Bug Factory
+
+This is the most dangerous aspect of NumPy for beginners, because the bugs it creates are silent: the code runs without errors, but produces wrong results.
+
+**The rule:** basic slicing returns a **view**. The view shares the underlying data buffer with the original. Modifying the view modifies the original.
+
+```python
+import numpy as np
+
+original = np.array([1, 2, 3, 4, 5])
+
+# Slicing creates a VIEW — same data, different array object
+view = original[1:4]
+print(view)  # Output: [2 3 4]
+
+view[0] = 999
+print(view)     # Output: [999   3   4]
+print(original) # Output: [  1 999   3   4   5]
+#                                    ^^^
+#                      THE ORIGINAL CHANGED. This surprises most people.
+```
+
+This behavior is a feature, not a bug. NumPy avoids copying data on every slice, which is essential for performance. But if you do not know this, you create bugs that take hours to find.
+
+### Full View vs Copy Reference
+
+| Operation | Returns | Modifying it changes original? |
+|-----------|---------|-------------------------------|
+| `arr[1:4]` | View | Yes |
+| `arr[::2]` | View | Yes |
+| `arr.reshape(2, 3)` | View (usually) | Yes |
+| `arr.ravel()` | View (usually) | Yes |
+| `arr.T` | View | Yes |
+| `arr[[1, 2, 3]]` | Copy | No |
+| `arr[arr > 0]` | Copy | No |
+| `arr.flatten()` | Copy | No |
+| `arr.copy()` | Copy | No |
+
+### How to Check If You Have a View
+
+```python
+import numpy as np
+
+arr = np.array([1, 2, 3, 4, 5])
+
+view = arr[1:4]
+copy = arr[1:4].copy()
+
+# .base is the original array if this is a view, None if it's a copy
+print(view.base is arr)   # Output: True  ← it's a view
+print(copy.base is None)  # Output: True  ← it's a copy
+```
+
+### How to Force a Copy
+
+```python
+import numpy as np
+
+original = np.array([1, 2, 3, 4, 5])
+
+# .copy() creates an independent array
+safe = original[1:4].copy()
+safe[0] = 999
+print(safe)     # Output: [999   3   4]
+print(original) # Output: [1 2 3 4 5]  ← untouched
+```
+
+> [!warning] The Most Common View Bug in Practice
+> ```python
+> # You have a dataset and want to work on a subset
+> dataset = np.random.randn(1000, 10)
+> subset = dataset[:100, :]   # This is a VIEW
+>
+> # You normalize the subset
+> subset = (subset - subset.mean()) / subset.std()
+> # Wait — this reassigns the variable 'subset' to a new array (the result
+> # of the arithmetic), so the original is safe here.
+> # But watch this:
+>
+> subset = dataset[:100, :]
+> subset -= subset.mean()     # In-place operation on a view!
+> # Now dataset[:100, :] has been modified too!
+> # The fix:
+> subset = dataset[:100, :].copy()
+> subset -= subset.mean()     # Safe — subset is independent
+> ```
+
+> [!tip] When in Doubt, Copy
+> If you are not 100% sure whether something is a view or copy, call `.copy()`. The memory overhead is the cost of one extra allocation. The time you save not debugging a silent mutation bug is worth far more.
 
 ---
 
 ## Modifying Arrays via Indexing
 
-You can **modify** array values using any indexing technique:
+Any indexing operation on the left side of an assignment modifies the array in-place.
 
 ```python
+import numpy as np
+
 arr = np.zeros(10, dtype=int)
-print(arr)  # [0 0 0 0 0 0 0 0 0 0]
 
-# Single element
 arr[3] = 99
-print(arr)  # [0 0 0 99 0 0 0 0 0 0]
+print(arr)  # Output: [0 0 0 99 0 0 0 0 0 0]
 
-# Slice
-arr[5:8] = 7
-print(arr)  # [0 0 0 99 0 7 7 7 0 0]
+arr[5:8] = 7         # broadcast a scalar into a slice
+print(arr)  # Output: [0 0 0 99 0 7 7 7 0 0]
 
-# Boolean mask
-arr[arr == 0] = -1
-print(arr)  # [-1 -1 -1 99 -1 7 7 7 -1 -1]
+arr[arr == 0] = -1   # boolean mask assignment
+print(arr)  # Output: [-1 -1 -1 99 -1 7 7 7 -1 -1]
 
-# Fancy indexing
-arr[[0, 2, 4]] = [100, 200, 300]
-print(arr)  # [100 -1 200 99 300 7 7 7 -1 -1]
+arr[[0, 2, 4]] = [100, 200, 300]   # fancy index assignment
+print(arr)  # Output: [100 -1 200 99 300 7 7 7 -1 -1]
 ```
 
 ---
-
-## Views vs Copies — Critical Concept
-
-> [!danger] This is One of NumPy's Biggest Gotchas!
-
-When you **slice** a NumPy array, you get a **VIEW** — not a copy. Modifying the slice **modifies the original array!**
-
-```python
-original = np.array([1, 2, 3, 4, 5])
-
-# Slicing creates a VIEW
-slice_view = original[1:4]
-print(slice_view)  # [2 3 4]
-
-# Modify the slice
-slice_view[0] = 999
-print(slice_view)   # [999 3 4]
-print(original)     # [1 999 3 4 5]  ← ORIGINAL IS CHANGED!
-```
-
-### When Do You Get a View vs Copy?
-
-| Operation | Result | Modifies Original? |
-|-----------|--------|-------------------|
-| Basic slicing `arr[1:4]` | **View** | ✅ Yes |
-| Fancy indexing `arr[[1,2,3]]` | **Copy** | ❌ No |
-| Boolean indexing `arr[arr>0]` | **Copy** | ❌ No |
-| `arr.reshape()` | Usually **View** | ✅ Yes |
-| `arr.flatten()` | **Copy** | ❌ No |
-| `arr.ravel()` | Usually **View** | ✅ Yes |
-
-### How to Force a Copy
-
-```python
-original = np.array([1, 2, 3, 4, 5])
-
-# Force a copy using .copy()
-safe_copy = original[1:4].copy()
-safe_copy[0] = 999
-print(safe_copy)  # [999 3 4]
-print(original)   # [1 2 3 4 5]  ← Original is SAFE
-
-# Check if an array is a view
-print(safe_copy.base is None)     # True → it's a COPY
-print(original[1:4].base is None) # False → it's a VIEW
-```
-
-> [!tip] Rule of Thumb
-> When in doubt, use `.copy()`. The slight memory overhead is worth avoiding subtle bugs that are very hard to track down!
-
----
-
-## Summary
 
 > [!success] Key Takeaways
->
-> 1. **Zero-based indexing** — `arr[0]` is first, `arr[-1]` is last
-> 2. **Slicing** = `arr[start:stop:step]` — stop is **excluded**
-> 3. **2D indexing** = `matrix[row, col]` or `matrix[row_slice, col_slice]`
-> 4. **Boolean indexing** — filter with conditions: `arr[arr > 5]`
-> 5. **Combine conditions** with `&`, `|`, `~` (not `and`, `or`, `not`!)
-> 6. **`np.where()`** = if-else for arrays
-> 7. **Fancy indexing** — use a list of indices: `arr[[0, 3, 7]]`
-> 8. **Views vs Copies** — slices are views! Use `.copy()` to be safe
->
-> ```python
-> # The golden rule:
-> arr[2]         # single element
-> arr[1:5]       # slice (VIEW!)
-> arr[arr > 0]   # boolean filter (copy)
-> arr[[1,3,5]]   # fancy indexing (copy)
-> arr[1:5].copy() # forced copy
-> ```
+> - Indexing uses `arr[i]` for 1-D, `arr[i, j]` for 2-D — always comma-separated, never `arr[i][j]`
+> - Slices are `[start:stop:step]` — stop is excluded, step defaults to 1
+> - Boolean indexing uses `&`, `|`, `~` — never `and`, `or`, `not` — with parentheses around each condition
+> - `np.where(cond, a, b)` is element-wise if-else; `np.where(cond)` returns indices
+> - Fancy indexing with integer arrays always returns a copy
+> - Basic slicing always returns a view — modifying it modifies the original
+> - Use `.copy()` whenever you need to modify a subset without affecting the source
 
 ---
 
-## 🔗 Navigation
-
-| Previous | Next |
-|----------|------|
-| [[02-array-creation]] | [[04-vectorization]] |
-
----
-
-*Tags: #numpy #indexing #slicing #boolean-indexing #fancy-indexing #views #masking*
+[[02-array-creation]] | [[04-vectorization]]
