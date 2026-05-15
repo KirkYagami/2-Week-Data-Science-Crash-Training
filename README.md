@@ -1,14 +1,14 @@
 # 2-Week Data Science Crash Training
 
-[![Website](https://img.shields.io/badge/Website-Live-4CAF50?style=for-the-badge&logo=materialformkdocs&logoColor=white)](https://kirkyagami.github.io/2-Week-Data-Science-Crash-Training/)
+[![Website](https://img.shields.io/badge/Website-Live-4CAF50?style=for-the-badge&logo=materialformkdocs&logoColor=white)](https://ds.learnwithnickk.com)
 [![GitHub Stars](https://img.shields.io/github/stars/KirkYagami/2-Week-Data-Science-Crash-Training?style=for-the-badge&logo=github)](https://github.com/KirkYagami/2-Week-Data-Science-Crash-Training/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
 A focused, hands-on data science learning vault — structured as a two-week bootcamp — built for students who want to move from Python basics to practical machine learning workflows without getting lost in theory fog.
 
-**Trainer:** [Nikhil Sharma](https://www.linkedin.com/in/-nikhil/) — Data Science Trainer & Practitioner
+**Trainer:** [Nikhil Sharma](https://www.linkedin.com/in/-nikhil/) — Sr. Data Science Trainer & Practitioner
 
-> Browse the course online at **[kirkyagami.github.io/2-Week-Data-Science-Crash-Training](https://kirkyagami.github.io/2-Week-Data-Science-Crash-Training/)** — no setup required.
+> Browse the course online at **[ds.learnwithnickk.com](https://ds.learnwithnickk.com)** — no setup required.
 
 Week 01 builds the working foundation: Python, NumPy, Pandas, visualization, statistics, SQL, and EDA. Week 02 moves into machine learning, feature engineering, evaluation, deep learning, NLP, and an end-to-end project.
 
@@ -34,7 +34,7 @@ By the end of this training, you should be able to:
 
 Two ways to use this course:
 
-**Option 1 — Read online (no setup):** Open the [course website](https://kirkyagami.github.io/2-Week-Data-Science-Crash-Training/) and follow the left-hand navigation. Everything is searchable.
+**Option 1 — Read online (no setup):** Open the [course website](https://ds.learnwithnickk.com) and follow the left-hand navigation. Everything is searchable.
 
 **Option 2 — Clone and study locally:**
 ```bash
@@ -220,9 +220,6 @@ Use this repo as a training ground. Break things, fix them, write the insight do
 
 <div align="center">
 
-## 📬 Get in Touch
-
-[![Email](https://img.shields.io/badge/Email-er.nikhilsharma7%40gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:er.nikhilsharma7@gmail.com)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Nikhil%20Sharma-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/-nikhil/)
 
 ### Made with ❤️ by [Nikhil Sharma](https://www.linkedin.com/in/-nikhil/)
