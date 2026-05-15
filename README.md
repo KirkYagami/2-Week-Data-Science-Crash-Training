@@ -95,11 +95,11 @@ The goal is not to "finish files." The goal is to build reflexes.
 
 ## Fast-Access Folders
 
-- [Assignments](docs/Assignments)
-- [Cheat Sheets](docs/Cheat-Sheets)
-- [Interview Preparation](docs/Interview-Preparation)
-- [Projects](docs/Projects)
-- [Resources](docs/Resources)
+- [Assignments](docs/Assignments/week-01-assignment.md)
+- [Cheat Sheets](docs/Cheat-Sheets/python-cheat-sheet.md)
+- [Interview Preparation](docs/Interview-Preparation/README.md)
+- [Projects](docs/Projects/Titanic-Survival-Prediction/README.md)
+- [Resources](docs/Resources/books.md)
 
 ---
 
@@ -187,7 +187,7 @@ If you want to keep going, build one of these end to end:
 - sentiment analysis on tweets
 - Titanic survival prediction
 
-The [Projects](Projects) folder is set up for these.
+The [Projects](docs/Projects) folder is set up for these.
 
 ---
 
